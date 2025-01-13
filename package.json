@@ -9,12 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "next": "15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.1.4"
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "postcss": "^8",
     "tailwindcss": "^3.4.1"
-  }
+  },
+  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) .",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
