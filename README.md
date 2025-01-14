@@ -1,5 +1,5 @@
 Project Idea: TradeSenseAI
-
+ 
 
 a hybrid stock prediction system that combines social sentiment analysis with traditional financial data and advanced analytics to provide a more accurate, holistic prediction model.
 
