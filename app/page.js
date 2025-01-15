@@ -25,10 +25,11 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>WebSocket with Next.js</h1>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+      <h2 className="first">Welcome</h2>
+      <h1 className="text-4xl font-bold text-blue-600">WebSocket with Next.js</h1>
       <p>{message}</p>
-      <button onClick={sendMessage}>Send Message</button>
+      <button className="btn-primary" onClick={sendMessage}>Send Message</button>
     </div>
   );
 }
