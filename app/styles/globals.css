@@ -6,9 +6,20 @@
   .btn-primary {
     @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition;
   }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition;
+  }
 }
 
-.first{
+.make-acc-btn{
+  font-size: 20px;
+  font-weight: bold;
+  position: relative;
+  display: flex;
+}
+
+.first {
   font-style: italic;
   color: red;
 }
@@ -30,3 +41,4 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+

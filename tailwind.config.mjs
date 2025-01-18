@@ -9,6 +9,11 @@ export default {
       colors: {
         customBlue: '#1E40AF',
       },
+      fontFamily: {
+        geist: ['--font-geist-sans'],
+        geistMono: ['--font-geist-mono'],
+        signature: ["var(--font-signature)", "cursive"], // Ensure fallback
+      },
     },
   },
   plugins: [
