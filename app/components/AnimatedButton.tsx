@@ -1,8 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
+import React, { ReactNode } from "react";
 
-export default function AnimatedButton({ children }) {
+interface AnimatedButtonProps {
+  children: ReactNode;
+}
+
+const AnimatedButton: React.FC<AnimatedButtonProps> = ({ children }) => {
   return (
     <motion.button
       whileHover={{ scale: 1.1 }}
@@ -11,6 +16,7 @@ export default function AnimatedButton({ children }) {
     >
       {children}
     </motion.button>
-
   );
-}
+};
+
+export default AnimatedButton;
