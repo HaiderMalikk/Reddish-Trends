@@ -7,9 +7,10 @@ export default function AnimatedButton({ children }) {
     <motion.button
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className="px-6 py-2 bg-blue-500 text-white rounded-lg font-semibold shadow-lg flex items-center justify-center"
+      className="px-6 py-2 bg-customBlue text-white rounded-lg font-semibold shadow-lg mb-4"
     >
-      {children}  {/* This allows you to pass any component inside */}
+      {children}
     </motion.button>
+
   );
 }

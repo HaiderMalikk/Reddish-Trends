@@ -7,12 +7,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        customBlue: '#1E40AF',
+        customBlue: '#3c59a3',
+        customWhite: '#f5f5f5',
+        customDark: '#01004d', // Deep navy color
       },
       fontFamily: {
-        geist: ['--font-geist-sans'],
-        geistMono: ['--font-geist-mono'],
-        signature: ["var(--font-signature)", "cursive"], // Ensure fallback
+        signature: ["var(--font-poppins)", "sans-serif"], // Use your variable here
+        secondary: ["italic"],
       },
     },
   },

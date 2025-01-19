@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/font": "^14.2.15",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/line-clamp": "^0.4.4",
@@ -25,10 +26,13 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@types/node": "22.10.7",
+    "@types/react": "19.0.7",
     "postcss": "^8.5.1",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "typescript": "5.7.3"
   },
-  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) .",
+  "description": "Trade Sense AI is a platform that provides real-time stock market data and analysis based on stock data and news sentiment analysis.",
   "main": "index.js",
   "keywords": [],
   "author": "",

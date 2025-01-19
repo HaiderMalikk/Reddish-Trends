@@ -4,7 +4,7 @@
 
 @layer components {
   .btn-primary {
-    @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition;
+    @apply px-4 py-2 bg-customBlue text-white font-semibold rounded-lg hover:bg-customBlue transition;
   }
 
   .btn-secondary {
@@ -12,12 +12,6 @@
   }
 }
 
-.make-acc-btn{
-  font-size: 20px;
-  font-weight: bold;
-  position: relative;
-  display: flex;
-}
 
 .first {
   font-style: italic;

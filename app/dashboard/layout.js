@@ -1,27 +1,31 @@
 'use client';
-import { Poppins } from "next/font/google";
-import Link from "next/link";
-import { usePathname } from 'next/navigation';
-import "./styles/globals.css";
-import logotext from "../public/logo-w-text.svg";
+import { useRouter, usePathname } from "next/navigation";  // Ensure correct import
 import Image from "next/image";
+import Link from "next/link";
+import logotext from "../../public/logo-w-text.svg";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"], // Add weights based on your usage
-  variable: "--font-poppins",
-});
-
-export default function RootLayout({ children }) {
+export default function DashboardLayout({ children }) {
+  const router = useRouter();  // Initialize router
   const pathname = usePathname();
 
+  // Logout function
+  const handleLogout = () => {
+    // Clear authentication (this could be clearing session, cookies, etc.)
+    sessionStorage.clear(); // or localStorage.clear();
+
+    // Redirect to login page after logout
+    router.replace("/login");
+    // Force a full page reload to ensure state is updated
+    window.location.href = "/login";
+  };
+
   return (
-    <html lang="en" className={poppins.variable}>
+    <html lang="en">
       <body className="min-h-screen bg-customBlue text-customWhite font-signature">
         <header className="p-4 shadow-md bg-customDark">
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center">
-              <Link href="http://localhost:3000">
+            <Link href="http://localhost:3000">
               <Image
                 src={logotext}
                 alt="Logo"
@@ -32,12 +36,12 @@ export default function RootLayout({ children }) {
               </Link>
             </div>
             <nav className="space-x-4 flex items-center">
-              <Link href="/" className={`hover:text-gray-300 ${pathname === '/' ? 'underline' : ''}`}>
-                Home
+              <Link href="/dashboard" className={`hover:text-gray-300 ${pathname === '/dashboard' ? 'underline' : ''}`}>
+                Dashboard
               </Link>
-              <Link href="/login" className={`hover:text-gray-300 ${pathname === '/login' ? 'underline' : ''}`}>
-                Login
-              </Link>
+              <button onClick={handleLogout} className="hover:text-gray-300">
+                Logout
+              </button>
             </nav>
           </div>
         </header>

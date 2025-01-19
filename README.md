@@ -1,3 +1,6 @@
+# COMING SOON
+
+
 Project Idea: TradeSenseAI
  
 
