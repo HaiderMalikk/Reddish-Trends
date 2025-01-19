@@ -1,31 +1,35 @@
 'use client';
-import { useRouter, usePathname } from "next/navigation";  // Ensure correct import
-import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
+import { useUser, useClerk } from "@clerk/nextjs";  // Import both useUser and useClerk
 import Link from "next/link";
 import logotext from "../../public/logo-w-text.svg";
+import Image from "next/image";
 
 export default function DashboardLayout({ children }) {
-  const router = useRouter();  // Initialize router
+  const { user, isLoaded } = useUser();  // Use Clerk hook for user management
+  const { signOut } = useClerk();  // Access signOut from useClerk
+  const router = useRouter();
   const pathname = usePathname();
 
-  // Logout function
-  const handleLogout = () => {
-    // Clear authentication (this could be clearing session, cookies, etc.)
-    sessionStorage.clear(); // or localStorage.clear();
-
-    // Redirect to login page after logout
-    router.replace("/login");
-    // Force a full page reload to ensure state is updated
-    window.location.href = "/login";
+  const handleLogout = async () => {
+    try {
+      await signOut();  // Sign the user out using Clerk's method
+      router.replace("/login");  // Redirect to login page after signing out
+    } catch (error) {
+      console.error("Logout error:", error);  // Handle logout errors
+    }
   };
 
+  if (!isLoaded) {
+    return <div>Loading...</div>;  // Wait until the user data is loaded
+  }
+
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-customBlue text-customWhite font-signature">
-        <header className="p-4 shadow-md bg-customDark">
-          <div className="flex justify-between items-center w-full">
-            <div className="flex items-center">
-            <Link href="http://localhost:3000">
+    <div className="min-h-screen bg-customBlue text-customWhite font-signature">
+      <header className="p-4 shadow-md bg-customDark">
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center">
+            <Link href="/dashboard">
               <Image
                 src={logotext}
                 alt="Logo"
@@ -33,41 +37,24 @@ export default function DashboardLayout({ children }) {
                 height={170}
                 className="mr-4"
               />
-              </Link>
-            </div>
-            <nav className="space-x-4 flex items-center">
-              <Link href="/dashboard" className={`hover:text-gray-300 ${pathname === '/dashboard' ? 'underline' : ''}`}>
-                Dashboard
-              </Link>
-              <button onClick={handleLogout} className="hover:text-gray-300">
-                Logout
-              </button>
-            </nav>
+            </Link>
           </div>
-        </header>
-        <main>{children}</main>
-        <footer className="bg-customDark text-white py-4 text-center">
-          <h3 className="text-lg font-semibold">
-            Trade Sense AI, a project of{" "}
-            <a
-              className="text-customBlue hover:underline"
-              href="https://github.com/HaiderMalikk"
-              target="_blank"
-              rel="noopener noreferrer"
+          <nav className="space-x-4 flex items-center">
+            <Link
+              href="/dashboard"
+              className={`hover:text-gray-300 ${
+                pathname === "/dashboard" ? "underline" : ""
+              }`}
             >
-              Haider Malik
-            </a>
-          </h3>
-          <a
-            className="text-customBlue hover:underline"
-            href="https://github.com/HaiderMalikk/Trade-Sense-AI"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Source Code Link
-          </a>
-        </footer>
-      </body>
-    </html>
+              Dashboard
+            </Link>
+            <button onClick={handleLogout} className="hover:text-gray-300">
+              Logout
+            </button>
+          </nav>
+        </div>
+      </header>
+      <main>{children}</main>
+    </div>
   );
 }
