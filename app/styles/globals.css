@@ -2,6 +2,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* tailwind + CSS global styles */
+
 @layer components {
   .btn-primary {
     @apply px-4 py-2 bg-customBlue text-white font-semibold rounded-lg hover:bg-customBlue transition;
@@ -13,15 +15,12 @@
 }
 
 
-.first {
-  font-style: italic;
-  color: red;
-}
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
+
 
 @media (prefers-color-scheme: dark) {
   :root {

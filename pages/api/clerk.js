@@ -1,4 +1,6 @@
-// pages/api/clerk.js or middleware.ts
+/* 
+- middleware for clerk login
+*/
 import { withClerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -6,7 +8,7 @@ export default withClerkMiddleware((req) => {
   return NextResponse.next();
 });
 
-// Ensure this includes the login route matcher
+// include pages that should be protected
 export const config = {
-  matcher: ["/((?!_next|static|favicon.ico).*)", "/login(.*)"], // Ensure login is not protected
+  matcher: ["/((?!_next|static|favicon.ico).*)", "/login(.*)"],
 };

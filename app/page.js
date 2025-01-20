@@ -1,26 +1,35 @@
-"use client";  // This ensures it's only rendered on the client side
+/* 
+Main Page for the website with introduction and some yap
 
-import Image from "next/image";  
-import { motion, useInView } from "framer-motion";  
-import { useRef, useState, useEffect } from "react";  
-import logotext from '../public/logo-w-text.svg'; 
-import AnimatedButton from "./components/AnimatedButton";
-import Link from "next/link";
+Uses Framer Motion for animation
+*/
+
+"use client"; 
+
+import Image from "next/image"; // Import the Image component
+import { motion, useInView } from "framer-motion";  // Import the motion and useInView hooks for framer motion
+import { useRef, useState, useEffect } from "react"; // Import the useRef, useState, and useEffect hooks for animation
+import logotext from '../public/logo-w-text.svg'; // Import the logo
+import AnimatedButton from "./components/AnimatedButton"; // Import the AnimatedButton component from the components folder
+import Link from "next/link"; // Import the Link component to send the user to the login page and etc etc
 
 export default function HomePage() {
-  const text = " Trade With Confidence, Trade With Sense."; // start with space 
-  const [displayedText, setDisplayedText] = useState("");
+  const text = " Trade With Confidence, Trade With Sense."; // start with space beacuse of the animation bug idk
+  const [displayedText, setDisplayedText] = useState(""); // to animate the displayed text (discription only)
 
+  // refs for animation
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const ref3 = useRef(null);
   const ref4 = useRef(null);
 
+  // useInView for animation only animate once when in view
   const isInView1 = useInView(ref1, { once: true });
   const isInView2 = useInView(ref2, { once: true });
   const isInView3 = useInView(ref3, { once: true });
   const isInView4 = useInView(ref4, { once: true });
 
+  // useEffect for typing animation (simple appends the text one letter at a time to the displayedText giving a typing effect)
   useEffect(() => {
     let index = 0;
     const typingInterval = setInterval(() => {
@@ -32,7 +41,7 @@ export default function HomePage() {
     }, 50); // Typing speed in milliseconds
 
     return () => clearInterval(typingInterval); // Cleanup on unmount
-  }, [text]);
+  }, [text]); // only animate once
 
   return (
     <div className="min-h-screen bg-customBlue flex flex-col items-center justify-center">
@@ -103,7 +112,7 @@ export default function HomePage() {
             <p className="text-gray-600">$0.0/month - Access to basic trading insights.</p>
           </div>
           <div className="bg-gray-200 p-4 rounded-lg">
-            <h3 className="text-xl font-semibold" style={{ color: "#d4b404" }} >Pro Plan</h3>
+            <h3 className="text-xl font-semibold" style={{ color: "#d4b404" }} >Pro Plan (Coming Soon)</h3>
             <p className="text-gray-600">$2.99/month - Everything in Free Plan + Access to advanced tools and analysis.</p>
           </div>
         </div>
@@ -118,14 +127,13 @@ export default function HomePage() {
         className="mt-20 p-6 bg-customWhite text-center shadow-lg rounded-lg w-3/4 mb-10 flex justify-center items-center flex-col"
       >
         <Link href="/login" >
+        {/* animated buttom coomponent */}
         <AnimatedButton >
           <h2 className="text-3xl font-semibold text-customWhite">Get Started for Free</h2>
         </AnimatedButton>
         </Link>
         <p className="text-black">Sign up now to start using TradeSenseAI and take your trading to the next level.</p>
       </motion.div>
-
-
     </div>
   );
 }

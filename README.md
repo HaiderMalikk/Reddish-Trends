@@ -76,3 +76,6 @@ Now that we have our predictions, we need a stunning UI that:
 ✅ Real-world relevance → People already use sentiment for trading
 ✅ Highly monetizable → You can sell premium insights & predictions
 
+
+- befoer publish on vercel: Publish Clerk, Publish Google OAuth
+
