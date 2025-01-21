@@ -21,6 +21,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "firebase": "^11.2.0",
+    "firebase-admin": "^13.0.2",
     "framer-motion": "^11.18.1",
     "next": "15.1.4",
     "react": "^19.0.0",

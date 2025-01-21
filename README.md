@@ -77,5 +77,5 @@ Now that we have our predictions, we need a stunning UI that:
 ✅ Highly monetizable → You can sell premium insights & predictions
 
 
-- befoer publish on vercel: Publish Clerk, Publish Google OAuth
+- before publish on vercel: Publish Clerk, Publish Google OAuth, Last min firebase configs?, remove paid ? 
 
