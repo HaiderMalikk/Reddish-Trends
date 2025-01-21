@@ -1,5 +1,5 @@
 /* 
-gets user email front frontend + clerk then adds it to firebase making a new user if it doesn't exist with its identifier as the email
+gets user email front frontend using clerk then adds it to firebase making a new user if it doesn't exist with its identifier as the email
 */
 
 import admin from '../../utils/firebaseAdmin';

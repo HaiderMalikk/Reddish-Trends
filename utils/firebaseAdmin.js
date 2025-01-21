@@ -2,12 +2,13 @@
 // this file is used to initialize the firebase admin app
 import admin from 'firebase-admin';
 
+let serviceAccount;
+
 try {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-    console.log(serviceAccount);
-  } catch (error) {
-    console.error('Error parsing Firebase service account key:', error);
-  }
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+} catch (error) {
+  console.error('Error parsing Firebase service account key:', error);
+}
 
 if (!admin.apps.length) {
   admin.initializeApp({
