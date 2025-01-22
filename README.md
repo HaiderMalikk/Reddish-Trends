@@ -77,6 +77,5 @@ Now that we have our predictions, we need a stunning UI that:
 ✅ Highly monetizable → You can sell premium insights & predictions
 
 ## Additional Information
-
-- [License](LICENSE)
-- [Policy](POLICY.md)
+- [License](Licence)
+- [Policy](Private_Policy.md)
