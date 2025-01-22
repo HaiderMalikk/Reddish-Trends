@@ -33,7 +33,7 @@ export default function Dashboard() {
             const lastName = user?.lastName || '';
             setMessage(
               data.userExists
-                ? `User found. Welcome, ${firstName} ${lastName}!`
+                ? `User found. Welcome back, ${firstName} ${lastName}!`
                 : `New user profile created. Welcome, ${firstName} ${lastName}!`
             );
           } else {
@@ -45,7 +45,7 @@ export default function Dashboard() {
           setTimeout(() => setMessage(''), 5000);
         } catch (error) {
           console.error('Error checking or creating user:', error);
-          setMessage('An error occurred.');
+          setMessage('An error occurred while finding or creating the user, please try again.');
         }
       };
   
