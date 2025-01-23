@@ -73,10 +73,10 @@ export default function RootLayout({ children }) {
           <main>{children}</main>
           {/* global footer */}
           <footer className="bg-customDark text-white py-4 text-center">
-            <h3 className="text-lg font-semibold">
+            <h3 className="text-lg font-semibold mb-4">
               Trade Sense AI, a project of{" "}
               <a
-                className="text-customBlue hover:underline"
+                className="text-customWhite underline hover:text-opacity-90"
                 href="https://github.com/HaiderMalikk"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -84,14 +84,28 @@ export default function RootLayout({ children }) {
                 Haider Malik
               </a>
             </h3>
-            <a
-              className="text-customBlue hover:underline"
-              href="https://github.com/HaiderMalikk/Trade-Sense-AI"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Source Code Link
-            </a>
+            <ul className="list-none">
+              <li className="mb-2">
+                <Link href="/policy" className="text-customWhite underline hover:text-opacity-90">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link href="/licence" className="text-customWhite underline hover:text-opacity-90">
+                  License
+                </Link>
+              </li>
+              <li>
+              <a
+                  className="text-customWhite underline hover:text-opacity-90"
+                  href="https://github.com/HaiderMalikk/Trade-Sense-AI"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Source Code
+                </a>
+              </li>
+            </ul>
           </footer>
         </body>
       </html>
