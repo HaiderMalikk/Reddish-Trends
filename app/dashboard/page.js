@@ -12,7 +12,9 @@ import { useEffect, useState } from 'react';
 export default function Dashboard() {
   const { user, isLoaded } = useUser();
   const [message, setMessage] = useState('');
+  const [createdAt, setCreatedAt] = useState(null);
 
+  // once user from clerk is loaded and we have a user then get the user data from firebase
   useEffect(() => {
     if (isLoaded && user) {
       const checkOrCreateUser = async () => {
@@ -36,6 +38,10 @@ export default function Dashboard() {
                 ? `User found. Welcome back, ${firstName} ${lastName}!`
                 : `New user profile created. Welcome, ${firstName} ${lastName}!`
             );
+  
+            if (data.userExists && data.createdAt) {
+              setCreatedAt(new Date(data.createdAt).toLocaleString());
+            }
           } else {
             console.error('Error:', data);
             setMessage(`Error: ${data.message}`);
@@ -89,6 +95,13 @@ export default function Dashboard() {
             }`}
           >
             {message}
+          </p>
+        )}
+
+        {/* Display account creation date if the user exists */}
+        {createdAt && (
+          <p className="mt-4 text-lg text-gray-600">
+            Account created at: {createdAt}
           </p>
         )}
       </div>

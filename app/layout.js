@@ -77,7 +77,7 @@ export default function RootLayout({ children }) {
               Trade Sense AI, a project of{" "}
               <a
                 className="text-customWhite underline hover:text-opacity-90"
-                href="https://github.com/HaiderMalikk"
+                href="https://haidermalikk.github.io/HaiderMaliksWebsite/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
