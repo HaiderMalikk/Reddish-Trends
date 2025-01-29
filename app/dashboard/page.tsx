@@ -9,12 +9,18 @@ Dashboard page currently handles the following:
 import { useUser } from '@clerk/nextjs';
 import { useEffect, useState } from 'react';
 
+// Define types for the state variables
+interface UserData {
+  createdAt?: string;
+  message?: string;
+}
+
 export default function Dashboard() {
   const { user, isLoaded } = useUser();
-  const [message, setMessage] = useState('');
-  const [createdAt, setCreatedAt] = useState(null);
+  const [message, setMessage] = useState<string>('');
+  const [createdAt, setCreatedAt] = useState<string | null>(null);
 
-  // once user from clerk is loaded and we have a user then get the user data from firebase
+  // Once user from Clerk is loaded and we have a user, then get the user data from Firebase
   useEffect(() => {
     if (isLoaded && user) {
       const checkOrCreateUser = async () => {
@@ -58,8 +64,8 @@ export default function Dashboard() {
       checkOrCreateUser();
     }
   }, [isLoaded, user]);
-  
 
+  // Loader state when user is not yet loaded
   if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -68,6 +74,7 @@ export default function Dashboard() {
     );
   }
 
+  // If no user is found
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -76,6 +83,7 @@ export default function Dashboard() {
     );
   }
 
+  // Extract user name
   const firstName = user?.firstName || 'User';
   const lastName = user?.lastName || '';
 

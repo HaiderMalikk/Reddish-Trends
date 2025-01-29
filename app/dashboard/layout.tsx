@@ -14,7 +14,12 @@ import Link from "next/link"; // link for navigation between pages
 import logotext from "../../public/logo-w-text.svg"; // Import the logo image
 import Image from "next/image"; // Import the Image component
 
-export default function DashboardLayout({ children }) {
+// Define the props type for DashboardLayout to include children
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, isLoaded } = useUser();  // Use Clerk hook for user management (logout)
   const { signOut } = useClerk();  // Access signOut from useClerk to handle logout
   const router = useRouter(); // Access the router for navigation
@@ -30,7 +35,7 @@ export default function DashboardLayout({ children }) {
     }
   };
 
-  // loder until the user data is loaded
+  // Loader until the user data is loaded
   if (!isLoaded) {
     return <div>Loading...</div>;  
   }

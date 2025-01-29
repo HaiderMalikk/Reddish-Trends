@@ -1,27 +1,53 @@
 /* 
-Component for the animated button (in ts)
+Component for the animated button 
 */
-
-"use client";
-
-import { motion } from "framer-motion";
-import React, { ReactNode } from "react";
+import { useRef, useEffect, ReactNode } from "react";
+import { gsap } from "gsap";
 
 interface AnimatedButtonProps {
   children: ReactNode;
+  onClick?: () => void;
 }
 
-// sinple animated button using framer motion and Tailwind CSS (on hover expand, on click shrink)
-const AnimatedButton: React.FC<AnimatedButtonProps> = ({ children }) => {
+export default function AnimatedButton({ children, onClick }: AnimatedButtonProps) {
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (!buttonRef.current) return;
+
+    // GSAP animation on hover
+    gsap.fromTo(
+      buttonRef.current,
+      { scale: 1 },
+      {
+        scale: 1.1,
+        duration: 0.2,
+        paused: true,
+        ease: "power1.out",
+      }
+    );
+
+    // Hover animation using event listeners
+    const button = buttonRef.current;
+    const handleMouseEnter = () => gsap.to(button, { scale: 1.1, duration: 0.2 });
+    const handleMouseLeave = () => gsap.to(button, { scale: 1, duration: 0.2 });
+
+    button.addEventListener("mouseenter", handleMouseEnter);
+    button.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      button.removeEventListener("mouseenter", handleMouseEnter);
+      button.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, []);
+
   return (
-    <motion.button
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-      className="px-6 py-2 bg-customBlue text-white rounded-lg font-semibold shadow-lg mb-4"
+    <button
+      ref={buttonRef}
+      onClick={onClick}
+      className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-md transition-all hover:bg-blue-700"
     >
       {children}
-    </motion.button>
+    </button>
   );
-};
-
-export default AnimatedButton;
+}

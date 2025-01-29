@@ -14,24 +14,36 @@
   }
 }
 
-
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Add dynamic background animation */
+body {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6, #1e3a8a);
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Custom styles for bullet points */
+ul.custom-list {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+ul.custom-list li {
+  margin-bottom: 0.5rem;
+}
+
+ul.custom-list ul {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}

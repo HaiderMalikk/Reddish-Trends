@@ -7,7 +7,6 @@ but the same global footer is defined in this layout.
 - uses poppins font so that the whole website uses the same font unless specified otherwise.
 - imports styles so that the whole website uses the same global styles.
 */
-
 'use client';
 import { Poppins } from "next/font/google"; // Import the Poppins font
 import { ClerkProvider } from '@clerk/nextjs';  // Import Clerk provider
@@ -24,13 +23,18 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-export default function RootLayout({ children }) {
+// Type for RootLayout props
+interface RootLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   const pathname = usePathname(); // Get the current pathname to highlight the active link
-  const isDashboard = pathname.startsWith('/dashboard'); // Check if the current page is the dashboard as dashboard has a different header
+  const isDashboard = pathname?.startsWith('/dashboard') ?? false; // Check if the current page is the dashboard as dashboard has a different header
 
   return (
     // wrapped in clerk provider to use clerk
-    <ClerkProvider frontendApi={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     // clerk config
     appearance={{
         variables: {
@@ -46,7 +50,7 @@ export default function RootLayout({ children }) {
         <body className="min-h-screen bg-customBlue text-customWhite font-signature">
           {/* keep font global but keep dashboard header separate (will apply to all the pages in the website once user logs in) */}
           {!isDashboard && (
-            <header className="p-4 shadow-md bg-customDark">
+            <header className="p-4 shadow-md bg-customBlue">
               <div className="flex justify-between items-center w-full">
                 <div className="flex items-center">
                   <Link href="/">
