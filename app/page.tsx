@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -38,7 +37,7 @@ export default function HomePage() {
     const typingInterval = setInterval(() => {
       setDisplayedText((prev) => prev + text[index]);
       index++;
-      if (index === text.length) clearInterval(typingInterval);
+      if (index === text.length-1) clearInterval(typingInterval);
     }, 50);
 
     // Scroll-triggered animations
@@ -90,7 +89,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-customDark flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-customColor1 flex flex-col items-center justify-center pt-20">
       {/* Logo Section */}
       <div className="text-center mb-2 mt-2">
         <Image
@@ -102,7 +101,7 @@ export default function HomePage() {
           className="mx-auto mb-4 mt-4"
           style={{ opacity: 0 }} // Set initial opacity to 0
         />
-        <p ref={textRef} className="text-lg text-customWhite font-secondary" style={{ opacity: 0 }}>
+        <p ref={textRef} className="text-lg text-customColor2 font-secondary" style={{ opacity: 0 }}>
           {displayedText}
         </p>
       </div>
@@ -112,7 +111,7 @@ export default function HomePage() {
         ref={(el) => {
           if (el) sectionRefs.current[0] = el;
         }}
-        className="mt-20 p-6 bg-customBlue shadow-lg rounded-lg w-3/4 text-center"
+        className="mt-20 p-6 bg-customColor3 shadow-2xl rounded-lg w-3/4 text-center"
         style={{ opacity: 0 }} // Set initial opacity to 0
       >
         <h2 className="text-3xl font-bold text-gray-800 mb-2 relative">
@@ -125,7 +124,7 @@ export default function HomePage() {
             style={{ width: "0%" }}
           ></div>
         </h2>
-        <ul className="custom-list text-left mt-4 text-customWhite">
+        <ul className="custom-list text-left mt-4 text-customColor2">
           <li>🔥 <strong>How It Works:</strong></li>
           <ul className="pl-4 list-disc">
             <li>- Combines social sentiment and financial trends for trading insights.</li>
@@ -145,7 +144,7 @@ export default function HomePage() {
         ref={(el) => {
           if (el) sectionRefs.current[1] = el;
         }}
-        className="mt-20 p-6 bg-customBlue shadow-lg rounded-lg w-3/4 text-center"
+        className="mt-20 p-6 bg-customColor3 shadow-2xl rounded-lg w-3/4 text-center"
         style={{ opacity: 0 }} // Set initial opacity to 0
       >
         <h2 className="text-3xl font-bold text-gray-800 mb-2 relative">
@@ -175,16 +174,16 @@ export default function HomePage() {
         ref={(el) => {
           if (el) sectionRefs.current[2] = el;
         }}
-        className="mt-20 p-6 bg-customBlue text-center shadow-lg rounded-lg w-3/4 mb-10 flex justify-center items-center flex-col"
+        className="mt-20 p-6 bg-customColor3 text-center shadow-2xl rounded-lg w-3/4 mb-10 flex justify-center items-center flex-col"
         style={{ opacity: 0 }} // Set initial opacity to 0
       >
         <Link href="/login">
           <AnimatedButton>
-            <h2 className="text-3xl font-semibold text-customWhite">Get Started for Free</h2>
+            <h2 className="text-3xl font-semibold text-customColor2">Get Started for Free</h2>
           </AnimatedButton>
         </Link>
-        <p className="text-customWhite">Sign up now and take your trading to the next level.</p>
+        <p className="text-customColor2">Sign up now and take your trading to the next level.</p>
       </div>
     </div>
   );
-}
+}   

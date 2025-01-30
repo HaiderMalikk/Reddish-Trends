@@ -7,9 +7,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        customBlue: '#3c59a3', // signature color (background)
-        customWhite: '#f5f5f5', // secondary color (components)
-        customDark: '#01004d', // header/footer color
+        customColor1: '#213555', // BG
+        customColor2: '#F5EFE7', // ?? >>>
+        customColor3: '#3E5879', // ?? >>
+        customColor4: '#D8C4B6', // ?? >
+        customColor5: '#f5f5f5', // text
       },
       fontFamily: {
         signature: ["var(--font-poppins)", "sans-serif"], // signature font

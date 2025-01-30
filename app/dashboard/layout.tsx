@@ -41,8 +41,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-customBlue text-customWhite font-signature">
-      <header className="p-4 shadow-md bg-customDark">
+    <div className="min-h-screen bg-customColor1 text-customColor2 font-signature">
+      <header className="p-4 shadow-md bg-customColor3">
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center">
             {/* logo on header */}

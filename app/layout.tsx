@@ -8,13 +8,14 @@ but the same global footer is defined in this layout.
 - imports styles so that the whole website uses the same global styles.
 */
 'use client';
-import { Poppins } from "next/font/google"; // Import the Poppins font
-import { ClerkProvider } from '@clerk/nextjs';  // Import Clerk provider
 import { usePathname } from 'next/navigation'; // Import the usePathname hook for highlighting the active link
 import "./styles/globals.css"; // Import global styles 
 import logotext from "../public/logo-w-text.svg"; // Import the logo 
 import Image from "next/image"; // Import the Image component
 import Link from "next/link"; // Import the Link component to navigate between pages while in loggout state
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ClerkProvider } from '@clerk/nextjs'; // Import Clerk provider
+import { Poppins } from "next/font/google"; // Import the Poppins font
 
 // Define the Poppins font with the specified weights
 const poppins = Poppins({
@@ -28,6 +29,12 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
+ScrollTrigger.create({
+  start: 'top -80',
+  end: 99999,
+  toggleClass: {className: 'main-tool-bar--scrolled', targets: '.main-tool-bar'}
+});
+
 export default function RootLayout({ children }: RootLayoutProps) {
   const pathname = usePathname(); // Get the current pathname to highlight the active link
   const isDashboard = pathname?.startsWith('/dashboard') ?? false; // Check if the current page is the dashboard as dashboard has a different header
@@ -38,19 +45,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
     // clerk config
     appearance={{
         variables: {
-          colorBackground: '#f5f5f5',
+          colorBackground: '#F5F5F5',
           fontSize: '16px',
-          colorPrimary: '#3c59a3',
+          colorPrimary: '#3E5879',
         },
-        layout: {
-          logoImageUrl: 'logo-bg.svg',
-        }
       }}>
       <html lang="en" className={poppins.variable}> 
-        <body className="min-h-screen bg-customBlue text-customWhite font-signature">
+        <body className="min-h-screen bg-customColor1 text-customColor5 font-signature">
           {/* keep font global but keep dashboard header separate (will apply to all the pages in the website once user logs in) */}
           {!isDashboard && (
-            <header className="p-4 shadow-md bg-customBlue">
+            <header className="main-tool-bar p-4 text-customColor2">
               <div className="flex justify-between items-center w-full">
                 <div className="flex items-center">
                   <Link href="/">
@@ -74,9 +78,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
               </div>
             </header>
           )}
-          <main>{children}</main>
+          <main >{children}</main> {/* Added padding-top to main content */}
           {/* global footer */}
-          <footer className="bg-customDark text-white py-4 text-center">
+          <footer className="bg-customColor3 text-white py-4 text-center">
             <h3 className="text-lg font-semibold mb-4">
               Trade Sense AI, a project of{" "}
               <a

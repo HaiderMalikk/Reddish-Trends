@@ -31,8 +31,8 @@ export default function LoginPage() {
   return (
     // Wrapped in Clerk provider for user authentication
     <ClerkProvider>
-      <div className="flex items-center justify-center min-h-screen bg-customDark">
-        <div className="p-12 bg-customWhite rounded-lg shadow-lg">
+      <div className="flex items-center justify-center min-h-screen bg-customColor1">
+        <div className="p-12 bg-customColor2 rounded-lg shadow-lg">
           {/* Use Clerk to handle sign-in */}
           <SignIn
             appearance={{
