@@ -32,6 +32,10 @@ export default function LoginPage() {
     // Wrapped in Clerk provider for user authentication
     <ClerkProvider>
       <div className="flex items-center justify-center min-h-screen bg-customColor1">
+        <div className="flex flex-col items-center justify-center">
+          <h1 className="text-4xl text-customColor2 font-signature">Welcome to the Clerk Login Page</h1>
+          <p className="text-customColor2 text-lg font-signature">Please sign in to access the dashboard</p>
+        </div>
         <div className="p-12 bg-customColor2 rounded-lg shadow-lg">
           {/* Use Clerk to handle sign-in */}
           <SignIn
