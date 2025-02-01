@@ -45,7 +45,7 @@ export default function AnimatedButton({ children, onClick }: AnimatedButtonProp
     <button
       ref={buttonRef}
       onClick={onClick}
-      className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-md transition-all hover:bg-blue-700"
+      className="px-6 py-3 bg-customColor3 text-white font-bold rounded-lg shadow-md transition-all hover:scale-105"
     >
       {children}
     </button>
