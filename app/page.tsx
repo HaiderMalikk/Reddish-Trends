@@ -129,7 +129,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-customColor1 flex flex-col items-center justify-center pt-20">
-      <div className="text-center mb-2 mt-2">
+      <div className="text-center mb-2 mt-2 pt-20">
         <Image ref={logoRef} src={logotext} alt="Logo" width={800} height={800} className="mx-auto mb-8 mt-4" style={{ opacity: 0 }} />
         <p ref={textRef} className="text-2xl text-customColor2 font-secondary">{displayedText}</p>
       </div>

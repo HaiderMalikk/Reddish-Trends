@@ -19,6 +19,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ClerkProvider } from '@clerk/nextjs'; // Import Clerk provider
 import { Poppins } from "next/font/google"; // Import the Poppins font
+import { Analytics } from "@vercel/analytics/react"
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -88,7 +89,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
               </div>
             </header>
           )}
-          <main className="pt-20">{children}</main> {/* Added padding-top to main content */}
+          <main>
+            {children}
+            <Analytics />
+            </main> {/* Added padding-top to main content */}
           {/* global footer */}
           <footer className="bg-customColor3 text-white py-4 text-center">
             <h3 className="text-lg font-semibold mb-4">
