@@ -12,6 +12,7 @@ export default {
         customColor3: '#3E5879', // ?? >>
         customColor4: '#D8C4B6', // ?? >
         customColor5: '#f5f5f5', // text
+        customColor6: '#000000', // ?? <
       },
       fontFamily: {
         signature: ["var(--font-poppins)", "sans-serif"], // signature font

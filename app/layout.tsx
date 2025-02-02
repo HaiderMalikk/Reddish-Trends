@@ -113,6 +113,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   License
                 </Link>
               </li>
+              <li className="mb-2">
+                <Link
+                  href="mailto:tradesenseai@googlegroups.com?subject=Contact%20from%20Website"
+                  className="text-customWhite underline hover:text-gray-300"
+                >
+                  Contact Us
+                </Link>
+              </li>
               <li>
               <a
                   className="text-customWhite underline hover:text-gray-300"

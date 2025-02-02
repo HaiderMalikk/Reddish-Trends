@@ -12,15 +12,7 @@
   --customColor5: #f5f5f5; /* text */
 }
 
-@layer components {
-  .btn-primary {
-    @apply px-4 py-2 bg-customColor1 text-white font-semibold rounded-lg hover:bg-customColor1 transition;
-  }
 
-  .btn-secondary {
-    @apply px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition;
-  }
-}
 
 body {
   color: var(--foreground);
@@ -28,23 +20,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Add dynamic background animation */
-body {
-  background-size: 400% 400%;
-  animation: gradientAnimation 15s ease infinite;
-}
-
-@keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 
 .main-tool-bar {
   height: 65px;
   border-bottom: 2px solid var(--customColor2);
-  background: #213555;  
+  background: var(--customColor3);  
   text-align: center;
   display: flex;
   align-items: center;
@@ -109,11 +89,11 @@ body {
 }
 
 .pricing-card .front {
-  background-color: #f0f0f0;
+  background-color: var(--customColor2);
 }
 
 .pricing-card .back {
-  background-color: #f0f0f0;
+  background-color: var(--customColor2);
   transform: rotateY(180deg);
 }
 
@@ -125,17 +105,15 @@ body {
   transform: rotateY(0deg);
 }
 
-.front h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-
-
 .animated-title {
   display: inline-block;
   position: relative;
   font-size: 2rem;
 }
 
-
+.underline-animation {
+  display: block;
+  width: 0%;
+  height: 3px;
+  background-color: var(--customColor2);
+}
