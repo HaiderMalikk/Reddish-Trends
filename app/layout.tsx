@@ -20,6 +20,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ClerkProvider } from '@clerk/nextjs'; // Import Clerk provider
 import { Poppins } from "next/font/google"; // Import the Poppins font
 import { Analytics } from "@vercel/analytics/react"
+import Head from 'next/head'
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -62,7 +63,30 @@ export default function RootLayout({ children }: RootLayoutProps) {
         }
       }}>
       <html lang="en" className={poppins.variable}> 
-        <body className="min-h-screen bg-customColor1 text-customColor5 font-signature">
+        {/* meta tags for SEO */}
+      <Head>
+        <title>Trade Sense AI - AI-Powered Stock Predictions</title>
+        <meta name="description" content="Trade Sense AI combines social sentiment analysis and financial data to provide accurate stock predictions and recommendations." />
+        <meta name="keywords" content="stock predictions, AI trading, machine learning, finance, sentiment analysis, stock market, investment, trading bot" />
+        <meta name="author" content="Haider Malik" />
+        
+        {/* Open Graph Meta Tags for Social Media */}
+        <meta property="og:title" content="Trade Sense AI - AI-Powered Stock Predictions" />
+        <meta property="og:description" content="A hybrid stock prediction system that combines financial data and social sentiment analysis for smarter trading insights." />
+        <meta property="og:image" content="../public/logo-bg.svg" />
+        <meta property="og:url" content="https://trade-sense-ai-sigma.vercel.app/" />
+        <meta property="og:type" content="website" />
+        
+        {/* Twitter Card Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Trade Sense AI - AI-Powered Stock Predictions" />
+        <meta name="twitter:description" content="A stock market AI tool that analyzes financial data & social sentiment to predict stock movements." />
+        <meta name="twitter:image" content="../public/logo-bg.svg" /> 
+        
+        {/* Favicon */}
+        <link rel="icon" href="./favicon.ico" />
+      </Head>
+        <body className="min-h-screen bg-customColor1 text-customColor2 font-signature">
           {/* keep font global but keep dashboard header separate (will apply to all the pages in the website once user logs in) */}
           {!isDashboard && (
             <header className="main-tool-bar p-4 text-customColor2">
@@ -94,7 +118,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <Analytics />
             </main> {/* Added padding-top to main content */}
           {/* global footer */}
-          <footer className="bg-customColor3 text-white py-4 text-center">
+          <footer className="bg-customColor3 text-customColor2 py-4 text-center">
             <h3 className="text-lg font-semibold mb-4">
               Trade Sense AI, a project of{" "}
               <a

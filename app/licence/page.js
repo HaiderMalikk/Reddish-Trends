@@ -1,6 +1,6 @@
 export default function License() {
     return (
-      <div className="min-h-screen bg-customColor1 flex flex-col items-center justify-center p-8">
+      <div className="min-h-screen bg-customColor1 flex flex-col items-center justify-center p-8 mt-20">
         <h1 className="text-4xl font-bold text-customColor2 mb-4">License</h1>
         <div className="text-lg text-customColor2 max-w-4xl">
           <p>Copyright [2025] [Haider Ali Gazi Malik]</p>

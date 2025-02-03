@@ -6,6 +6,7 @@ import Image from "next/image";
 import logotext from "../public/logo-w-text.svg";
 import AnimatedButton from "./components/AnimatedButton";
 import Link from "next/link";
+import "./styles/mainpagestyles.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,6 +18,7 @@ export default function HomePage() {
   const textRef = useRef<HTMLParagraphElement | null>(null);
   const sectionRefs = useRef<HTMLDivElement[]>([]);
   const animatedItemsRef = useRef<HTMLDivElement[]>([]);
+  
 
   useEffect(() => {
     if (!logoRef.current || !textRef.current) return;
@@ -75,8 +77,8 @@ export default function HomePage() {
             ease: "power2.out",
             scrollTrigger: {
               trigger: section,
-              start: "top 80%",
-              end: "bottom 60%",
+              start: "top 90%",
+              end: "bottom 20%",
               toggleActions: "play none none reverse",
             },
           }
@@ -97,12 +99,13 @@ export default function HomePage() {
           ease: "power2.out",
           scrollTrigger: {
             trigger: item,
-            start: "top 80%",
-            end: "bottom 60%",
+            start: "top 90%",
+            end: "bottom 20%",
             toggleActions: "play none none reverse",
           },
         }
       );
+      // Add underline animation
         const underline = item.querySelector(".underline-animation");
   
         gsap.fromTo(
@@ -114,8 +117,8 @@ export default function HomePage() {
             ease: "power1.inOut",
             scrollTrigger: {
               trigger: item,
-              start: "top 80%",
-              end: "bottom 60%",
+              start: "top 90%",
+              end: "bottom 20%",
               toggleActions: "play none none reverse",
             },
           }
@@ -128,42 +131,42 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-customColor1 flex flex-col items-center justify-center pt-20">
-      <div className="text-center mb-2 mt-2 pt-20">
-        <Image ref={logoRef} src={logotext} alt="Logo" width={800} height={800} className="mx-auto mb-8 mt-4" style={{ opacity: 0 }} />
+    <div className="min-h-screen bg-customColor1 flex flex-col items-center justify-center pt-20 overflow-hidden">
+      <div className="text-center mb-2 mt-2 pt-20 px-4">
+        <Image ref={logoRef} src={logotext} alt="Logo" width={800} height={800} className="mx-auto mb-8 mt-4 max-w-full" style={{ opacity: 0 }} />
         <p ref={textRef} className="text-2xl text-customColor2 font-secondary">{displayedText}</p>
       </div>
 
-      <div ref={(el) => { if (el) sectionRefs.current[0] = el; }} className="mt-20 p-6 text-center">
+      <div ref={(el) => { if (el) sectionRefs.current[0] = el; }} className="mt-20 p-6 text-center w-full ">
         <h2 ref={(el) => { if (el) animatedItemsRef.current[0] = el; }} className="font-bold text-customColor2 mb-2 relative inline-block" style={{ fontSize: "3rem" }}>
           What is TradeSense?
           <div className="underline-animation"></div>
         </h2>
         <div className="mt-8 space-y-8 bg-customColor4 p-8 rounded-lg ml-20 mr-20 mb-20 shadow-2xl" ref={(el) => { if (el) animatedItemsRef.current[4] = el; }}>
-          <p className=" text-customColor6" style={{ fontSize: "2rem" }}>TradeSense is a platform that combines social sentiment and financial data to help you make smarter trading decisions.</p>
+          <p className=" text-customColor6 ">TradeSense is a platform that combines social sentiment and financial data to help you make smarter trading decisions.</p>
         </div>
         <h2 ref={(el) => { if (el) animatedItemsRef.current[1] = el; }} className="font-bold text-customColor2 mb-2 relative inline-block" style={{ fontSize: "3rem" }}>
           How Dose It Work?
           <div className="underline-animation"></div>
         </h2>
         <div  className="mt-8 space-y-8 bg-customColor4 p-8 rounded-lg ml-20 mr-20 mb-20 shadow-2xl" ref={(el) => { if (el) animatedItemsRef.current[5] = el; }}>
-          <p className=" text-customColor6" style={{ fontSize: "2rem" }}>We analyze social sentiment and financial trends together meaning we can give you Stock predictions and recomend actions based on the analysis of both social media and financial data.</p>
+          <p className=" text-customColor6" >We analyze social sentiment and financial trends together meaning we can give you Stock predictions and recomend actions based on the analysis of both social media and financial data.</p>
         </div>
         <h2 ref={(el) => { if (el) animatedItemsRef.current[2] = el; }} className="font-bold text-customColor2 mb-2 relative inline-block" style={{ fontSize: "3rem" }}>
           What Are The Features?
           <div className="underline-animation"></div>
         </h2>
         <div className="mt-8 space-y-8 bg-customColor4 p-8 rounded-lg ml-20 mr-20 shadow-2xl" ref={(el) => { if (el) animatedItemsRef.current[6] = el; }}>
-          <p className=" text-customColor6" style={{ fontSize: "2rem" }}>Sentiment data from social media, technical indicators, and more. Users can get a general overview of the market or a specific stock.</p>
+          <p className=" text-customColor6" >Sentiment data from social media, technical indicators, and more. Users can get a general overview of the market or a specific stock.</p>
         </div>
       </div>
 
-      <div ref={(el) => { if (el) sectionRefs.current[1] = el; }} className="mt-20 text-center">
-        <h2 ref={(el) => { if (el) animatedItemsRef.current[7] = el; }} className="font-bold text-customColor2 mb-2 relative inline-block" style={{ fontSize: "4rem" }}>
+      <div ref={(el) => { if (el) sectionRefs.current[1] = el; }} className="mt-20 text-center px-4">
+        <h2 ref={(el) => { if (el) animatedItemsRef.current[7] = el; }} className="font-bold text-customColor2 mb-2 relative inline-block " style={{ fontSize: "3rem" }}>
           Pricing Plans
           <div className="underline-animation"></div>
         </h2>
-        <div className="pricing-card-container flex gap-8 justify-center mt-8">
+        <div className="pricing-card-container flex gap-8 justify-center mt-8" onClick={() => console.log("clicked")}>
           <div className="pricing-card">
             <div className="front">
               <h3 className="text-xl font-semibold text-customColor6">Free Plan</h3>
@@ -172,7 +175,7 @@ export default function HomePage() {
             <div className="back">
               <p className="text-gray-600 mb-8">Get started with limited features, perfect for beginners.</p>
               <Link href="/login">
-                <AnimatedButton paddinginput="40px 120px">
+                <AnimatedButton paddinginput="buttonpadding2">
                   <h2 className="text-xl font-semibold text-customColor2">Get Started for Free</h2>
                 </AnimatedButton>
               </Link>
@@ -186,7 +189,7 @@ export default function HomePage() {
             <div className="back">
               <p className="text-gray-600 mb-8">Includes advanced tools, real-time insights, and more.</p>
               <Link href="/login">
-                <AnimatedButton paddinginput="40px 120px">
+                <AnimatedButton paddinginput="buttonpadding2">
                   <h2 className="text-xl font-semibold text-customColor2">Get Started</h2>
                 </AnimatedButton>
               </Link>
@@ -195,13 +198,13 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div ref={(el) => { if (el) sectionRefs.current[2] = el; }} className="mt-20 text-center">
-        <Link href="/login">
-          <AnimatedButton paddinginput="70px 180px">
+      <div ref={(el) => { if (el) sectionRefs.current[2] = el; }} className="mt-24 text-center">
+        <Link href="/login" className="custombutton" >
+          <AnimatedButton paddinginput="buttonpadding">    
             <h2 className="text-3xl font-semibold text-customColor2">Get Started for Free</h2>
-          </AnimatedButton>
+          </AnimatedButton >
         </Link>
-        <p className="text-customColor2 mt-4 text-2xl">Sign up now and take your trading to the next level.</p>
+        <p className="text-customColor2 mt-4 text-2xl twoxlpadded">Sign up now and take your trading to the next level.</p>
       </div>
 
       {/* Add more spacing from the last section to the footer */}

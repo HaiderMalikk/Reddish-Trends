@@ -1,0 +1,342 @@
+
+
+
+/* Animations */
+.animated-item {
+  margin-bottom: 4rem;
+  margin-top: 8rem;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animated-item.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pricing-card-container {
+  display: flex;
+  justify-content: space-around; /* Ensure equal space */
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  padding-top: 50px;
+}
+
+.pricing-card {
+  width: 350px;
+  height: 450px;
+  perspective: 1000px;
+}
+
+.pricing-card .front, .pricing-card .back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: transform 0.6s ease-in-out;
+}
+
+.pricing-card .front {
+  background-color: var(--customColor2);
+}
+
+.pricing-card .back {
+  background-color: var(--customColor2);
+  transform: rotateY(180deg);
+}
+
+.pricing-card:hover .front {
+  transform: rotateY(180deg);
+}
+
+.pricing-card:hover .back {
+  transform: rotateY(0deg);
+}
+
+.animated-title {
+  display: inline-block;
+  position: relative;
+  font-size: 2rem;
+}
+
+.underline-animation {
+  display: block;
+  width: 0%;
+  height: 3px;
+  background-color: var(--customColor2);
+}
+.bg-customColor4 {
+  background-color: var(--customColor4);
+  font-size: 2rem;
+}
+
+@media (max-width: 768px) {
+  .text-lg {
+    font-size: 1.125rem;
+  }
+
+  .text-2xl {
+    font-size: 1rem;
+  }
+
+  .twoxlpadded {
+    font-size: 1rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+  }
+
+  .text-3xl{
+    font-size: 1.875rem;
+  }
+
+  .text-4xl {
+    font-size: 2.25rem;
+  }
+
+  .p-8 {
+    padding: 2rem;
+  }
+
+  .ml-20, .mr-20 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .mt-20 {
+    margin-top: 5rem;
+  }
+  
+  .mt-24{
+    margin-top: 6.5rem;
+  }
+
+  .mb-20 {
+    margin-bottom: 5rem;
+  }
+
+
+  .mt-8 {
+    margin-top: 2rem;
+  }
+
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }
+
+  .shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+
+  .mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .min-h-screen {
+    min-height: 100vh;
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .flex-col {
+    flex-direction: column;
+  }
+
+  .items-center {
+    align-items: center;
+  }
+
+  .justify-center {
+    justify-content: center;
+  }
+
+  .pt-20 {
+    margin-top: -1.5rem;
+  }
+
+  .space-y-8 {
+    margin-bottom: 2rem;
+  }
+
+  .gap-8 {
+    gap: 2rem;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .text-customColor2 {
+    color: var(--customColor2);
+  }
+
+  .text-customColor6 {
+    color: var(--customColor6);
+  }
+
+
+  .font-secondary {
+    font-family: "Arial", sans-serif;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .relative {
+    position: relative;
+  }
+
+  .inline-block {
+    display: inline-block;
+  }
+
+  .absolute {
+    position: absolute;
+  }
+
+  .bottom-0 {
+    bottom: 0;
+  }
+
+  .left-0 {
+    left: 0;
+  }
+
+  .h-1 {
+    height: 0.25rem;
+  }
+
+  .bg-gray-800 {
+    background-color: #2d3748;
+  }
+
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }
+
+  .shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+
+  .mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .min-h-screen {
+    min-height: 100vh;
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .flex-col {
+    flex-direction: column;
+  }
+
+  .items-center {
+    align-items: center;
+  }
+
+  .justify-center {
+    justify-content: center;
+  }
+
+  .pt-20 {
+    padding-top: 5rem;
+  }
+
+  .space-y-8 {
+    margin-bottom: 2rem;
+  }
+
+  .gap-8 {
+    gap: 2rem;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .text-customColor2 {
+    color: var(--customColor2);
+  }
+
+  .text-customColor6 {
+    color: var(--customColor6);
+  }
+
+  .bg-customColor1 {
+    background-color: var(--customColor1);
+  }
+
+  .bg-customColor2 {
+    background-color: var(--customColor2);
+  }
+
+  .bg-customColor3 {
+    background-color: var(--customColor3);
+  }
+
+  .bg-customColor4 {
+    background-color: var(--customColor4);
+    font-size: 1.25rem;
+  }
+
+  .font-secondary {
+    font-family: "Arial", sans-serif;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .relative {
+    position: relative;
+  }
+
+  .inline-block {
+    display: inline-block;
+  }
+
+  .absolute {
+    position: absolute;
+  }
+
+  .bottom-0 {
+    bottom: 0;
+  }
+
+  .left-0 {
+    left: 0;
+  }
+
+  .h-1 {
+    height: 0.25rem;
+  }
+
+  .bg-gray-800 {
+    background-color: #2d3748;
+  }
+
+  .custombutton{
+    padding-left: 0.5rem 1rem;
+
+  }
+  
+}

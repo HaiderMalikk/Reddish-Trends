@@ -10,6 +10,7 @@ import { useEffect } from "react"; // Import the useEffect hook for routing to t
 import { useRouter } from "next/navigation"; // Import the useRouter hook for navigation
 import { ClerkProvider, SignIn } from "@clerk/nextjs"; // Import Clerk components for sign-in
 import { useUser } from "@clerk/nextjs"; // Import useUser hook for user info
+import ".././../styles/loginpagestyle.css"
 
 // Type for Clerk user and loading state
 interface User {
@@ -28,12 +29,17 @@ export default function LoginPage() {
     }
   }, [user, isLoaded, router]);
 
+  if (!isLoaded) {
+    // maybe add loading spinner here but null good for error handling
+    return null;
+  }
+
   return (
     // Wrapped in Clerk provider for user authentication
     <ClerkProvider>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-customColor1">
-        <h1 className="text-4xl font-bold text-red-600 mb-4">Clerk is being setup AVOID SIGNING UP, please come back later</h1>
-        <div className="p-12 bg-customColor2 rounded-lg shadow-lg">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-customColor1 pt-14 overflow-hidden">
+        <h1 className="text-4xl font-bold text-red-600 mb-8">Clerk is being setup AVOID SIGNING UP, please come back later</h1>
+        <div className="p-12 bg-customColor4 rounded-lg shadow-lg">
           {/* Use Clerk to handle sign-in */}
           <SignIn
             appearance={{

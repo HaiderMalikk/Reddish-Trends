@@ -1,5 +1,6 @@
 import { useRef, useEffect, ReactNode } from "react";
 import { gsap } from "gsap";
+import "../styles/buttonstyles.css";
 
 interface AnimatedButtonProps {
   children: ReactNode;
@@ -72,14 +73,13 @@ export default function AnimatedButton({ children, onClick, paddinginput }: Anim
     <button
       ref={buttonRef}
       onClick={onClick}
-      className="relative px-4 py-2 bg-transparent text-white font-bold rounded-lg transition-all"
+      className={`relative ${paddinginput} bg-transparent text-white font-bold rounded-lg transition-all`}
       style={{
         position: "relative",
         overflow: "visible",
         border: "none",
         backgroundColor: "transparent", // Ensure no background
         boxShadow: "none", // No shadow
-        padding: paddinginput ?? "20px 60px", // Make the button smaller
       }}
     >
       <span

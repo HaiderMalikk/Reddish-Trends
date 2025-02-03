@@ -1,0 +1,16 @@
+.buttonpadding{
+    padding: 70px 180px;
+}
+
+.buttonpadding2{
+    padding: 40px 120px;
+}
+
+@media (max-width: 768px) {
+    .buttonpadding{
+        padding: 60px 160px;
+    }
+    .buttonpadding2{
+        padding: 50px 120px;
+    }
+}
