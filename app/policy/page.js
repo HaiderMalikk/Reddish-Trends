@@ -101,7 +101,7 @@ export default function PrivacyPolicy() {
 
         <h2 className="text-2xl font-semibold mt-6">9. Contact Information</h2>
         <p>For privacy-related questions or concerns, contact us at:</p>
-        <p>[Your Contact Information]</p>
+        <p>tradesenseai@googlegroups.com</p>
 
         <h2 className="text-2xl font-semibold mt-6">10. Governing Law</h2>
         <p>This Privacy Policy is governed by the laws of Canada, including PIPEDA.</p>

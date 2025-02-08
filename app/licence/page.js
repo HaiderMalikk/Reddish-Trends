@@ -3,7 +3,7 @@ export default function License() {
       <div className="min-h-screen bg-customColor1 flex flex-col items-center justify-center p-8 mt-20">
         <h1 className="text-4xl font-bold text-customColor2 mb-4">License</h1>
         <div className="text-lg text-customColor2 max-w-4xl">
-          <p>Copyright [2025] [Haider Ali Gazi Malik]</p>
+          <p>Copyright 2025 Haider Ali Gazi Malik</p>
   
           <p className="mt-6">
             Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, and distribute the Software for personal, academic, or educational purposes only, subject to the following conditions:
