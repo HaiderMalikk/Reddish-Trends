@@ -1,0 +1,26 @@
+.animated-text {
+  position: absolute;
+  bottom: 10%;
+  font-size: 2rem;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  padding: 10px;
+  white-space: nowrap;
+  background-color: #000;
+  transform: translateX(-50%); /* Center horizontally */
+  left: 50%; /* Align to the center */
+}
+
+@media (max-width: 768px) {
+  .animated-text {
+    font-size: 1.2rem; /* Smaller font size for mobile devices */
+    padding: 5px; /* Adjust padding for mobile devices */
+  }
+}
+
+@media (max-width: 480px) {
+  .animated-text {
+    font-size: 1rem; /* Even smaller font size for very small devices */
+    padding: 3px; /* Adjust padding for very small devices */
+  }
+}

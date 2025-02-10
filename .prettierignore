@@ -1,0 +1,5 @@
+# Ignore Markdown files
+*.md
+
+# Ignore tsconfig.mjs
+tsconfig.mjs

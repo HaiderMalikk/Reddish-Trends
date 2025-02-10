@@ -1,0 +1,9 @@
+@media (max-width: 768px) {
+  .project-description {
+    font-size: small;
+  }
+
+  .contact-resources {
+    padding-top: 1rem; /* Add padding between Contact and Resources sections */
+  }
+}

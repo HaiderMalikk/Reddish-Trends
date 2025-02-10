@@ -1,68 +1,25 @@
-'use client';
-import { useEffect, useRef, useState } from "react";
+"use client";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import logotext from "../public/logo-w-text.svg";
+import logocursor from "../public/logo-alt.svg";
+import image1 from "../public/featureimg1.webp";
+import image2 from "../public/featureimg2.webp";
+import image3 from "../public/featureimg3.webp";
 import AnimatedButton from "./components/AnimatedButton";
+import ThreeScene from "./components/ThreeScene";
 import Link from "next/link";
-import "./styles/mainpagestyles.css";
+import "./styles/main-page-styles.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function HomePage() {
-  const text = "Trrade With Confidence, Trade With Sense.";
-  const [displayedText, setDisplayedText] = useState<string>("");
-
-  const logoRef = useRef<HTMLImageElement | null>(null);
-  const textRef = useRef<HTMLParagraphElement | null>(null);
   const sectionRefs = useRef<HTMLDivElement[]>([]);
-  const animatedItemsRef = useRef<HTMLDivElement[]>([]);
-  
+  const underlinedItemsRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
-    if (!logoRef.current || !textRef.current) return;
-
-    setDisplayedText("");
-
-    gsap.fromTo(logoRef.current, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 1 });
-    gsap.fromTo(textRef.current, { opacity: 0 }, { opacity: 1, duration: 1, delay: 0.5 });
-
-    let index = 0;
-    const typingInterval = setInterval(() => {
-      setDisplayedText((prev) => prev + text[index]);
-      index++;
-      
-      // When we reach the end of the text
-      if (index === text.length -1 ) {
-        clearInterval(typingInterval);
-  
-        // Start deleting "Sense" letter by letter
-
-        let deleteIndex = 6; // "Sense" has 5 letters plus the period 
-        const deleteInterval = setInterval(() => {
-          setDisplayedText((prev) => prev.slice(0, -1)); // Remove last letter
-          deleteIndex--;
-          
-          if (deleteIndex === 0) {
-            clearInterval(deleteInterval);
-  
-            // Start typing "US"
-            let usIndex = 0;
-            const usLetters = "UUs."; // frist letter is ignoreed and i cant figure out why but it works so we dont touch it O_o
-            const addUSInterval = setInterval(() => {
-              setDisplayedText((prev) => prev + usLetters[usIndex]);
-              usIndex++;
-  
-              if (usIndex === usLetters.length -1) {
-                clearInterval(addUSInterval);
-              }
-            }, 250); // timing for the "US" animation
-          }
-        }, 150); // timing for the delete animation
-      }
-    }, 55); // Typing speed overall
-
     // Apply ScrollTrigger animation to each section
     sectionRefs.current.forEach((section, index) => {
       if (section) {
@@ -72,141 +29,262 @@ export default function HomePage() {
           {
             opacity: 1,
             y: 0,
-            duration: 1,
-            delay: index * 0.3,
+            duration: 0.5,
             ease: "power2.out",
             scrollTrigger: {
               trigger: section,
               start: "top 90%",
-              end: "bottom 20%",
+              end: "bottom 2%",
               toggleActions: "play none none reverse",
             },
-          }
+          },
         );
       }
     });
 
     // Animate the items when they come into view
-    animatedItemsRef.current.forEach((item, index) => {
+    underlinedItemsRef.current.forEach((item, index) => {
       if (item) {
-      gsap.fromTo(
-        item,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: item,
-            start: "top 90%",
-            end: "bottom 20%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-      // Add underline animation
-        const underline = item.querySelector(".underline-animation");
-  
         gsap.fromTo(
-          underline,
-          { width: "0%" },
+          item,
+          { opacity: 0, y: 50 },
           {
-            width: "100%",
-            duration: 1,
-            ease: "power1.inOut",
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: "expo.out",
             scrollTrigger: {
               trigger: item,
               start: "top 90%",
               end: "bottom 20%",
               toggleActions: "play none none reverse",
             },
-          }
+          },
+        );
+        const underline = item.querySelector(".underline-animation");
+
+        gsap.fromTo(
+          underline,
+          { width: "-50%" },
+          {
+            width: "100%",
+            duration: 1,
+            ease: "bounce.inOut",
+            scrollTrigger: {
+              trigger: item,
+              start: "top 90%",
+              end: "bottom 20%",
+              toggleActions: "play none none reverse",
+            },
+          },
         );
       }
     });
 
+    gsap.set(".flair", { xPercent: -25, yPercent: -25, zIndex: 10000 });
 
-    return () => clearInterval(typingInterval);
+    let xTo = gsap.quickTo(".flair", "x", { duration: 0.6, ease: "power3" }),
+      yTo = gsap.quickTo(".flair", "y", { duration: 0.6, ease: "power3" });
+
+    window.addEventListener("mousemove", (e) => {
+      xTo(e.clientX);
+      yTo(e.clientY);
+    });
   }, []);
 
   return (
-    <div className="min-h-screen bg-customColor1 flex flex-col items-center justify-center pt-20 overflow-hidden">
-      <div className="text-center mb-2 mt-2 pt-20 px-4">
-        <Image ref={logoRef} src={logotext} alt="Logo" width={800} height={800} className="mx-auto mb-8 mt-4 max-w-full" style={{ opacity: 0 }} />
-        <p ref={textRef} className="text-2xl text-customColor2 font-secondary">{displayedText}</p>
+    <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-customColor2">
+      <div className="flair">
+        <Image src={logocursor} alt="Logo" width={30} height={30} />
+      </div>{" "}
+      {/* Custom mouse effect */}
+      <div className="w-full">
+        <ThreeScene />
       </div>
-
-      <div ref={(el) => { if (el) sectionRefs.current[0] = el; }} className="mt-20 p-6 text-center w-full ">
-        <h2 ref={(el) => { if (el) animatedItemsRef.current[0] = el; }} className="font-bold text-customColor2 mb-2 relative inline-block" style={{ fontSize: "3rem" }}>
-          What is TradeSense?
-          <div className="underline-animation"></div>
-        </h2>
-        <div className="mt-8 space-y-8 bg-customColor4 p-8 rounded-lg ml-20 mr-20 mb-20 shadow-2xl" ref={(el) => { if (el) animatedItemsRef.current[4] = el; }}>
-          <p className=" text-customColor6 ">TradeSense is a platform that combines social sentiment and financial data to help you make smarter trading decisions.</p>
+      <div
+        ref={(el) => {
+          if (el) sectionRefs.current[0] = el;
+        }}
+        className="mb-2 mt-2 px-4 pt-20 text-center"
+      >
+        <Image
+          ref={(el) => {
+            if (el) sectionRefs.current[1] = el;
+          }}
+          src={logotext}
+          alt="Logo"
+          width={800}
+          height={800}
+          className="mx-auto mb-8 mt-4 max-w-full"
+          style={{ opacity: 0 }}
+        />
+      </div>
+      <div
+        ref={(el) => {
+          if (el) sectionRefs.current[2] = el;
+        }}
+        className="mt-6 w-full p-7 text-center"
+      >
+        <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
+          TradeSense is a platform that combines social sentiment and financial
+          data to help you make smarter trading decisions.
+        </p>
+      </div>
+      <div
+        ref={(el) => {
+          if (el) sectionRefs.current[3] = el;
+        }}
+        className="mt-20 flex w-full flex-wrap justify-around p-6 text-center"
+      >
+        <div
+          className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3"
+          ref={(el) => {
+            if (el) sectionRefs.current[4] = el;
+          }}
+        >
+          <Image
+            src={image1}
+            alt="Image 1"
+            width={400}
+            height={400}
+            className="rounded-lg shadow-2xl"
+          />
+          <p className="mt-4 max-w-[400px] px-4 text-customColor6 sm:px-0">
+            <strong>Hybrid Market Analysis</strong> – We analyze social
+            sentiment and financial trends together and recommend actions based
+            on the analysis of both social media and financial data.
+          </p>
         </div>
-        <h2 ref={(el) => { if (el) animatedItemsRef.current[1] = el; }} className="font-bold text-customColor2 mb-2 relative inline-block" style={{ fontSize: "3rem" }}>
-          How Dose It Work?
-          <div className="underline-animation"></div>
-        </h2>
-        <div  className="mt-8 space-y-8 bg-customColor4 p-8 rounded-lg ml-20 mr-20 mb-20 shadow-2xl" ref={(el) => { if (el) animatedItemsRef.current[5] = el; }}>
-          <p className=" text-customColor6" >We analyze social sentiment and financial trends together meaning we can give you Stock predictions and recomend actions based on the analysis of both social media and financial data.</p>
+        <div
+          className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3"
+          ref={(el) => {
+            if (el) sectionRefs.current[5] = el;
+          }}
+        >
+          <Image
+            src={image2}
+            alt="Image 2"
+            width={400}
+            height={400}
+            className="rounded-lg shadow-2xl"
+          />
+          <p className="mt-4 max-w-[400px] px-4 text-customColor6 sm:px-0">
+            <strong>Comprehensive Market Overview</strong> – Sentiment data from
+            social media, technical indicators, and more. Users can get a
+            general overview of the market or a specific stock.
+          </p>
         </div>
-        <h2 ref={(el) => { if (el) animatedItemsRef.current[2] = el; }} className="font-bold text-customColor2 mb-2 relative inline-block" style={{ fontSize: "3rem" }}>
-          What Are The Features?
-          <div className="underline-animation"></div>
-        </h2>
-        <div className="mt-8 space-y-8 bg-customColor4 p-8 rounded-lg ml-20 mr-20 shadow-2xl" ref={(el) => { if (el) animatedItemsRef.current[6] = el; }}>
-          <p className=" text-customColor6" >Sentiment data from social media, technical indicators, and more. Users can get a general overview of the market or a specific stock.</p>
+        <div
+          className="flex w-full flex-col items-center sm:w-1/3"
+          ref={(el) => {
+            if (el) sectionRefs.current[6] = el;
+          }}
+        >
+          <Image
+            src={image3}
+            alt="Image 3"
+            width={400}
+            height={400}
+            className="rounded-lg shadow-2xl"
+          />
+          <p className="mt-4 max-w-[400px] px-4 text-customColor6 sm:px-0">
+            <strong>LLM-Driven Predictions</strong> – We combine all data
+            sources and run them through an advanced LLM trained on past events
+            and expert generating accurate stock recommendations.
+          </p>
         </div>
       </div>
-
-      <div ref={(el) => { if (el) sectionRefs.current[1] = el; }} className="mt-20 text-center px-4">
-        <h2 ref={(el) => { if (el) animatedItemsRef.current[7] = el; }} className="font-bold text-customColor2 mb-2 relative inline-block " style={{ fontSize: "3rem" }}>
+      <div
+        ref={(el) => {
+          if (el) sectionRefs.current[7] = el;
+        }}
+        className="mt-20 px-4 text-center"
+      >
+        <h2
+          ref={(el) => {
+            if (el) underlinedItemsRef.current[0] = el;
+          }}
+          className="relative inline-block font-bold text-customColor6"
+          style={{ fontSize: "3rem" }}
+        >
           Pricing Plans
           <div className="underline-animation"></div>
         </h2>
-        <div className="pricing-card-container flex gap-8 justify-center mt-8" onClick={() => console.log("clicked")}>
+        <div
+          className="pricing-card-container mt-6 flex justify-center gap-8"
+          ref={(el) => {
+            if (el) sectionRefs.current[8] = el;
+          }}
+        >
           <div className="pricing-card">
             <div className="front">
-              <h3 className="text-xl font-semibold text-customColor6">Free Plan</h3>
-              <p className="text-gray-600">$0.0/month - Basic access to trading insights</p>
+              <h3 className="text-xl font-semibold text-customColor6">
+                Free Plan
+              </h3>
+              <p className="text-gray-600">
+                $0.0/month - Basic access to trading insights
+              </p>
             </div>
             <div className="back">
-              <p className="text-gray-600 mb-8">Get started with limited features, perfect for beginners.</p>
+              <p className="mb-8 text-gray-600">
+                Get started with limited features, perfect for beginners.
+              </p>
               <Link href="/login">
-                <AnimatedButton paddinginput="buttonpadding2">
-                  <h2 className="text-xl font-semibold text-customColor2">Get Started for Free</h2>
+                <AnimatedButton
+                  paddinginput="buttonpadding2"
+                  Buttoncolor="#f5efe7"
+                >
+                  <h2 className="text-xl font-semibold text-customColor6">
+                    Get Started for Free
+                  </h2>
                 </AnimatedButton>
               </Link>
             </div>
           </div>
           <div className="pricing-card">
             <div className="front">
-              <h3 className="text-xl font-semibold text-yellow-600">Pro Plan</h3>
-              <p className="text-gray-600">$2.99/month - Unlock advanced features</p>
+              <h3 className="text-xl font-semibold text-yellow-600">
+                Pro Plan (Coming Soon)
+              </h3>
+              <p className="text-gray-600">
+                $2.99/month - Unlock advanced features
+              </p>
             </div>
             <div className="back">
-              <p className="text-gray-600 mb-8">Includes advanced tools, real-time insights, and more.</p>
+              <p className="mb-8 text-gray-600">
+                Includes advanced tools, real-time insights, and more.
+              </p>
               <Link href="/login">
-                <AnimatedButton paddinginput="buttonpadding2">
-                  <h2 className="text-xl font-semibold text-customColor2">Get Started</h2>
+                <AnimatedButton
+                  paddinginput="buttonpadding2"
+                  Buttoncolor="#f5efe7"
+                >
+                  <h2 className="text-xl font-semibold text-customColor6">
+                    Get Started
+                  </h2>
                 </AnimatedButton>
               </Link>
             </div>
           </div>
         </div>
       </div>
-
-      <div ref={(el) => { if (el) sectionRefs.current[2] = el; }} className="mt-24 text-center">
-        <Link href="/login" className="custombutton" >
-          <AnimatedButton paddinginput="buttonpadding">    
-            <h2 className="text-3xl font-semibold text-customColor2">Get Started for Free</h2>
-          </AnimatedButton >
+      <div
+        ref={(el) => {
+          if (el) sectionRefs.current[9] = el;
+        }}
+        className="mt-24 text-center"
+      >
+        <Link href="/login" className="custombutton">
+          <AnimatedButton paddinginput="buttonpadding" Buttoncolor="">
+            <h2 className="text-3xl font-semibold text-customColor2">
+              Get Started for Free
+            </h2>
+          </AnimatedButton>
         </Link>
-        <p className="text-customColor2 mt-4 text-2xl twoxlpadded">Sign up now and take your trading to the next level.</p>
+        <p className="twoxlpadded mt-4 text-2xl text-customColor6">
+          Sign up now and take your trading to the next level.
+        </p>
       </div>
-
       {/* Add more spacing from the last section to the footer */}
       <div className="mt-20"></div>
     </div>

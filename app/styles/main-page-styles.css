@@ -1,13 +1,12 @@
-
-
-
 /* Animations */
 .animated-item {
   margin-bottom: 4rem;
   margin-top: 8rem;
   opacity: 0;
   transform: translateY(50px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
 }
 
 .animated-item.active {
@@ -30,7 +29,8 @@
   perspective: 1000px;
 }
 
-.pricing-card .front, .pricing-card .back {
+.pricing-card .front,
+.pricing-card .back {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -46,11 +46,11 @@
 }
 
 .pricing-card .front {
-  background-color: var(--customColor2);
+  background-color: var(--customColor4);
 }
 
 .pricing-card .back {
-  background-color: var(--customColor2);
+  background-color: var(--customColor4);
   transform: rotateY(180deg);
 }
 
@@ -72,11 +72,29 @@
   display: block;
   width: 0%;
   height: 3px;
-  background-color: var(--customColor2);
+  background-color: var(--customColor6);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: width 0.6s ease-in-out;
 }
+
+.pricing-card:hover .underline-animation {
+  width: 100%;
+}
+
 .bg-customColor4 {
   background-color: var(--customColor4);
   font-size: 2rem;
+}
+
+.flair {
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
@@ -94,7 +112,7 @@
     padding-right: 1.2rem;
   }
 
-  .text-3xl{
+  .text-3xl {
     font-size: 1.875rem;
   }
 
@@ -106,7 +124,16 @@
     padding: 2rem;
   }
 
-  .ml-20, .mr-20 {
+  .p-7 {
+    padding: 0rem;
+  }
+
+  .p-6 {
+    padding-bottom: 0rem;
+  }
+
+  .ml-20,
+  .mr-20 {
     margin-left: 1rem;
     margin-right: 1rem;
   }
@@ -114,15 +141,14 @@
   .mt-20 {
     margin-top: 5rem;
   }
-  
-  .mt-24{
+
+  .mt-24 {
     margin-top: 6.5rem;
   }
 
   .mb-20 {
     margin-bottom: 5rem;
   }
-
 
   .mt-8 {
     margin-top: 2rem;
@@ -135,7 +161,6 @@
   .shadow-2xl {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
-
 
   .mx-auto {
     margin-left: auto;
@@ -152,6 +177,7 @@
 
   .flex-col {
     flex-direction: column;
+    padding-bottom: 2rem;
   }
 
   .items-center {
@@ -186,7 +212,6 @@
     color: var(--customColor6);
   }
 
-
   .font-secondary {
     font-family: "Arial", sans-serif;
   }
@@ -223,120 +248,7 @@
     background-color: #2d3748;
   }
 
-  .rounded-lg {
-    border-radius: 0.5rem;
-  }
-
-  .shadow-2xl {
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  }
-
-
-  .mx-auto {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .min-h-screen {
-    min-height: 100vh;
-  }
-
-  .flex {
-    display: flex;
-  }
-
-  .flex-col {
-    flex-direction: column;
-  }
-
-  .items-center {
-    align-items: center;
-  }
-
-  .justify-center {
-    justify-content: center;
-  }
-
-  .pt-20 {
-    padding-top: 5rem;
-  }
-
-  .space-y-8 {
-    margin-bottom: 2rem;
-  }
-
-  .gap-8 {
-    gap: 2rem;
-  }
-
-  .text-center {
-    text-align: center;
-  }
-
-  .text-customColor2 {
-    color: var(--customColor2);
-  }
-
-  .text-customColor6 {
-    color: var(--customColor6);
-  }
-
-  .bg-customColor1 {
-    background-color: var(--customColor1);
-  }
-
-  .bg-customColor2 {
-    background-color: var(--customColor2);
-  }
-
-  .bg-customColor3 {
-    background-color: var(--customColor3);
-  }
-
-  .bg-customColor4 {
-    background-color: var(--customColor4);
-    font-size: 1.25rem;
-  }
-
-  .font-secondary {
-    font-family: "Arial", sans-serif;
-  }
-
-  .font-bold {
-    font-weight: bold;
-  }
-
-  .relative {
-    position: relative;
-  }
-
-  .inline-block {
-    display: inline-block;
-  }
-
-  .absolute {
-    position: absolute;
-  }
-
-  .bottom-0 {
-    bottom: 0;
-  }
-
-  .left-0 {
-    left: 0;
-  }
-
-  .h-1 {
-    height: 0.25rem;
-  }
-
-  .bg-gray-800 {
-    background-color: #2d3748;
-  }
-
-  .custombutton{
+  .custombutton {
     padding-left: 0.5rem 1rem;
-
   }
-  
 }

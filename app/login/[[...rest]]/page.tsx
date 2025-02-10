@@ -4,13 +4,13 @@ Login page
 ues clerk to login
 */
 
-'use client';
+"use client";
 
 import { useEffect } from "react"; // Import the useEffect hook for routing to the dashboard
 import { useRouter } from "next/navigation"; // Import the useRouter hook for navigation
 import { ClerkProvider, SignIn } from "@clerk/nextjs"; // Import Clerk components for sign-in
 import { useUser } from "@clerk/nextjs"; // Import useUser hook for user info
-import ".././../styles/loginpagestyle.css"
+import ".././../styles/login-page-style.css";
 
 // Type for Clerk user and loading state
 interface User {
@@ -37,14 +37,16 @@ export default function LoginPage() {
   return (
     // Wrapped in Clerk provider for user authentication
     <ClerkProvider>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-customColor1 pt-14 overflow-hidden">
-        <h1 className="text-4xl font-bold text-red-600 mb-8">Clerk is being setup AVOID SIGNING UP, please come back later</h1>
-        <div className="p-12 bg-customColor4 rounded-lg shadow-lg">
+      <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-customColor2 pt-14">
+        <h1 className="mb-8 text-4xl font-bold text-red-600">
+          Clerk is being setup AVOID SIGNING UP, please come back later
+        </h1>
+        <div className="rounded-lg bg-customColor4 p-12 shadow-lg">
           {/* Use Clerk to handle sign-in */}
           <SignIn
             appearance={{
               elements: {
-                formButtonPrimary: 'bg-slate-500 hover:bg-slate-200 text-sm',
+                formButtonPrimary: "bg-slate-500 hover:bg-slate-200 text-sm",
               },
             }}
             afterSignInUrl="/dashboard" // Redirect to the dashboard after sign-in

@@ -1,14 +1,20 @@
 import { useRef, useEffect, ReactNode } from "react";
 import { gsap } from "gsap";
-import "../styles/buttonstyles.css";
+import "../styles/button-styles.css";
 
 interface AnimatedButtonProps {
   children: ReactNode;
   onClick?: () => void;
   paddinginput?: string;
+  Buttoncolor?: string;
 }
 
-export default function AnimatedButton({ children, onClick, paddinginput }: AnimatedButtonProps) {
+export default function AnimatedButton({
+  children,
+  onClick,
+  paddinginput,
+  Buttoncolor,
+}: AnimatedButtonProps) {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const polylineRef = useRef<SVGPolylineElement | null>(null);
@@ -40,18 +46,20 @@ export default function AnimatedButton({ children, onClick, paddinginput }: Anim
       pointzArray.forEach((point, index) => {
         const mapper = gsap.utils.mapRange(0, pointz, 0, 0.4);
 
-        gsap.to(point, {
-          keyframes: [
-            { y: "+=6", ease: "Sine.easeInOut" },
-            { y: "-=12", ease: "Sine.easeInOut" },
-            { y: "+=6", ease: "Sine.easeInOut" }
-          ],
-          yoyo: true,
-          duration: 0.6,
-          onComplete: () => {
-            isAnimating = false;
-          }
-        }).progress(mapper(index));
+        gsap
+          .to(point, {
+            keyframes: [
+              { y: "+=6", ease: "Sine.easeInOut" },
+              { y: "-=12", ease: "Sine.easeInOut" },
+              { y: "+=6", ease: "Sine.easeInOut" },
+            ],
+            yoyo: true,
+            duration: 0.6,
+            onComplete: () => {
+              isAnimating = false;
+            },
+          })
+          .progress(mapper(index));
       });
     };
 
@@ -73,7 +81,7 @@ export default function AnimatedButton({ children, onClick, paddinginput }: Anim
     <button
       ref={buttonRef}
       onClick={onClick}
-      className={`relative ${paddinginput} bg-transparent text-white font-bold rounded-lg transition-all`}
+      className={`relative ${paddinginput} rounded-lg bg-transparent font-bold text-white transition-all`}
       style={{
         position: "relative",
         overflow: "visible",
@@ -109,7 +117,7 @@ export default function AnimatedButton({ children, onClick, paddinginput }: Anim
       >
         <polyline
           ref={polylineRef}
-          stroke="#D8C4B6"
+          stroke={Buttoncolor ? Buttoncolor : "#d8c4b6"}
           fill="none"
           strokeWidth="45"
           strokeLinecap="round"

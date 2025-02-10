@@ -82,7 +82,7 @@ We reserve the right to update this Privacy Policy at any time. We will notify u
 ## 9. Contact Information
 
 For privacy-related questions or concerns, contact us at:
-[Your Contact Information]
+tradesenseai@googlegroups.com
 
 ## 10. Governing Law
 

@@ -7,10 +7,10 @@ and if so it dosent show its footer and the dashboard layout will show its own h
 - uses cleck to manage the lohout button in the header 
 on logout we use clerks signout method to sign the user out and then redirect to the login page.
 */
-'use client';
+"use client";
 import { useRouter, usePathname } from "next/navigation"; // router for navigation between logged in/out website sections, pathname for highlighting the current page in header
-import { useUser, useClerk } from "@clerk/nextjs";  // Import both useUser and useClerk
-import Link from "next/link"; // link for navigation between pages 
+import { useUser, useClerk } from "@clerk/nextjs"; // Import both useUser and useClerk
+import Link from "next/link"; // link for navigation between pages
 import logotext from "../../public/logo-w-text.svg"; // Import the logo image
 import Image from "next/image"; // Import the Image component
 
@@ -20,30 +20,30 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const { user, isLoaded } = useUser();  // Use Clerk hook for user management (logout)
-  const { signOut } = useClerk();  // Access signOut from useClerk to handle logout
+  const { user, isLoaded } = useUser(); // Use Clerk hook for user management (logout)
+  const { signOut } = useClerk(); // Access signOut from useClerk to handle logout
   const router = useRouter(); // Access the router for navigation
   const pathname = usePathname(); // Access the current pathname for routing
 
   // Function to handle logout
   const handleLogout = async () => {
     try {
-      await signOut();  // Sign the user out using Clerk's method
-      router.replace("/login");  // Redirect to login page after signing out
+      await signOut(); // Sign the user out using Clerk's method
+      router.replace("/login"); // Redirect to login page after signing out
     } catch (error) {
-      console.error("Logout error:", error);  // Handle logout errors
+      console.error("Logout error:", error); // Handle logout errors
     }
   };
 
   // Loader until the user data is loaded
   if (!isLoaded) {
-    return <div>Loading...</div>;  
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-customColor1 text-customColor2 font-signature">
-      <header className="p-4 shadow-md bg-customColor3">
-        <div className="flex justify-between items-center w-full">
+    <div className="min-h-screen bg-customColor1 font-signature text-customColor2">
+      <header className="bg-customColor3 p-4 shadow-md">
+        <div className="flex w-full items-center justify-between">
           <div className="flex items-center">
             {/* logo on header */}
             <Link href="/">
@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </Link>
           </div>
           {/* navigation links on header (underline on active page) */}
-          <nav className="space-x-4 flex items-center">
+          <nav className="flex items-center space-x-4">
             <Link
               href="/dashboard"
               className={`hover:text-gray-300 ${
