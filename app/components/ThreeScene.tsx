@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -11,7 +10,7 @@ import "./styles/three-js-styles.css";
 gsap.registerPlugin(ScrollTrigger);
 
 const ThreeScene = () => {
-  const mountRef = useRef<HTMLDivElement>(null);
+const mountRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const text = "TTrade With Confidence, Trade With Sense.";
   const [displayedText, setDisplayedText] = useState<string>("");
@@ -114,6 +113,7 @@ const ThreeScene = () => {
     });
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
+    
 
     // Add lighting for better quality
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
@@ -237,6 +237,7 @@ const ThreeScene = () => {
     // call the function over and over again
     setInterval(moveEyes, 3000);
 
+    // banner for text animation with gsap
     const animateBanner = () => {
       if (textRef.current) {
         gsap.fromTo(
@@ -363,7 +364,14 @@ const ThreeScene = () => {
   }, []);
 
   return (
+    // TODO fix this 
     <>
+    {false ? (
+      <div className="flex justify-center items-center h-screen bg-black">
+        <p>Loading...</p>
+      </div>
+    ) : (
+      <>
       <div ref={mountRef} />
       <div
         ref={textRef}
@@ -372,6 +380,8 @@ const ThreeScene = () => {
       >
         {doneAnimation && displayedText}
       </div>
+      </>
+    )}
     </>
   );
 };

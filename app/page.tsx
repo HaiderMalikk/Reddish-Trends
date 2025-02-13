@@ -94,10 +94,10 @@ export default function HomePage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-customColor2">
+      {/* Custom mouse effect */}
       <div className="flair">
         <Image src={logocursor} alt="Logo" width={30} height={30} />
       </div>{" "}
-      {/* Custom mouse effect */}
       <div className="w-full">
         <ThreeScene />
       </div>
