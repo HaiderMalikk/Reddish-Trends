@@ -1,6 +1,6 @@
-# COMING SOON 
+# COMING SOON, This Website Is Being Rebuilt From Scrach!
 
-<a href="https://mood-atlas.vercel.app">Check It Out So Far Here
+<a href="https://trade-sense-ai-sigma.vercel.app">Check It Out So Far Here
 <img src="./public/linkgrey.png" alt="Home" width="20"/>
 </a>
 
