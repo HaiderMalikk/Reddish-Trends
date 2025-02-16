@@ -5,19 +5,38 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { randFloat } from "three/src/math/MathUtils";
 import backgroundImage from "../../public/bgimage.webp";
+import backgroundImageLoading from "../../public/bgimageloading.jpeg";
 import "./styles/three-js-styles.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const ThreeScene = () => {
-const mountRef = useRef<HTMLDivElement>(null);
+  const mountRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const text = "TTrade With Confidence, Trade With Sense.";
   const [displayedText, setDisplayedText] = useState<string>("");
   const [doneAnimation, setDoneAnimation] = useState<boolean>(false);
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [map, setMap] = useState(new THREE.Texture()); // Initialize with an empty texture to hold the background image
+
+  // Load background image asynchronously from the next useeffect below this way we can use a usestate to track if the image is loaded
+  // loadAsync is a promis its better to use insted of loader.load as you can have usestates and etc inside of it
+  useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    loader
+      .loadAsync(backgroundImage.src)
+      .then((texture) => {
+        setMap(texture); // Assign new texture only after it's loaded
+        setLoaded(true);
+      })
+      .catch((error) => {
+        console.error("An error occurred loading the texture:", error);
+        setLoaded(true); // Ensure we set loaded to true even if there's an error
+      });
+  }, []);
 
   useEffect(() => {
-    if (!mountRef.current) return;
+    if (!mountRef.current || !loaded) return;
 
     // Scene & Renderer
     const scene = new THREE.Scene();
@@ -34,31 +53,29 @@ const mountRef = useRef<HTMLDivElement>(null);
     renderer.setPixelRatio(window.devicePixelRatio); // Set pixel ratio for higher resolution
     mountRef.current.appendChild(renderer.domElement);
 
-    // Load background image
-    const loader = new THREE.TextureLoader();
-    loader.load(backgroundImage.src, (texture) => {
-      const aspect = texture.image.width / texture.image.height;
-      const imageAspect = window.innerWidth / window.innerHeight;
-      let factor;
+    // Set background texture, the texture is already loaded from the prevoius useeffect on mount so we can use it here without a loader
+    const aspect = map.image.width / map.image.height;
+    const imageAspect = window.innerWidth / window.innerHeight;
+    let factor;
 
-      if (aspect > imageAspect) {
-        factor = window.innerWidth / texture.image.width;
-      } else {
-        factor = window.innerHeight / texture.image.height;
-      }
+    if (aspect > imageAspect) {
+      factor = window.innerWidth / map.image.width;
+    } else {
+      factor = window.innerHeight / map.image.height;
+    }
 
-      texture.repeat.set(
-        window.innerWidth / (texture.image.width * factor),
-        window.innerHeight / (texture.image.height * factor),
-      );
-      texture.offset.set(
-        0.5 - window.innerWidth / (texture.image.width * factor) / 2,
-        0.5 - window.innerHeight / (texture.image.height * factor) / 2,
-      );
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
-      scene.background = texture;
-    });
+    // Set the background image to cover the whole screen, map is our background texture
+    map.repeat.set(
+      window.innerWidth / (map.image.width * factor),
+      window.innerHeight / (map.image.height * factor),
+    );
+    map.offset.set(
+      0.5 - window.innerWidth / (map.image.width * factor) / 2,
+      0.5 - window.innerHeight / (map.image.height * factor) / 2,
+    );
+    map.wrapS = THREE.RepeatWrapping;
+    map.wrapT = THREE.RepeatWrapping;
+    scene.background = map;
 
     // Handle window resize
     const handleResize = () => {
@@ -113,7 +130,6 @@ const mountRef = useRef<HTMLDivElement>(null);
     });
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
-    
 
     // Add lighting for better quality
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
@@ -122,6 +138,10 @@ const mountRef = useRef<HTMLDivElement>(null);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 4);
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
+
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight2.position.set(-10, -15, 10);
+    scene.add(directionalLight2);
 
     // Function to create a blinking eye
     const createEye = (x: number, y: number) => {
@@ -332,7 +352,7 @@ const mountRef = useRef<HTMLDivElement>(null);
     };
     randomSpin();
 
-    // ScrollTrigger to spin and move cube when scrolling off
+    // ScrollTrigger to spin and move cube when scrolling off + onenter to spin on entering the page section and on leave back to spin as the cube comes back into view
     ScrollTrigger.create({
       trigger: mountRef.current,
       start: "top top",
@@ -343,15 +363,15 @@ const mountRef = useRef<HTMLDivElement>(null);
           duration: 0.5,
           ease: "power2.inOut",
         });
-        gsap.to(cube.position, { y: -5, duration: 2, ease: "power2.inOut" });
+        gsap.to(cube.position, { y: -5, duration: 1, ease: "power2.inOut" });
       },
       onLeaveBack: () => {
         gsap.to(cube.rotation, {
           x: "+=" + Math.PI * 2,
-          duration: 0.5,
+          duration: 1,
           ease: "power2.inOut",
         });
-        gsap.to(cube.position, { y: 0, duration: 2, ease: "power2.inOut" });
+        gsap.to(cube.position, { y: 0, duration: 1, ease: "power2.inOut" });
       },
     });
 
@@ -361,27 +381,36 @@ const mountRef = useRef<HTMLDivElement>(null);
       mountRef.current?.removeChild(renderer.domElement);
       renderer.dispose();
     };
-  }, []);
+  }, [loaded]);
 
+  // conditional rendering for loading, until three.js's loader loads the image show a loading screen
   return (
-    // TODO fix this 
     <>
-    {false ? (
-      <div className="flex justify-center items-center h-screen bg-black">
-        <p>Loading...</p>
-      </div>
-    ) : (
-      <>
-      <div ref={mountRef} />
-      <div
-        ref={textRef}
-        className="animated-text" // Apply the CSS class
-        style={{ opacity: doneAnimation ? 1 : 0 }} // Hide text until animation is done
-      >
-        {doneAnimation && displayedText}
-      </div>
-      </>
-    )}
+      {!loaded ? (
+        <div className="flex h-screen items-center justify-center bg-black">
+          {/* Spinner */}
+          <div className="spinner m-8">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <h1 className="text-white">Loading...</h1>
+        </div>
+      ) : (
+        <>
+          <div ref={mountRef} />
+          <div
+            ref={textRef}
+            className="animated-text"
+            style={{ opacity: doneAnimation ? 1 : 0 }} // Hide text until animation is done
+          >
+            {doneAnimation && displayedText}
+          </div>
+        </>
+      )}
     </>
   );
 };

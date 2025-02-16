@@ -12,7 +12,6 @@ but the same global footer is defined in this layout.
 import { useEffect } from "react";
 import { usePathname } from "next/navigation"; // Import the usePathname hook for highlighting the active link
 import "./styles/globals.css"; // Import global styles
-import "./styles/layout-styles.css"; // Import the new CSS file
 import logo from "../public/logo.svg"; // Import the logo
 import Image from "next/image"; // Import the Image component
 import Link from "next/link"; // Import the Link component to navigate between pages while in loggout state
@@ -154,12 +153,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </main>{" "}
           {/* Added padding-top to main content */}
           {/* global footer */}
-          <footer className="bg-customColor6 px-6 py-8 text-customColor2">
+          <footer className="custom-footer">
             <div className="mx-auto flex max-w-5xl flex-col justify-between md:flex-row">
               {/* Left Section: Hello + Name */}
               <div className="md:w-1/2">
                 <h1 className="text-customWhite font-serif text-6xl">Hello</h1>
-                <p className="project-description mt-4 text-lg">
+                <p className="project-description mt-4">
                   Trade Sense AI, a project of{" "}
                   <a
                     className="text-customWhite underline hover:text-gray-300"

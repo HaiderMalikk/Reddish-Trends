@@ -2,8 +2,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* tailwind + CSS global styles */
-
+/* Custom colors */
 :root {
   --customColor1: #213555; /* BG */
   --customColor2: #f5efe7; /* ?? >>> */
@@ -13,10 +12,12 @@
   --customColor6: #000; /* text */
 }
 
+/* Global styles body*/
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Header tool bar*/
 .main-tool-bar {
   height: 65px;
   border-bottom: 2px solid var(--customColor2);
@@ -36,6 +37,40 @@ body {
   }
 }
 
+/* Scrollable area */
 .scrollable-area {
   height: 200vh;
+}
+
+/* Footer */
+.custom-footer {
+  background-color: (var(--customColor6));
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  color: var(--customColor2);
+}
+
+/* Project description in footer */
+.project-description {
+  font-size: large;
+}
+
+/* footer adjustment for phones */
+@media (max-width: 768px) {
+  .project-description {
+    font-size: 1.5rem;
+  }
+
+  /* conatact is in a col not row */
+  .contact-resources {
+    padding-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* less bt padding for footer on phones */
+  .custom-footer {
+    padding-bottom: 0rem;
+  }
 }

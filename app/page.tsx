@@ -137,7 +137,7 @@ export default function HomePage() {
         className="mt-20 flex w-full flex-wrap justify-around p-6 text-center"
       >
         <div
-          className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3"
+          className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3 sm:px-4"
           ref={(el) => {
             if (el) sectionRefs.current[4] = el;
           }}
@@ -152,11 +152,11 @@ export default function HomePage() {
           <p className="mt-4 max-w-[400px] px-4 text-customColor6 sm:px-0">
             <strong>Hybrid Market Analysis</strong> – We analyze social
             sentiment and financial trends together and recommend actions based
-            on the analysis of both social media and financial data.
+            on both.
           </p>
         </div>
         <div
-          className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3"
+          className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3 sm:px-4"
           ref={(el) => {
             if (el) sectionRefs.current[5] = el;
           }}
@@ -175,7 +175,7 @@ export default function HomePage() {
           </p>
         </div>
         <div
-          className="flex w-full flex-col items-center sm:w-1/3"
+          className="flex w-full flex-col items-center sm:w-1/3 sm:px-4"
           ref={(el) => {
             if (el) sectionRefs.current[6] = el;
           }}
@@ -190,7 +190,7 @@ export default function HomePage() {
           <p className="mt-4 max-w-[400px] px-4 text-customColor6 sm:px-0">
             <strong>LLM-Driven Predictions</strong> – We combine all data
             sources and run them through an advanced LLM trained on past events
-            and expert generating accurate stock recommendations.
+            to generating accurate stock recommendations.
           </p>
         </div>
       </div>
@@ -204,10 +204,9 @@ export default function HomePage() {
           ref={(el) => {
             if (el) underlinedItemsRef.current[0] = el;
           }}
-          className="relative inline-block font-bold text-customColor6"
-          style={{ fontSize: "3rem" }}
+          className="underline-text relative inline-block font-bold text-customColor6"
         >
-          Pricing Plans
+          Level Up Your Trading
           <div className="underline-animation"></div>
         </h2>
         <div
@@ -217,17 +216,18 @@ export default function HomePage() {
           }}
         >
           <div className="pricing-card">
-            <div className="front">
+            <div className="front space-y-2">
               <h3 className="text-xl font-semibold text-customColor6">
-                Free Plan
+                Completly Free!
               </h3>
               <p className="text-gray-600">
-                $0.0/month - Basic access to trading insights
+                This Project is Open Source, Free and will always be.
               </p>
             </div>
             <div className="back">
               <p className="mb-8 text-gray-600">
-                Get started with limited features, perfect for beginners.
+                Get a host of features for free, including our social sentiment
+                and stock market analysis.
               </p>
               <Link href="/login">
                 <AnimatedButton
@@ -242,17 +242,32 @@ export default function HomePage() {
             </div>
           </div>
           <div className="pricing-card">
-            <div className="front">
-              <h3 className="text-xl font-semibold text-yellow-600">
-                Pro Plan (Coming Soon)
+            <div className="front space-y-2">
+              <h3 className="text-xl font-semibold text-customColor6">
+                Features!
               </h3>
               <p className="text-gray-600">
-                $2.99/month - Unlock advanced features
+                See a list of all the features we offer. (HOVER OVER ME)
               </p>
             </div>
             <div className="back">
-              <p className="mb-8 text-gray-600">
-                Includes advanced tools, real-time insights, and more.
+              <p className="mb-8 text-gray-600" style={{ textAlign: "left" }}>
+                - Social Sentiment Analysis
+                <br />
+                - Stock Market Analysis
+                <br />
+                - Hybrid Market Analysis
+                <br />
+                - Comprehensive Market Overview
+                <br />
+                - LLM-Driven Predictions
+                <br />
+                - Stock Recommendations
+                <br />
+                - Real-time Updates
+                <br />
+                - User Profiles
+                <br />- And Much More!
               </p>
               <Link href="/login">
                 <AnimatedButton

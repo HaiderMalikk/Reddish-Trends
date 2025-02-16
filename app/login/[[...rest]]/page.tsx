@@ -38,8 +38,8 @@ export default function LoginPage() {
     // Wrapped in Clerk provider for user authentication
     <ClerkProvider>
       <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-customColor2 pt-14">
-        <h1 className="mb-8 text-4xl font-bold text-red-600">
-          Clerk is being setup AVOID SIGNING UP, please come back later
+        <h1 className="mb-8 text-4xl font-bold text-customColor6">
+          Great Things are on the way, Please come back later
         </h1>
         <div className="rounded-lg bg-customColor4 p-12 shadow-lg">
           {/* Use Clerk to handle sign-in */}
