@@ -4,6 +4,10 @@
 <img src="./public/linkgrey.png" alt="Home" width="20"/>
 </a>
 
+<a href="https://trade-sense-ai-sigma.vercel.app">This Website Is Powered By Mercur AI Check That Out Here
+<img src="./public/linkgrey.png" alt="Home" width="20"/>
+</a>
+
 ## Project Idea: TradeSenseAI
 
 TradeSenseAI is a hybrid stock prediction system that combines social sentiment analysis with traditional financial data and advanced analytics to provide a more accurate, holistic prediction model.
