@@ -1,8 +1,11 @@
 "use client";
-import useUserData from "../hooks/GetUserData"; // user data hook
-import "./styles/home-page-styles.css";
+import React from "react";
+import Image from "next/image";
+import useUserData from "../../hooks/GetUserData"; // user data hook
+import "../styles/home-page-styles.css";
+import defaultPP from "../../../public/defaultprofilepic.svg";
 
-export default function Dashboard() {
+export default function Profile() {
   const { userData, loading } = useUserData(); // get user data
 
   // Show loading screen while user data is loading
@@ -22,6 +25,7 @@ export default function Dashboard() {
       </div>
     );
   }
+
   // Show error screen if an error occurred
   if (userData.message.startsWith("Error")) {
     return (
@@ -40,16 +44,32 @@ export default function Dashboard() {
     );
   }
 
-  //  * after user is loaded and no error load other apis no need for checks
-  console.log("here");
-
   return (
     <div className="min-h-screen bg-customColor2 p-6">
-      <div className="mx-auto max-w-4xl rounded-lg bg-customColor4 p-6 shadow-md">
-        <h1 className="text-3xl font-semibold text-customColor6">Dashboard</h1>
-        <p className="mt-4 text-lg text-customColor6">
-          Welcome, {userData.firstName} {userData.lastName}!
-        </p>
+      <div className="mx-auto max-w-4xl rounded-lg bg-customColor4 p-8 shadow-lg">
+        <div className="flex flex-col items-center">
+          <Image
+            src={userData.profileImageUrl ?? defaultPP}
+            height={128}
+            width={128}
+            alt="Profile"
+            className="mx-auto h-32 w-32 rounded-full border-4 border-customColor6"
+          />
+          <p className="mt-4 text-lg text-gray-700">
+            <strong>First Name:</strong> {userData.firstName}
+          </p>
+          <p className="text-lg text-gray-700">
+            <strong>Last Name:</strong> {userData.lastName}
+          </p>
+          <p className="text-lg text-gray-700">
+            <strong>Email:</strong> {userData.email}
+          </p>
+          {userData.createdAt && (
+            <p className="text-lg text-gray-700">
+              <strong>Account Created At:</strong> {userData.createdAt}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation"; // Import the usePathname hook for highlighting the active link
 import "./styles/globals.css"; // Import global styles
 import logo from "../public/logo.svg"; // Import the logo
+import logoAlt from "../public/logo-w-text-alt.svg"; // Import the logo
 import Image from "next/image"; // Import the Image component
 import Link from "next/link"; // Import the Link component to navigate between pages while in loggout state
 import { gsap } from "gsap";
@@ -120,11 +121,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <div className="flex items-center">
                   <a href="/">
                     <Image
+                      src={logoAlt}
+                      alt="Logo"
+                      className="header-logo desktop-logo"
+                    />
+                    <Image
                       src={logo}
                       alt="Logo"
-                      width={40}
-                      height={40}
-                      className="mr-4 cursor-pointer"
+                      className="header-logo mobile-logo"
                     />
                   </a>
                 </div>
@@ -147,10 +151,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
               </div>
             </header>
           )}
-          <main>
+          {/* main content with default margin due to header */}
+          <main className="pt-16">
             {children}
             <Analytics />
-          </main>{" "}
+          </main>
           {/* Added padding-top to main content */}
           {/* global footer */}
           <footer className="custom-footer">

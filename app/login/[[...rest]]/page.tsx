@@ -1,12 +1,6 @@
-/* 
-Login page
-
-ues clerk to login
-*/
-
 "use client";
 
-import { useEffect } from "react"; // Import the useEffect hook for routing to the dashboard
+import { useEffect, useState } from "react"; // Import the useEffect and useState hooks
 import { useRouter } from "next/navigation"; // Import the useRouter hook for navigation
 import { ClerkProvider, SignIn } from "@clerk/nextjs"; // Import Clerk components for sign-in
 import { useUser } from "@clerk/nextjs"; // Import useUser hook for user info
@@ -20,40 +14,54 @@ interface User {
 export default function LoginPage() {
   const router = useRouter(); // Access the router for navigation
   const { user, isLoaded } = useUser(); // Check if the user is logged in
+  const [isLoading, setIsLoading] = useState(true); // State to manage loading
 
   // Check if the user is logged in, if so, redirect to the dashboard
   useEffect(() => {
-    if (isLoaded && user) {
-      // Redirect to the dashboard if the user is logged in
-      router.push("/dashboard");
+    if (isLoaded) {
+      setIsLoading(false); // Set loading to false once Clerk is loaded
+      if (user) {
+        // Redirect to the dashboard if the user is logged in
+        router.push("/dashboard");
+      }
     }
   }, [user, isLoaded, router]);
-
-  if (!isLoaded) {
-    // maybe add loading spinner here but null good for error handling
-    return null;
-  }
 
   return (
     // Wrapped in Clerk provider for user authentication
     <ClerkProvider>
-      <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-customColor2 pt-14">
-        <h1 className="mb-8 text-4xl font-bold text-customColor6">
-          Great Things are on the way, Please come back later
-        </h1>
-        <div className="rounded-lg bg-customColor4 p-12 shadow-lg">
-          {/* Use Clerk to handle sign-in */}
-          <SignIn
-            appearance={{
-              elements: {
-                formButtonPrimary: "bg-slate-500 hover:bg-slate-200 text-sm",
-              },
-            }}
-            afterSignInUrl="/dashboard" // Redirect to the dashboard after sign-in
-            afterSignUpUrl="/dashboard" // Redirect to the dashboard after sign-up
-          />
+      {isLoading ? (
+        <div className="flex h-screen items-center justify-center bg-black">
+          {/* Spinner */}
+          <div className="spinner m-8">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <h1 className="text-white">Loading...</h1>
         </div>
-      </div>
+      ) : (
+        <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-customColor2">
+          <h1 className="mb-4 text-4xl font-bold text-customColor6">
+            Great Things are on the way, Please come back later
+          </h1>
+          <div className="rounded-lg bg-customColor4 p-12 shadow-lg">
+            {/* Use Clerk to handle sign-in */}
+            <SignIn
+              appearance={{
+                elements: {
+                  formButtonPrimary: "bg-slate-500 hover:bg-slate-200 text-sm",
+                },
+              }}
+              afterSignInUrl="/dashboard" // Redirect to the dashboard after sign-in
+              afterSignUpUrl="/dashboard" // Redirect to the dashboard after sign-up
+            />
+          </div>
+        </div>
+      )}
     </ClerkProvider>
   );
 }

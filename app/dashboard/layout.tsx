@@ -11,7 +11,8 @@ on logout we use clerks signout method to sign the user out and then redirect to
 import { useRouter, usePathname } from "next/navigation"; // router for navigation between logged in/out website sections, pathname for highlighting the current page in header
 import { useUser, useClerk } from "@clerk/nextjs"; // Import both useUser and useClerk
 import Link from "next/link"; // link for navigation between pages
-import logotext from "../../public/logo-w-text.svg"; // Import the logo image
+import logo from "../../public/logo.svg"; // Import the logo
+import logoAlt from "../../public/logo-w-text-alt.svg"; // Import the logo
 import Image from "next/image"; // Import the Image component
 
 // Define the props type for DashboardLayout to include children
@@ -41,20 +42,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-customColor1 font-signature text-customColor2">
-      <header className="bg-customColor3 p-4 shadow-md">
+    <div className="min-h-screen bg-customColor6 font-signature text-customColor2">
+      <header className="main-tool-bar p-4 text-customColor2">
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center">
             {/* logo on header */}
-            <Link href="/">
+            <a href="/">
               <Image
-                src={logotext}
+                src={logoAlt}
                 alt="Logo"
-                width={170}
-                height={170}
-                className="mr-4"
+                className="header-logo desktop-logo"
               />
-            </Link>
+              <Image
+                src={logo}
+                alt="Logo"
+                className="header-logo mobile-logo"
+              />
+            </a>
           </div>
           {/* navigation links on header (underline on active page) */}
           <nav className="flex items-center space-x-4">
@@ -65,6 +69,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               }`}
             >
               Dashboard
+            </Link>
+            {/* profile */}
+            <Link
+              href="/dashboard/profile"
+              className={`hover:text-gray-300 ${
+                pathname === "/dashboard/profile" ? "underline" : ""
+              }`}
+            >
+              Profile
             </Link>
             {/* logout */}
             <button onClick={handleLogout} className="hover:text-gray-300">

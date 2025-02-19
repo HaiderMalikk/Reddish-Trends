@@ -57,6 +57,16 @@ body {
   font-size: large;
 }
 
+/* no mobile logo unless on phone */
+.mobile-logo {
+  display: none;
+}
+
+.desktop-logo {
+  height: 12rem;
+  width: 12rem;
+}
+
 /* footer adjustment for phones */
 @media (max-width: 768px) {
   .project-description {
@@ -72,5 +82,16 @@ body {
   /* less bt padding for footer on phones */
   .custom-footer {
     padding-bottom: 0rem;
+  }
+
+  /* no desktop logo on phones */
+  .desktop-logo {
+    display: none;
+  }
+  /* mobile logo on phones */
+  .mobile-logo {
+    height: 2rem;
+    width: 2rem;
+    display: block;
   }
 }
