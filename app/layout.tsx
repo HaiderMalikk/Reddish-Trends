@@ -65,6 +65,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
         },
         layout: {
           logoImageUrl: "logo-bg.svg",
+          
+          privacyPageUrl: "/policy",
+          termsPageUrl: "/licence",
         },
       }}
     >

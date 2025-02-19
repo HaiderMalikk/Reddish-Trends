@@ -90,18 +90,24 @@ TradeSenseAI was created to provide traders with a more comprehensive tool for s
 │   ├── components/
 │   │   ├── AnimatedButton.tsx // Animated button component
 │   │   ├── ThreeScene.tsx // Main 3D scene component using Three.js
-│   │   └── styles/
+│   │   └── styles/ // component styles
 │   │       └── three-js-styles.css // CSS styles for Three.js components
-│   ├── dashboard/
-│   │   ├── layout.tsx // Layout for the dashboard page
-│   │   └── page.tsx // Dashboard page
+│   ├── dashboard/ // (post login pages)
+│   │   │── profile/
+│   │   │   └── page.tsx // user profile page
+│   │   │── styles/ // dashboard styles
+│   │   │   └── home-page-styles.css // home page styles
+│   │   ├── layout.tsx // Layout for the dashboard
+│   │   └── page.tsx // home page for user
+│   ├── hooks/
+│   │   └── GetUserData.tsx // to fetch the user data like name email profile stuff etc
 │   ├── login/
 │   │   └── [[...rest]]/page.tsx // Login page
 │   ├── policy/
 │   │   └── page.js // Privacy policy page
 │   ├── licence/
 │   │   └── page.js // License page
-│   ├── styles/
+│   ├── styles/ // root app styles (pre login pages)
 │   │   ├── button-styles.css // Custom button styles
 │   │   ├── globals.css // Global CSS styles
 │   │   ├── login-page-style.css // CSS styles for the login page
@@ -118,6 +124,7 @@ TradeSenseAI was created to provide traders with a more comprehensive tool for s
 │   ├── logo.svg // Logo image
 │   ├── logo-bg.svg // Logo image with a black background for while surfaces
 │   ├── logo-w-text.svg // Logo with text
+│   ├── logo-w-text-alt.svg // dark background ver of the one above
 │   ├── logo-w-text-copy.svg // Logo with text for social previews
 │   ├── logo-alt.svg // Alternative logo for cursor
 │   ├── feature1.webp // Feature image 1
@@ -127,8 +134,8 @@ TradeSenseAI was created to provide traders with a more comprehensive tool for s
 ├── utils/
 │   ├── firebaseAdmin.js // Firebase admin initialization
 │   └── firebase.js // Firebase client initialization for sending data to firebase
-├── node_modules/ // node modules for the dependencies
-├── .next/ // final build folder
+├── node_modules/ // node modules for the dependencies (do npm install to get these before running)
+├── .next/ // final build folder (do npm build then npm start to run this)
 ├── README.md // Project README file
 ├── package.json // Project dependencies and scripts
 ├── .env // Environment variables

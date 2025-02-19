@@ -149,7 +149,7 @@ export default function HomePage() {
             height={400}
             className="rounded-lg shadow-2xl"
           />
-          <p className="mt-4 max-w-[400px] px-4 text-customColor6 sm:px-0">
+          <p className="mt-4 max-w-[350px] px-4 text-customColor6 sm:px-0">
             <strong>Hybrid Market Analysis</strong> – We analyze social
             sentiment and financial trends together and recommend actions based
             on both.
@@ -168,7 +168,7 @@ export default function HomePage() {
             height={400}
             className="rounded-lg shadow-2xl"
           />
-          <p className="mt-4 max-w-[400px] px-4 text-customColor6 sm:px-0">
+          <p className="mt-4 max-w-[350px] px-4 text-customColor6 sm:px-0">
             <strong>Comprehensive Market Overview</strong> – Sentiment data from
             social media, technical indicators, and more. Users can get a
             general overview of the market or a specific stock.
@@ -187,7 +187,7 @@ export default function HomePage() {
             height={400}
             className="rounded-lg shadow-2xl"
           />
-          <p className="mt-4 max-w-[400px] px-4 text-customColor6 sm:px-0">
+          <p className="mt-4 max-w-[350px] px-4 text-customColor6 sm:px-0">
             <strong>LLM-Driven Predictions</strong> – We combine all data
             sources and run them through an advanced LLM trained on past events
             to generating accurate stock recommendations.

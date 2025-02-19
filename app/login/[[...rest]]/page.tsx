@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react"; // Import the useEffect and useState hooks
 import { useRouter } from "next/navigation"; // Import the useRouter hook for navigation
-import { ClerkProvider, SignIn } from "@clerk/nextjs"; // Import Clerk components for sign-in
-import { useUser } from "@clerk/nextjs"; // Import useUser hook for user info
+import { useUser, ClerkProvider, SignIn } from "@clerk/nextjs"; // Import Clerk components for sign-in and userData
 import ".././../styles/login-page-style.css";
 
 // Type for Clerk user and loading state
