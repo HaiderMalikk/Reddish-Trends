@@ -8,6 +8,8 @@ import logocursor from "../public/logo-alt.svg";
 import image1 from "../public/feature1.webp";
 import image2 from "../public/feature2.webp";
 import image3 from "../public/feature3.webp";
+import altharionlogo from "../public/altharion-logo.svg";
+import linklogo from '../public/link-black.svg';
 import AnimatedButton from "./components/AnimatedButton";
 import ThreeScene from "./components/ThreeScene";
 import Link from "next/link";
@@ -125,21 +127,65 @@ export default function HomePage() {
         }}
         className="mt-6 w-full p-7 text-center"
       >
-        <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
-          TradeSense is a platform that combines social sentiment and financial
-          data to help you make smarter trading decisions.
+        {/* catchy line to intoduce */}
+        <p className="mx-4 mb-10 text-4xl text-customColor3 sm:mx-20 md:mx-40 lg:mx-60">
+          Welcome to TradeSense – the future of trading.
         </p>
+        <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
+          TradeSense combines social sentiment and financial
+          data to help you make smarter trading decisions.
+          it takes the guesswork out of the stock market. 
+          by providing you with the most accurate and up-to-date 
+          information that takes into account both social sentiment and financial data.
+          Get the edge you need to succeed in the stock market.
+        </p>
+        {/* Powered by Altharion */}
+        <div 
+        ref={(el) => {
+          if (el) sectionRefs.current[3] = el;
+        }}
+        className="mt-10">
+        <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
+          Powered by Altharion, a cutting-edge AI Market Analysit.
+        </p>
+        <div className="flex flex-row items-center justify-center">
+        <Image
+          src={altharionlogo}
+          alt="Altharion Logo"
+          width={400}
+          height={400}
+          className="alth-logo"
+          // link to repo
+          onClick={() => {
+            window.open("https://github.com/HaiderMalikk/Altharion", "_blank");
+          }}
+          >
+        </Image>
+        <Image
+          src={linklogo}
+          alt="link"
+          width={20}
+          height={20}
+          className="link-logo"
+          // link to repo
+          onClick={() => {
+            window.open("https://github.com/HaiderMalikk/Altharion", "_blank");
+          }}
+          >
+        </Image>
+        </div>
+        </div>
       </div>
       <div
         ref={(el) => {
-          if (el) sectionRefs.current[3] = el;
+          if (el) sectionRefs.current[4] = el;
         }}
         className="mt-20 flex w-full flex-wrap justify-around p-6 text-center"
       >
         <div
           className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3 sm:px-4"
           ref={(el) => {
-            if (el) sectionRefs.current[4] = el;
+            if (el) sectionRefs.current[5] = el;
           }}
         >
           <Image
@@ -158,7 +204,7 @@ export default function HomePage() {
         <div
           className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3 sm:px-4"
           ref={(el) => {
-            if (el) sectionRefs.current[5] = el;
+            if (el) sectionRefs.current[6] = el;
           }}
         >
           <Image
@@ -177,7 +223,7 @@ export default function HomePage() {
         <div
           className="flex w-full flex-col items-center sm:w-1/3 sm:px-4"
           ref={(el) => {
-            if (el) sectionRefs.current[6] = el;
+            if (el) sectionRefs.current[7] = el;
           }}
         >
           <Image
@@ -196,7 +242,7 @@ export default function HomePage() {
       </div>
       <div
         ref={(el) => {
-          if (el) sectionRefs.current[7] = el;
+          if (el) sectionRefs.current[8] = el;
         }}
         className="mt-20 px-4 text-center"
       >
@@ -212,7 +258,7 @@ export default function HomePage() {
         <div
           className="pricing-card-container mt-6 flex justify-center gap-8"
           ref={(el) => {
-            if (el) sectionRefs.current[8] = el;
+            if (el) sectionRefs.current[9] = el;
           }}
         >
           <div className="pricing-card">
@@ -285,7 +331,7 @@ export default function HomePage() {
       </div>
       <div
         ref={(el) => {
-          if (el) sectionRefs.current[9] = el;
+          if (el) sectionRefs.current[10] = el;
         }}
         className="mt-24 text-center"
       >

@@ -1,3 +1,15 @@
+/* alth logo and link */
+.alth-logo {
+  box-shadow: 1rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.link-logo {
+  box-shadow: 1rem;
+}
+
 /* Pricing Cards */
 .pricing-card-container {
   display: flex;
@@ -80,6 +92,17 @@
 
 /* Media queries for phones */
 @media (max-width: 768px) {
+  .alth-logo {
+    margin-top: 0.5rem;
+    margin-left: -3rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+
+  .link-logo {
+    margin-left: -3rem;
+  }
+
   .text-lg {
     font-size: 1.125rem;
   }

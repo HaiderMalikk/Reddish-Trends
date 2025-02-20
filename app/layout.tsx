@@ -217,6 +217,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
                       </Link>
                     </li>
                     <li>
+                      <Link
+                        href="/about"
+                        className="text-customWhite underline hover:text-gray-300"
+                      >
+                        About
+                      </Link>
+                    </li>
+                    <li>
                       <a
                         className="text-customWhite underline hover:text-gray-300"
                         href="https://github.com/HaiderMalikk/Trade-Sense-AI"
@@ -224,6 +232,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
                         rel="noopener noreferrer"
                       >
                         Source Code
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        className="text-customWhite underline hover:text-gray-300"
+                        href="https://github.com/HaiderMalikk/Altharion"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Altharian AI Model
                       </a>
                     </li>
                   </ul>

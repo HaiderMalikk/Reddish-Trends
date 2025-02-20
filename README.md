@@ -1,11 +1,14 @@
+<img src="./public/logo-w-text-alt.svg" alt="Home" width="400"/>
+
 # COMING SOON, This Website Is Being Rebuilt From Scrach!
 
 <a href="https://trade-sense-ai-sigma.vercel.app">Check It Out So Far Here
 <img src="./public/linkgrey.png" alt="Home" width="20"/>
 </a>
 
-<a href="https://trade-sense-ai-sigma.vercel.app">This Website Is Powered By Mercur AI Check That Out Here
-<img src="./public/linkgrey.png" alt="Home" width="20"/>
+<a href="https://github.com/HaiderMalikk/Altharion">This Website Is Powered By Altharion A AI Market Analyst, Check That Out Here </br>
+<img src="./public/altharion-logo.svg" alt="logo" width="250"/>
+<img src="./public/linkgrey.png" alt="Home" width="42"/>
 </a>
 
 ## Project Idea: TradeSenseAI
@@ -107,10 +110,9 @@ TradeSenseAI was created to provide traders with a more comprehensive tool for s
 │   │   └── GetUserData.tsx // to fetch the user data like name email profile stuff etc
 │   ├── login/
 │   │   └── [[...rest]]/page.tsx // Login page
-│   ├── policy/
-│   │   └── page.js // Privacy policy page
-│   ├── licence/
-│   │   └── page.js // License page
+│   ├── policy/ // policy page
+│   ├── licence/ // licence page
+│   ├── about/ // about page
 │   ├── styles/ // root app styles (pre login pages)
 │   │   ├── button-styles.css // Custom button styles
 │   │   ├── globals.css // Global CSS styles
@@ -123,18 +125,7 @@ TradeSenseAI was created to provide traders with a more comprehensive tool for s
 │   └── api/
 │       ├── users.js // API endpoint for user management
 │       └── clerk.js // Middleware for Clerk login
-├── public/
-│   ├── bgimage.webp // Background image for the 3D scene
-│   ├── logo.svg // Logo image
-│   ├── logo-bg.svg // Logo image with a black background for while surfaces
-│   ├── logo-w-text.svg // Logo with text
-│   ├── logo-w-text-alt.svg // dark background ver of the one above
-│   ├── logo-w-text-copy.svg // Logo with text for social previews
-│   ├── logo-alt.svg // Alternative logo for cursor
-│   ├── feature1.webp // Feature image 1
-│   ├── feature2.webp // Feature image 2
-│   ├── feature3.webp // Feature image 3
-│   └── linkgrey.png // grey link img for readme
+├── public/ // contains all the images for the website
 ├── utils/
 │   ├── firebaseAdmin.js // Firebase admin initialization
 │   └── firebase.js // Firebase client initialization for sending data to firebase
@@ -162,4 +153,5 @@ TradeSenseAI was created to provide traders with a more comprehensive tool for s
 ## Additional Information
 - [License](Licence)
 - [Policy](Private_Policy.md)
+- [Altharian](https://github.com/HaiderMalikk/Altharion)
 - [About-Me](https://github.com/HaiderMalikk)
