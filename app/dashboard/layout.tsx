@@ -8,6 +8,7 @@ and if so it dosent show its footer and the dashboard layout will show its own h
 on logout we use clerks signout method to sign the user out and then redirect to the login page.
 */
 "use client";
+import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation"; // router for navigation between logged in/out website sections, pathname for highlighting the current page in header
 import { useUser, useClerk } from "@clerk/nextjs"; // Import both useUser and useClerk
 import Link from "next/link"; // link for navigation between pages
@@ -25,20 +26,41 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { signOut } = useClerk(); // Access signOut from useClerk to handle logout
   const router = useRouter(); // Access the router for navigation
   const pathname = usePathname(); // Access the current pathname for routing
+  const [loggingOut, setLoggingOut] = useState(false); // State to manage logout process
 
   // Function to handle logout
   const handleLogout = async () => {
+    setLoggingOut(true); // Set logging out state to true
     try {
       await signOut(); // Sign the user out using Clerk's method
       router.replace("/login"); // Redirect to login page after signing out
     } catch (error) {
       console.error("Logout error:", error); // Handle logout errors
+      setLoggingOut(false); // Reset logging out state if there's an error
     }
   };
 
   // Loader until the user data is loaded
   if (!isLoaded) {
     return <div>Loading...</div>;
+  }
+
+  // Show loading screen during logout process
+  if (loggingOut) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-black">
+        {/* Spinner */}
+        <div className="spinner m-8">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <h1 className="text-white">Logging out...</h1>
+      </div>
+    );
   }
 
   return (

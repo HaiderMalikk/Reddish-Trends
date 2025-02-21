@@ -1,10 +1,19 @@
 "use client";
 import useUserData from "../hooks/GetUserData"; // user data hook
+import { useUser} from "@clerk/nextjs"; // Import both useUser for clerk user management
 import "./styles/home-page-styles.css";
 
 export default function Dashboard() {
   const { userData, loading } = useUserData(); // get user data
-
+  const { user} = useUser(); // Use Clerk hook for user management
+  
+  if (!user) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-black">
+        <h1 className="text-white">Please log in to view this page.</h1>
+      </div>
+    )
+  }
   // Show loading screen while user data is loading
   if (loading || !userData) {
     return (
