@@ -21,6 +21,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ClerkProvider } from "@clerk/nextjs"; // Import Clerk provider
 import { Poppins } from "next/font/google"; // Import the Poppins font
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import Head from "next/head";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -158,6 +159,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <main className="pt-16">
             {children}
             <Analytics />
+            <SpeedInsights />
           </main>
           {/* Added padding-top to main content */}
           {/* global footer */}

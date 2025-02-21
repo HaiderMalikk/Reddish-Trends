@@ -7,6 +7,7 @@ export default function Dashboard() {
   const { userData, loading } = useUserData(); // get user data
   const { user} = useUser(); // Use Clerk hook for user management
   
+  // If user is not logged in, show a message
   if (!user) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">

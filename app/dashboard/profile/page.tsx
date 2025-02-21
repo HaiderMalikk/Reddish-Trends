@@ -10,6 +10,7 @@ export default function Profile() {
   const { userData, loading } = useUserData(); // get user data
   const { user} = useUser(); // Use Clerk hook for user management (logout)
 
+  // promp user if not logged in and on dashboard
   if (!user) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
