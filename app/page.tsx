@@ -9,7 +9,7 @@ import image1 from "../public/feature1.webp";
 import image2 from "../public/feature2.webp";
 import image3 from "../public/feature3.webp";
 import altharionlogo from "../public/altharion-logo.svg";
-import linklogo from '../public/link-black.svg';
+import linklogo from "../public/link-black.svg";
 import AnimatedButton from "./components/AnimatedButton";
 import ThreeScene from "./components/ThreeScene";
 import Link from "next/link";
@@ -132,48 +132,52 @@ export default function HomePage() {
           Welcome to TradeSense – the future of trading.
         </p>
         <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
-          TradeSense combines social sentiment and financial
-          data to help you make smarter trading decisions.
-          it takes the guesswork out of the stock market. 
-          by providing you with the most accurate and up-to-date 
-          information that takes into account both social sentiment and financial data.
-          Get the edge you need to succeed in the stock market.
+          TradeSense combines social sentiment and financial data to help you
+          make smarter trading decisions. it takes the guesswork out of the
+          stock market. by providing you with the most accurate and up-to-date
+          information that takes into account both social sentiment and
+          financial data. Get the edge you need to succeed in the stock market.
         </p>
         {/* Powered by Altharion */}
-        <div 
-        ref={(el) => {
-          if (el) sectionRefs.current[3] = el;
-        }}
-        className="mt-10">
-        <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
-          Powered by Altharion, a cutting-edge AI Market Analyst.
-        </p>
-        <div className="flex flex-row items-center justify-center">
-        <Image
-          src={altharionlogo}
-          alt="Altharion Logo"
-          width={400}
-          height={400}
-          className="alth-logo"
-          // link to repo
-          onClick={() => {
-            window.open("https://github.com/HaiderMalikk/Altharion", "_blank");
+        <div
+          ref={(el) => {
+            if (el) sectionRefs.current[3] = el;
           }}
-          >
-        </Image>
-        <Image
-          src={linklogo}
-          alt="link"
-          width={20}
-          height={20}
-          className="link-logo"
-          // link to repo
-          onClick={() => {
-            window.open("https://github.com/HaiderMalikk/Altharion", "_blank");
-          }}
-          >
-        </Image>
-        </div>
+          className="mt-10"
+        >
+          <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
+            Powered by Altharion, a cutting-edge AI Market Analyst.
+          </p>
+          <div className="flex flex-row items-center justify-center">
+            <Image
+              src={altharionlogo}
+              alt="Altharion Logo"
+              width={400}
+              height={400}
+              className="alth-logo"
+              // link to repo
+              onClick={() => {
+                window.open(
+                  "https://github.com/HaiderMalikk/Altharion",
+                  "_blank",
+                );
+              }}
+            ></Image>
+            <Image
+              src={linklogo}
+              alt="link"
+              width={20}
+              height={20}
+              className="link-logo"
+              // link to repo
+              onClick={() => {
+                window.open(
+                  "https://github.com/HaiderMalikk/Altharion",
+                  "_blank",
+                );
+              }}
+            ></Image>
+          </div>
         </div>
       </div>
       <div

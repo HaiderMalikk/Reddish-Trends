@@ -2,13 +2,13 @@
 import React from "react";
 import Image from "next/image";
 import useUserData from "../../hooks/GetUserData"; // user data hook
-import { useUser} from "@clerk/nextjs"; // Import both useUser for clerk user management
+import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user management
 import "../styles/home-page-styles.css";
 import defaultPP from "../../../public/defaultprofilepic.svg";
 
 export default function Profile() {
   const { userData, loading } = useUserData(); // get user data
-  const { user} = useUser(); // Use Clerk hook for user management (logout)
+  const { user } = useUser(); // Use Clerk hook for user management (logout)
 
   // promp user if not logged in and on dashboard
   if (!user) {
@@ -16,7 +16,7 @@ export default function Profile() {
       <div className="flex h-screen items-center justify-center bg-black">
         <h1 className="text-white">Please log in to view this page.</h1>
       </div>
-    )
+    );
   }
 
   // Show loading screen while user data is loading
