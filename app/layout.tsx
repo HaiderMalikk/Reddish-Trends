@@ -241,7 +241,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Altharian AI Model
+                        Altharion AI Model
                       </a>
                     </li>
                   </ul>
