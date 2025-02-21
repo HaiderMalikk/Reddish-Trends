@@ -146,7 +146,7 @@ export default function HomePage() {
         }}
         className="mt-10">
         <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
-          Powered by Altharion, a cutting-edge AI Market Analysit.
+          Powered by Altharion, a cutting-edge AI Market Analyst.
         </p>
         <div className="flex flex-row items-center justify-center">
         <Image
