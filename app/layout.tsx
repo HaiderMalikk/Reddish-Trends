@@ -212,6 +212,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     </li>
                     <li>
                       <Link
+                        href="/terms"
+                        className="text-customWhite underline hover:text-gray-300"
+                      >
+                        Terms of Service
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
                         href="/licence"
                         className="text-customWhite underline hover:text-gray-300"
                       >
