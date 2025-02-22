@@ -31,9 +31,9 @@ export default function GetUserData() {
 
           const data = await response.json();
           if (response.ok) {
-            const firstName = user?.firstName || "User";
-            const lastName = user?.lastName || "";
-            const email = user.primaryEmailAddress?.emailAddress || "";
+            const firstName = user?.firstName ?? "User";
+            const lastName = user?.lastName ?? "";
+            const email = user.primaryEmailAddress?.emailAddress ?? "";
             const profileImageUrl = user.imageUrl || null;
             const message = data.userExists
               ? `User found. Welcome back, ${firstName} ${lastName}!`
@@ -58,7 +58,7 @@ export default function GetUserData() {
               firstName: "",
               lastName: "",
               email: "",
-              profileImageUrl: "",
+              profileImageUrl: null,
               message: `Error: ${data.message}`,
               createdAt: null,
             });
@@ -69,7 +69,7 @@ export default function GetUserData() {
             firstName: "",
             lastName: "",
             email: "",
-            profileImageUrl: "",
+            profileImageUrl: null,
             message: "Error checking or creating user",
             createdAt: null,
           });

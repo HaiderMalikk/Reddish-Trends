@@ -5,7 +5,9 @@ import admin from "firebase-admin";
 let serviceAccount;
 
 try {
-  serviceAccount = JSON.parse(process.env.MY_SECRET_FIREBASE_SERVICE_ACCOUNT_KEY);
+  serviceAccount = JSON.parse(
+    process.env.MY_SECRET_FIREBASE_SERVICE_ACCOUNT_KEY,
+  );
 } catch (error) {
   console.error("Error parsing Firebase service account key:", error);
 }
