@@ -153,5 +153,5 @@ TradeSenseAI was created to provide traders with a more comprehensive tool for s
 ## Additional Information
 - [License](Licence)
 - [Policy](Private_Policy.md)
-- [Altharian](https://github.com/HaiderMalikk/Altharion)
+- [Altharion](https://github.com/HaiderMalikk/Altharion)
 - [About-Me](https://github.com/HaiderMalikk)
