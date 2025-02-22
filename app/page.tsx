@@ -180,16 +180,11 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-      <div
-        ref={(el) => {
-          if (el) sectionRefs.current[4] = el;
-        }}
-        className="mt-20 flex w-full flex-wrap justify-around p-6 text-center"
-      >
+      <div className="mt-20 flex w-full flex-wrap justify-around p-6 text-center">
         <div
           className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3 sm:px-4"
           ref={(el) => {
-            if (el) sectionRefs.current[5] = el;
+            if (el) sectionRefs.current[4] = el;
           }}
         >
           <Image
@@ -208,7 +203,7 @@ export default function HomePage() {
         <div
           className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3 sm:px-4"
           ref={(el) => {
-            if (el) sectionRefs.current[6] = el;
+            if (el) sectionRefs.current[5] = el;
           }}
         >
           <Image
@@ -227,7 +222,7 @@ export default function HomePage() {
         <div
           className="flex w-full flex-col items-center sm:w-1/3 sm:px-4"
           ref={(el) => {
-            if (el) sectionRefs.current[7] = el;
+            if (el) sectionRefs.current[6] = el;
           }}
         >
           <Image
@@ -246,7 +241,7 @@ export default function HomePage() {
       </div>
       <div
         ref={(el) => {
-          if (el) sectionRefs.current[8] = el;
+          if (el) sectionRefs.current[7] = el;
         }}
         className="mt-20 px-4 text-center"
       >
@@ -262,7 +257,7 @@ export default function HomePage() {
         <div
           className="pricing-card-container mt-6 flex justify-center gap-8"
           ref={(el) => {
-            if (el) sectionRefs.current[9] = el;
+            if (el) sectionRefs.current[8] = el;
           }}
         >
           <div className="pricing-card">
@@ -335,7 +330,7 @@ export default function HomePage() {
       </div>
       <div
         ref={(el) => {
-          if (el) sectionRefs.current[10] = el;
+          if (el) sectionRefs.current[9] = el;
         }}
         className="mt-24 text-center"
       >
