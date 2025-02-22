@@ -75,7 +75,7 @@
 @media (max-width: 768px) {
   /* Smaller font size for mobile devices */
   .animated-text {
-    font-size: 1.2rem; /* Smaller font size for mobile devices */
+    font-size: 1rem; /* Smaller font size for mobile devices */
     padding: 5px; /* Adjust padding for mobile devices */
   }
 }
