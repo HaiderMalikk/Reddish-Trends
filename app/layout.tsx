@@ -164,7 +164,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           {/* Added padding-top to main content */}
           {/* global footer */}
           <footer className="custom-footer">
-            <div className="mx-auto flex max-w-5xl flex-col justify-between md:flex-row">
+            <div className="mx-auto flex max-w-6xl flex-col justify-between md:flex-row">
               {/* Left Section: Hello + Name */}
               <div className="md:w-1/2">
                 <h1 className="text-customWhite font-serif text-6xl">Hello</h1>
@@ -187,14 +187,24 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   <h2 className="text-customWhite text-xl font-semibold">
                     Contact
                   </h2>
-                  <p className="mt-2">
-                    <Link
-                      href="mailto:tradesenseai@googlegroups.com?subject=Contact%20from%20Website"
-                      className="text-customWhite underline hover:text-gray-300"
-                    >
-                      Contact Us
-                    </Link>
-                  </p>
+                  <ul className="mt-2 space-y-2">
+                    <li>
+                      <Link
+                        href="mailto:tradesenseai@googlegroups.com?subject=Contact%20from%20Website"
+                        className="text-customWhite underline hover:text-gray-300"
+                      >
+                        Contact Us
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="https://github.com/HaiderMalikk"
+                        className="text-customWhite underline hover:text-gray-300"
+                      >
+                        Follow Us
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
 
                 <div className="contact-resources text-center md:text-left">
@@ -202,30 +212,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     Resources
                   </h2>
                   <ul className="mt-2 space-y-2">
-                    <li>
-                      <Link
-                        href="/policy"
-                        className="text-customWhite underline hover:text-gray-300"
-                      >
-                        Privacy Policy
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/terms"
-                        className="text-customWhite underline hover:text-gray-300"
-                      >
-                        Terms of Service
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/licence"
-                        className="text-customWhite underline hover:text-gray-300"
-                      >
-                        License
-                      </Link>
-                    </li>
                     <li>
                       <Link
                         href="/about"
@@ -253,6 +239,38 @@ export default function RootLayout({ children }: RootLayoutProps) {
                       >
                         Altharion AI Model
                       </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="contact-resources text-center md:text-left">
+                  <h2 className="text-customWhite text-xl font-semibold">
+                    Legal
+                  </h2>
+                  <ul className="mt-2 space-y-2">
+                    <li>
+                      <Link
+                        href="/policy"
+                        className="text-customWhite underline hover:text-gray-300"
+                      >
+                        Privacy Policy
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/terms"
+                        className="text-customWhite underline hover:text-gray-300"
+                      >
+                        Terms of Service
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/licence"
+                        className="text-customWhite underline hover:text-gray-300"
+                      >
+                        License
+                      </Link>
                     </li>
                   </ul>
                 </div>
