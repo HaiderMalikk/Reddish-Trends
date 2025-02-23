@@ -2,16 +2,30 @@
 import useUserData from "../hooks/GetUserData"; // user data hook
 import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user management
 import "./styles/home-page-styles.css";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation"; // Correct import for useRouter
 
 export default function Dashboard() {
   const { userData, loading } = useUserData(); // get user data
   const { user } = useUser(); // Use Clerk hook for user management
+  const router = useRouter(); // Access the router for navigation
 
-  // If user is not logged in, show a message
+  // If user is not logged in, show a message and redirect after 1 second
+  useEffect(() => {
+    if (!user) {
+      const timer = setTimeout(() => {
+        router.push("/login");
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [user, router]);
+
   if (!user) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
-        <h1 className="text-white">Please log in to view this page.</h1>
+        <h1 className="text-white">
+          Please log in to view this page. Logging you out...
+        </h1>
       </div>
     );
   }
@@ -54,10 +68,13 @@ export default function Dashboard() {
   console.log("here");
 
   return (
-    <div className="min-h-screen bg-customColor2 p-6">
-      <div className="mx-auto max-w-4xl rounded-lg bg-customColor4 p-6 shadow-md">
-        <h1 className="text-3xl font-semibold text-customColor6">Dashboard</h1>
-        <p className="mt-4 text-lg text-customColor6">
+    <div className="min-h-screen bg-gradient-to-b from-customColor6 to-customColor1 p-6">
+      <p className="pb-8 text-center text-7xl font-semibold text-customColor2">
+        Welcome
+      </p>
+      <div className="mx-auto max-w-4xl rounded-lg bg-customColor2 p-12 text-gray-700 shadow-md">
+        <h1 className="text-3xl font-semibold">Dashboard</h1>
+        <p className="mt-4 text-lg">
           Welcome, {userData.firstName} {userData.lastName}!
         </p>
       </div>

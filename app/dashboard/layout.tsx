@@ -64,7 +64,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-customColor6 font-signature text-customColor2">
+    <div className="min-h-screen bg-customColor6 font-signature">
       <header className="main-tool-bar p-4 text-customColor2">
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center">

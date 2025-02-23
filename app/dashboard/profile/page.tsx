@@ -1,20 +1,33 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import useUserData from "../../hooks/GetUserData"; // user data hook
 import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user management
+import { useRouter } from "next/navigation"; // Correct import for useRouter
 import "../styles/home-page-styles.css";
 import defaultPP from "../../../public/defaultprofilepic.svg";
 
 export default function Profile() {
   const { userData, loading } = useUserData(); // get user data
   const { user } = useUser(); // Use Clerk hook for user management (logout)
+  const router = useRouter(); // Access the router for navigation
 
-  // promp user if not logged in and on dashboard
+  // If user is not logged in, show a message and redirect after 1 second
+  useEffect(() => {
+    if (!user) {
+      const timer = setTimeout(() => {
+        router.push("/login");
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [user, router]);
+
   if (!user) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
-        <h1 className="text-white">Please log in to view this page.</h1>
+        <h1 className="text-white">
+          Please log in to view this page. Logging you out...
+        </h1>
       </div>
     );
   }
@@ -56,8 +69,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-customColor2 p-6">
-      <div className="mx-auto max-w-4xl rounded-lg bg-customColor4 p-8 shadow-lg">
+    <div className="min-h-screen bg-gradient-to-b from-customColor6 to-customColor1 p-6">
+      <div className="mx-auto max-w-4xl rounded-lg bg-customColor2 p-8 shadow-lg">
         <div className="flex flex-col items-center">
           <Image
             src={userData.profileImageUrl ?? defaultPP}

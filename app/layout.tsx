@@ -120,7 +120,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <body className="min-h-screen bg-customColor6 font-signature text-customColor2">
           {/* keep font global but keep dashboard header separate (will apply to all the pages in the website once user logs in) */}
           {!isDashboard && (
-            <header className="main-tool-bar p-4 text-customColor2">
+            <header className="main-tool-bar p-4">
               <div className="flex w-full items-center justify-between">
                 <div className="flex items-center">
                   <a href="/">
@@ -167,11 +167,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <div className="mx-auto flex max-w-6xl flex-col justify-between md:flex-row">
               {/* Left Section: Hello + Name */}
               <div className="md:w-1/2">
-                <h1 className="text-customWhite font-serif text-6xl">Hello</h1>
+                <h1 className="font-serif text-6xl">Hello</h1>
                 <p className="project-description mt-4">
                   Trade Sense AI, a project of{" "}
                   <a
-                    className="text-customWhite underline hover:text-gray-300"
+                    className="underline hover:text-gray-300"
                     href="https://haidermalikk.github.io/HaiderMaliksWebsite/"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -184,14 +184,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
               {/* Right Section: Contact & Resources Centered */}
               <div className="mt-8 flex flex-col justify-between md:mt-0 md:w-1/2 md:flex-row">
                 <div className="contact-resources text-center md:mr-8 md:text-left">
-                  <h2 className="text-customWhite text-xl font-semibold">
-                    Contact
-                  </h2>
+                  <h2 className="text-xl font-semibold">Contact</h2>
                   <ul className="mt-2 space-y-2">
                     <li>
                       <Link
                         href="mailto:tradesenseai@googlegroups.com?subject=Contact%20from%20Website"
-                        className="text-customWhite underline hover:text-gray-300"
+                        className="underline hover:text-gray-300"
                       >
                         Contact Us
                       </Link>
@@ -199,7 +197,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <li>
                       <Link
                         href="https://github.com/HaiderMalikk"
-                        className="text-customWhite underline hover:text-gray-300"
+                        className="underline hover:text-gray-300"
                       >
                         Follow Us
                       </Link>
@@ -208,21 +206,19 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 </div>
 
                 <div className="contact-resources text-center md:text-left">
-                  <h2 className="text-customWhite text-xl font-semibold">
-                    Resources
-                  </h2>
+                  <h2 className="text-xl font-semibold">Resources</h2>
                   <ul className="mt-2 space-y-2">
                     <li>
                       <Link
                         href="/about"
-                        className="text-customWhite underline hover:text-gray-300"
+                        className="underline hover:text-gray-300"
                       >
                         About
                       </Link>
                     </li>
                     <li>
                       <a
-                        className="text-customWhite underline hover:text-gray-300"
+                        className="underline hover:text-gray-300"
                         href="https://github.com/HaiderMalikk/Trade-Sense-AI"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -232,7 +228,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     </li>
                     <li>
                       <a
-                        className="text-customWhite underline hover:text-gray-300"
+                        className="underline hover:text-gray-300"
                         href="https://github.com/HaiderMalikk/Altharion"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -244,14 +240,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 </div>
 
                 <div className="contact-resources text-center md:text-left">
-                  <h2 className="text-customWhite text-xl font-semibold">
-                    Legal
-                  </h2>
+                  <h2 className="text-xl font-semibold">Legal</h2>
                   <ul className="mt-2 space-y-2">
                     <li>
                       <Link
                         href="/policy"
-                        className="text-customWhite underline hover:text-gray-300"
+                        className="underline hover:text-gray-300"
                       >
                         Privacy Policy
                       </Link>
@@ -259,7 +253,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <li>
                       <Link
                         href="/terms"
-                        className="text-customWhite underline hover:text-gray-300"
+                        className="underline hover:text-gray-300"
                       >
                         Terms of Service
                       </Link>
@@ -267,7 +261,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <li>
                       <Link
                         href="/licence"
-                        className="text-customWhite underline hover:text-gray-300"
+                        className="underline hover:text-gray-300"
                       >
                         License
                       </Link>
