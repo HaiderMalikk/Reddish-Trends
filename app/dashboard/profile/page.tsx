@@ -17,7 +17,7 @@ export default function Profile() {
     if (!user) {
       const timer = setTimeout(() => {
         router.push("/login");
-      }, 1000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [user, router]);
@@ -26,7 +26,7 @@ export default function Profile() {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
         <h1 className="text-white">
-          Please log in to view this page. Logging you out...
+          Please log in to view this page. Redirecting you to the login page...
         </h1>
       </div>
     );

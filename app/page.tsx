@@ -35,8 +35,9 @@ export default function HomePage() {
             ease: "power2.out",
             scrollTrigger: {
               trigger: section,
-              start: "top 90%",
-              end: "bottom 2%",
+              start:
+                window.innerWidth < 768 ? `top ${90 + index * 10}%` : "top 90%", // Adjust for mobile as the index inc i.e as we traverse down the page the top% should increase
+              end: "bottom 20%",
               toggleActions: "play none none reverse",
             },
           },
@@ -57,7 +58,7 @@ export default function HomePage() {
             ease: "expo.out",
             scrollTrigger: {
               trigger: item,
-              start: "top 90%",
+              start: window.innerWidth < 768 ? "top 200%" : "top 90%", // Adjust for mobile as the index here is 0 and we are quite far down i must inc it manually
               end: "bottom 20%",
               toggleActions: "play none none reverse",
             },
@@ -74,7 +75,7 @@ export default function HomePage() {
             ease: "bounce.inOut",
             scrollTrigger: {
               trigger: item,
-              start: "top 90%",
+              start: window.innerWidth < 768 ? "top 200%" : "top 90%", // Adjust for mobile as the index here is 0 and we are quite far down i must inc it manually
               end: "bottom 20%",
               toggleActions: "play none none reverse",
             },
