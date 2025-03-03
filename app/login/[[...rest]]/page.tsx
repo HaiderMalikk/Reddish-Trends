@@ -45,7 +45,7 @@ export default function LoginPage() {
       ) : (
         <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-customColor2">
           <h1 className="mb-4 text-4xl font-bold text-customColor6">
-            Great Things are on the way, Please come back later
+            Coming Very Soon! Check back later.
           </h1>
           <div className="rounded-lg bg-customColor4 p-12 shadow-lg">
             {/* Use Clerk to handle sign-in */}

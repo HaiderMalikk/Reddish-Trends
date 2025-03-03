@@ -103,8 +103,16 @@
     margin-left: -3rem;
   }
 
+  .text-md{
+    font-size: 1rem;
+  }
+
   .text-lg {
-    font-size: 1.125rem;
+    font-size: 1rem;
+  }
+
+  .text-xl{
+    font-size: 1rem;
   }
 
   .text-2xl {
@@ -157,6 +165,11 @@
 
   .mt-8 {
     margin-top: 2rem;
+  }
+
+  .mx-4{
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
   }
 
   .rounded-lg {

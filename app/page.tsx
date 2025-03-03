@@ -144,7 +144,7 @@ export default function HomePage() {
           ref={(el) => {
             if (el) sectionRefs.current[3] = el;
           }}
-          className="mt-10"
+          className="mt-20"
         >
           <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
             Powered by Altharion, a cutting-edge AI Market Analyst.
@@ -178,6 +178,17 @@ export default function HomePage() {
                 );
               }}
             ></Image>
+          </div>
+          <div className="mt-6 text-customColor6">
+              <a className="text-xl">Whats New ?</a>
+              <div className="mt-4 text-customColor6">
+              <a className="text-customColor3 text-xl">Altharion Model √A Version 1.0</a>
+              <p className="mx-4 text-md mt-2 sm:mx-20 md:mx-40 lg:mx-60">
+              Altharion Model √A can analyze any financial subreddit and make sense of what the market situation is based on the Redditors and conversations in those communities. 
+              It can then recommend best, worst and upcoming stocks from the subreddit. It also uses Yahoo Finance API to get information on the stocks
+              mentioned in the subreddits to see there current situation and predict the future of the stock.
+              </p>
+              </div>
           </div>
         </div>
       </div>
