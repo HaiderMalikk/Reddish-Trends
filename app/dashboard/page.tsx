@@ -2,13 +2,24 @@
 import useUserData from "../hooks/GetUserData"; // user data hook
 import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user management
 import "./styles/home-page-styles.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Correct import for useRouter
+import { get_data } from "./get_data";
+// TODO: add types for response 
 
 export default function Dashboard() {
   const { userData, loading } = useUserData(); // get user data
   const { user } = useUser(); // Use Clerk hook for user management
   const router = useRouter(); // Access the router for navigation
+  const [response, setResponse] = useState(null);
+
+  const handel_flask_call = async (request: any) => {
+    console.log("Sending data to flask");
+    const response = await get_data(request);
+    console.log("Response from Flask");
+    console.log(response);
+    setResponse(response);
+  };
 
   // If user is not logged in, show a message and redirect after 1 second
   useEffect(() => {
@@ -65,10 +76,10 @@ export default function Dashboard() {
   }
 
   //  * after user is loaded and no error load other apis no need for checks
-  console.log("here");
+  console.log("User Loaded", userData);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-customColor6 to-customColor1 p-6">
+    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-customColor6 to-customColor1 p-6">
       <p className="pb-8 text-center text-7xl font-semibold text-customColor2">
         Welcome
       </p>
@@ -78,6 +89,38 @@ export default function Dashboard() {
           Welcome, {userData.firstName} {userData.lastName}!
         </p>
       </div>
+        <button
+          className="rounded-lg bg-customColor3 p-4 text-white shadow-md"
+          onClick={() => handel_flask_call({ type: "getgeneralanalysis" })}
+          >
+          Get Data
+        </button>
+      <div className="mt-8 flex justify-center bg-customColor2 text-black p-12 text-center">
+        {/* call get data on click */}
+          {/* Show data from flask * only if not null*/}
+          {response &&  <div> 
+            <p> Data from Flask: {JSON.stringify(response)}</p>
+            <p>Top Stock</p> 
+            <p> Stock {JSON.stringify(response["response"]["Top Stock"]["symbol"])}</p>
+            <p> sentiment {JSON.stringify(response["response"]["Top Stock"]["sentiment"])}</p>
+            <p> post {JSON.stringify(response["response"]["Top Stock"]["post"])}</p>
+            <p> price {JSON.stringify(response["response"]["Top Stock"]["price"])}</p>
+            <p> high {JSON.stringify(response["response"]["Top Stock"]["high"])}</p>
+            <p> low {JSON.stringify(response["response"]["Top Stock"]["low"])}</p>
+            <p> change {JSON.stringify(response["response"]["Top Stock"]["change"])}</p>
+            <p> percent change {JSON.stringify(response["response"]["Top Stock"]["percent_change"])}</p>
+            <p> rsi {JSON.stringify(response["response"]["Top Stock"]["rsi"])}</p>
+            <p> GPT analysis: summary {JSON.stringify(response["response"]["Top Stock"]["GPT_Analysis"]["overview"])}</p>
+            <p> GPT analysis: market_sent {JSON.stringify(response["response"]["Top Stock"]["GPT_Analysis"]["market_sentiment"])}</p>
+            <p> GPT analysis: technical analysis {JSON.stringify(response["response"]["Top Stock"]["GPT_Analysis"]["technical_analysis"])}</p>
+            <p> GPT analysis: fundimental analysis {JSON.stringify(response["response"]["Top Stock"]["GPT_Analysis"]["fundamental_analysis"])}</p>
+            <p> GPT analysis: prediction {JSON.stringify(response["response"]["Top Stock"]["GPT_Analysis"]["prediction"])}</p>
+            <p> GPT analysis: confidence score {JSON.stringify(response["response"]["Top Stock"]["GPT_Analysis"]["Confidence Score"])}</p>
+            
+            
+            </div>}
+      </div>
     </div>
   );
 }
+

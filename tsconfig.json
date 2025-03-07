@@ -115,6 +115,6 @@
     "**/*.tsx",
     "app/layout.tss",
     "app/layout.tsx"
-  ],
+, "app/dashboard/get_data.ts"  ],
   "exclude": ["node_modules"]
 }
