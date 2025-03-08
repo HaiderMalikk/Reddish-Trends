@@ -69,7 +69,14 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-customColor6 to-customColor1 p-6">
+    <div className="min-h-screen bg-customColor4 p-6">
+      <div className="mx-auto max-w-4xl w-full rounded-lg bg-white p-12 text-gray-700 shadow-md text-center mb-10">
+        <h1 className="text-6xl font-semibold">Profile</h1>
+        <p className="mt-4 text-xl">
+          Welcome, {userData.firstName} {userData.lastName}!
+        </p>
+      </div>
+
       <div className="mx-auto max-w-4xl rounded-lg bg-customColor2 p-8 shadow-lg">
         <div className="flex flex-col items-center">
           <Image

@@ -129,7 +129,7 @@ export default function HomePage() {
         className="mt-6 w-full p-7 text-center"
       >
         {/* catchy line to intoduce */}
-        <p className="mx-4 mb-10 text-4xl text-customColor3 sm:mx-20 md:mx-40 lg:mx-60">
+        <p className="mx-4 mb-10 text-4xl text-customColor4 sm:mx-20 md:mx-40 lg:mx-60">
           Welcome to TradeSense – the future of trading.
         </p>
         <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
@@ -180,15 +180,21 @@ export default function HomePage() {
             ></Image>
           </div>
           <div className="mt-6 text-customColor6">
-              <a className="text-xl">Whats New ?</a>
-              <div className="mt-4 text-customColor6">
-              <a className="text-customColor3 text-xl">Altharion Model √A Version 1.0</a>
-              <p className="mx-4 text-md mt-2 sm:mx-20 md:mx-40 lg:mx-60">
-              Altharion Model √A can analyze any financial subreddit and make sense of what the market situation is based on the Redditors and conversations in those communities. 
-              It can then recommend best, worst and upcoming stocks from the subreddit. It also uses Yahoo Finance API to get information on the stocks
-              mentioned in the subreddits to see there current situation and predict the future of the stock.
+            <a className="text-xl">Whats New ?</a>
+            <div className="mt-4 text-customColor6">
+              <a className="text-xl text-customColor4">
+                Altharion Model √A Version 1.0
+              </a>
+              <p className="text-md mx-4 mt-2 sm:mx-20 md:mx-40 lg:mx-60">
+                Altharion Model √A can analyze any financial subreddit and make
+                sense of what the market situation is based on the Redditors and
+                conversations in those communities. It can then recommend best,
+                worst and upcoming stocks from the subreddit. It also uses Yahoo
+                Finance API to get information on the stocks mentioned in the
+                subreddits to see there current situation and predict the future
+                of the stock.
               </p>
-              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -291,7 +297,7 @@ export default function HomePage() {
                   paddinginput="buttonpadding2"
                   Buttoncolor="#f5efe7"
                 >
-                  <h2 className="text-xl font-semibold text-customColor6">
+                  <h2 className="text-xl font-semibold text-customColor4">
                     Get Started for Free
                   </h2>
                 </AnimatedButton>
@@ -331,7 +337,7 @@ export default function HomePage() {
                   paddinginput="buttonpadding2"
                   Buttoncolor="#f5efe7"
                 >
-                  <h2 className="text-xl font-semibold text-customColor6">
+                  <h2 className="text-xl font-semibold text-customColor4">
                     Get Started
                   </h2>
                 </AnimatedButton>
