@@ -8,6 +8,7 @@ import { get_data } from "./get_data";
 import InfoPopup from "../components/InfoPopup"; // Import InfoPopup component
 import { FaInfoCircle } from "react-icons/fa"; // Import info icon
 
+
 // Define types for the response
 interface GPTAnalysis {
   overview: string;
@@ -34,7 +35,9 @@ interface StockData {
 
 interface FlaskResponse {
   response: {
-    "Top Stock": StockData;
+    Top_Stock: StockData | "None";
+    Worst_Stock: StockData | "None";
+    Rising_Stock: StockData | "None";
   };
 }
 
@@ -45,22 +48,54 @@ export default function Dashboard() {
   const [response, setResponse] = useState<FlaskResponse | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
   const [isApiLoading, setIsApiLoading] = useState<boolean>(false);
-  
+  const [progress, setProgress] = useState<number>(0); // Add state for progress
+
+  const incrementProgress = () => {
+    setProgress((prevProgress) => {
+      if (prevProgress >= 95) { // if at 90 pause it so it dose reach 100
+        return 95;
+      }
+      return prevProgress + 1;
+    });
+  };
+
   // Add state for info popups
   const [stockInfoOpen, setStockInfoOpen] = useState(false);
   const [gptInfoOpen, setGptInfoOpen] = useState(false);
+
+  // Add state to track which posts are expanded
+  const [expandedPosts, setExpandedPosts] = useState<{
+    top: boolean;
+    worst: boolean;
+    rising: boolean;
+  }>({
+    top: false,
+    worst: false,
+    rising: false,
+  });
+
+  // Add functions to scroll to specific sections
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const handel_flask_call = async (request: any) => {
     console.log("Sending data to flask");
     setIsApiLoading(true);
     setApiError(null);
-    
+    setProgress(10); // Set initial progress
+    const interval = setInterval(incrementProgress, 3000); // Increment progress every 3000ms
+
     try {
       const response = await get_data(request);
       console.log("Response from Flask");
       console.log(response);
       setResponse(response as FlaskResponse);
-      if (!response){
+      setProgress(100); // Set progress to 100 when data is fetched
+      if (!response) {
         console.error("Error fetching data from Flask response is null");
         setApiError("Failed to load data. Please try again later.");
       }
@@ -72,10 +107,38 @@ export default function Dashboard() {
     }
   };
 
+  // Function to toggle expanded state of posts
+  const togglePostExpand = (type: "top" | "worst" | "rising") => {
+    setExpandedPosts((prev) => {
+      const newState = {
+        ...prev,
+        [type]: !prev[type],
+      };
+      
+      // If we're collapsing the post, scroll back to its section
+      if (prev[type] && !newState[type]) {
+        setTimeout(() => {
+          const section = document.getElementById(`${type}-stock-post`);
+          if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100); // Small delay to ensure state is updated
+      }
+      
+      return newState;
+    });
+  };
+
+  // Function to truncate text
+  const truncateText = (text: string, maxLength: number = 150) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
   // if we have user make the call even if user if loading or data is loading make the call to flask
   useEffect(() => {
     if (user) {
-      handel_flask_call({ type: "getgeneralanalysis" })
+      handel_flask_call({ type: "getgeneralanalysis" });
     }
   }, []);
 
@@ -115,11 +178,11 @@ export default function Dashboard() {
       </div>
     );
   }
-  
+
   // Show loading screen while API data is loading
   if (isApiLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-black">
+      <div className="flex h-screen items-center justify-center bg-black flex-col">
         {/* Spinner */}
         <div className="spinner m-8">
           <div></div>
@@ -130,10 +193,16 @@ export default function Dashboard() {
           <div></div>
         </div>
         <h1 className="text-white">Loading market data...</h1>
+        <div className="min-w-[300px] h-1 bg-gray-200 mt-4">
+          <div
+            className="h-full bg-blue-500 transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
       </div>
     );
   }
-  
+
   // Show error screen if an error occurred
   if (userData.message.startsWith("Error")) {
     return (
@@ -158,9 +227,9 @@ export default function Dashboard() {
       <div className="flex h-screen flex-col items-center justify-center bg-black">
         <h1 className="text-4xl font-semibold text-red-600">API Error</h1>
         <p className="mt-4 text-lg text-white">{apiError}</p>
-        <button 
+        <button
           onClick={() => handel_flask_call({ type: "getgeneralanalysis" })}
-          className="mt-6 px-6 py-2 bg-customColor5 text-black rounded-lg hover:bg-opacity-90 transition"
+          className="mt-6 rounded-lg bg-customColor5 px-6 py-2 text-black transition hover:bg-opacity-90"
         >
           Try Again
         </button>
@@ -174,162 +243,913 @@ export default function Dashboard() {
   return (
     // bg div
     <div className="flex min-h-screen flex-col items-center bg-customColor4 p-6">
-
       {/* welcome message to my 2 person userbase */}
-      <div className="mx-auto max-w-4xl w-full rounded-lg bg-gradient-to-br from-10%  from-customColor4 to-customColor2 border-black border-2 p-12 text-black shadow-md text-center mb-10">
+      <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-gradient-to-br from-customColor4 from-10% to-customColor2 p-12 text-center text-black shadow-md">
         <h1 className="text-6xl font-semibold">Dashboard</h1>
         <p className="mt-4 text-xl text-gray-600">
           Welcome, {userData.firstName} {userData.lastName}!
         </p>
       </div>
-      
+
       {response && (
-        <div className="mt-8 w-full max-w-5xl mb-10">
-          <h2 className="text-5xl font-bold text-center text-customColor2 mb-6">Reddit's Stock of the Day</h2>
-          
-          {/* Stock Info Section */}
-          <div className="bg-customColor2 rounded-t-lg p-8 shadow-lg relative">
+        <div className="mb-10 mt-8 w-full max-w-5xl">
+          <h2 className="mb-6 text-center text-7xl font-bold text-customColor2">
+            Reddit's Stock's of the Day
+          </h2>
+
+          {/* Quick Navigation Buttons */}
+          <div className="mb-10 flex justify-center space-x-4">
             <button 
-              className="absolute top-2 right-2 text-black hover:text-gray-600 transition-colors"
-              onClick={() => setStockInfoOpen(true)}
+              onClick={() => scrollToSection('top-stock')} 
+              className="rounded-lg bg-customColor2 px-6 py-2 font-bold text-black shadow-md transition hover:bg-opacity-80"
             >
-              <FaInfoCircle size={18} />
+              Top Stock
             </button>
-            
-            <div className="flex justify-between items-center border-b border-gray-300 pb-4">
-              <div className="flex items-center">
-                <div className="bg-black rounded-full p-2 mr-3 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-customColor2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                </div>
-                <h3 className="text-3xl font-bold text-black">
-                  {response.response["Top Stock"].symbol} <span className="text-xl font-normal text-grey-600">({response.response["Top Stock"].company_name})</span>
-                </h3>
-              </div>
-              <div className="text-right">
-                <p className="text-3xl font-bold text-black">${response.response["Top Stock"].price}</p>
-                <div className="flex items-center justify-end space-x-2 mt-1">
-                  {Number(response.response["Top Stock"].percentage_change) >= 0 ? (
-                    <span className="text-green-600 flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                      </svg>
-                      <span className="font-medium">{response.response["Top Stock"].percentage_change}%</span>
-                    </span>
-                  ) : (
-                    <span className="text-red-600 flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                      <span className="font-medium">{response.response["Top Stock"].percentage_change}%</span>
-                    </span>
-                  )}
-                  <span className="text-gray-600">(${response.response["Top Stock"].change})</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-6 mt-6 text-center">
-              <div className="bg-customColor4 bg-opacity-30 rounded-lg p-3">
-                <p className="text-sm text-gray-600">High</p>
-                <p className="text-xl text-black font-semibold">${response.response["Top Stock"].high}</p>
-              </div>
-              <div className="bg-customColor4 bg-opacity-30 rounded-lg p-3">
-                <p className="text-sm text-gray-600">Low</p>
-                <p className="text-xl text-black font-semibold">${response.response["Top Stock"].low}</p>
-              </div>
-              <div className="bg-customColor4 bg-opacity-30 rounded-lg p-3">
-                <p className="text-sm text-gray-600">RSI</p>
-                <p className="text-xl  text-black font-semibold">
-                  {response.response["Top Stock"].rsi}
-                  {Number(response.response["Top Stock"].rsi) > 70 && <span className="text-sm text-red-500 ml-1">(Overbought)</span>}
-                  {Number(response.response["Top Stock"].rsi) < 30 && <span className="text-sm text-green-500 ml-1">(Oversold)</span>}
-                </p>
-              </div>
-            </div>
-            
-            {/* Sentiment Section */}
-            <div className="mt-6 p-4 rounded-lg border border-gray-200">
-              <h4 className="text-lg text-black font-semibold mb-2">Sentiment Analysis</h4>
-              <div className={`text-lg font-medium rounded-full px-4 py-1 inline-block ${
-                response.response["Top Stock"].sentiment > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-              }`}> 
-                {response.response["Top Stock"].sentiment > 0 ? "Positive" : "Negative"} 
-                ({response.response["Top Stock"].sentiment}/10)
-              </div>
-            </div>
-            
-            {/* Reddit Post */}
-            <div className="mt-6">
-              <h4 className="text-lg text-black font-semibold mb-2">Post from Reddit:</h4>
-              <div className="bg-customColor4 bg-opacity-20 p-4 rounded-lg">
-                <p className="italic text-black">{response.response["Top Stock"].post}</p>
-              </div>
-            </div>
+            <button 
+              onClick={() => scrollToSection('worst-stock')} 
+              className="rounded-lg bg-customColor2 px-6 py-2 font-bold text-black shadow-md transition hover:bg-opacity-80"
+            >
+              Worst Stock
+            </button>
+            <button 
+              onClick={() => scrollToSection('rising-stock')} 
+              className="rounded-lg bg-customColor2 px-6 py-2 font-bold text-black shadow-md transition hover:bg-opacity-80"
+            >
+              Rising Stock
+            </button>
           </div>
-          
-          {/* GPT Analysis Section */}
-          <div className="bg-customColor6 text-customColor2 p-8 rounded-b-lg shadow-lg relative">
-            <button 
-              className="absolute top-2 right-2 text-customColor2 hover:text-white transition-colors"
-              onClick={() => setGptInfoOpen(true)}
-            >
-              <FaInfoCircle size={18} />
-            </button>
-            
-            <div className="flex items-center mb-4 border-b border-customColor2 pb-2">
-              <div className="bg-customColor2 rounded-full p-2 mr-3 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-customColor6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold">AI Analysis</h3>
+
+          {/* Stock Info Section */}
+          <p id="top-stock" className="mb-6 mt-20 text-center text-5xl font-bold text-customColor2">Top Stock</p>
+          {response.response["Top_Stock"] === "None" ? (
+            <div className="rounded-lg bg-customColor2 p-8 text-center shadow-lg">
+              <h3 className="text-3xl font-bold text-black">Top Stock Not Found!</h3>
+              <p className="mt-3 text-lg text-gray-700">No data available for this category.</p>
             </div>
-            
-            <div className="space-y-4 text-customColor2">
-              <div>
-                <h4 className="font-semibold text-xl">Overview</h4>
-                <p className="mt-1">{response.response["Top Stock"].GPT_Analysis.overview}</p>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold text-xl">Market Sentiment</h4>
-                <p className="mt-1">{response.response["Top Stock"].GPT_Analysis.market_sentiment}</p>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold text-xl">Technical Analysis</h4>
-                <p className="mt-1">{response.response["Top Stock"].GPT_Analysis.technical_analysis}</p>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold text-xl">Fundamental Analysis</h4>
-                <p className="mt-1">{response.response["Top Stock"].GPT_Analysis.fundamental_analysis}</p>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold text-xl">Prediction</h4>
-                <p className="mt-1">{response.response["Top Stock"].GPT_Analysis.prediction}</p>
-              </div>
-              
-              <div className="mt-6 pt-4 border-t border-customColor2">
-                <div className="flex justify-between items-center">
-                  <h4 className="font-bold text-xl">Confidence Score</h4>
-                  <div className={`text-lg font-bold rounded-full px-4 py-1 ${
-                    Number(response.response["Top Stock"].GPT_Analysis["Confidence Score"]) > 50 
-                      ? "bg-green-700 text-white" 
-                      : "bg-red-700 text-white"
-                  }`}>
-                    {response.response["Top Stock"].GPT_Analysis["Confidence Score"]}%
+          ) : (
+            <>
+              <div className="relative rounded-t-lg bg-customColor2 p-8 shadow-lg">
+                <button
+                  className="absolute right-2 top-2 text-black transition-colors hover:text-gray-600"
+                  onClick={() => setStockInfoOpen(true)}
+                >
+                  <FaInfoCircle size={18} />
+                </button>
+
+                <div className="flex items-center justify-between border-b border-gray-300 pb-4">
+                  <div className="flex items-center">
+                    <div className="mr-3 flex items-center justify-center rounded-full bg-black p-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-customColor2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-3xl font-bold text-black">
+                      {response.response["Top_Stock"].symbol}{" "}
+                      <span className="text-grey-600 text-xl font-normal">
+                        ({response.response["Top_Stock"].company_name})
+                      </span>
+                    </h3>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-3xl font-bold text-black">
+                      ${response.response["Top_Stock"].price}
+                    </p>
+                    <div className="mt-1 flex items-center justify-end space-x-2">
+                      {Number(response.response["Top_Stock"].percentage_change) >=
+                      0 ? (
+                        <span className="flex items-center text-green-600">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 15l7-7 7 7"
+                            />
+                          </svg>
+                          <span className="font-medium">
+                            {response.response["Top_Stock"].percentage_change}%
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center text-red-600">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                          <span className="font-medium">
+                            {response.response["Top_Stock"].percentage_change}%
+                          </span>
+                        </span>
+                      )}
+                      <span className="text-gray-600">
+                        (${response.response["Top_Stock"].change})
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 grid grid-cols-3 gap-6 text-center">
+                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                    <p className="text-sm text-gray-600">High</p>
+                    <p className="text-xl font-semibold text-black">
+                      ${response.response["Top_Stock"].high}
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                    <p className="text-sm text-gray-600">Low</p>
+                    <p className="text-xl font-semibold text-black">
+                      ${response.response["Top_Stock"].low}
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                    <p className="text-sm text-gray-600">RSI</p>
+                    <p className="text-xl font-semibold text-black">
+                      {response.response["Top_Stock"].rsi}
+                      {Number(response.response["Top_Stock"].rsi) > 70 && (
+                        <span className="ml-1 text-sm text-red-500">
+                          (Overbought)
+                        </span>
+                      )}
+                      {Number(response.response["Top_Stock"].rsi) < 30 && (
+                        <span className="ml-1 text-sm text-green-500">
+                          (Oversold)
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Sentiment Section */}
+                <div className="mt-6 rounded-lg border border-gray-200 p-4">
+                  <h4 className="mb-2 text-lg font-semibold text-black">
+                    Sentiment Analysis
+                  </h4>
+                  <div
+                    className={`inline-block rounded-full px-4 py-1 text-lg font-medium ${
+                      response.response["Top_Stock"].sentiment > 3
+                        ? "bg-green-100 text-green-800"
+                        : response.response["Top_Stock"].sentiment >= 0
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {response.response["Top_Stock"].sentiment > 3
+                      ? "Positive"
+                      : response.response["Top_Stock"].sentiment >= 0
+                        ? "Neutral"
+                        : "Negative"}
+                    ({response.response["Top_Stock"].sentiment}/10)
+                  </div>
+                </div>
+
+                {/* Reddit Post */}
+                <div className="mt-6" id="top-stock-post">
+                  <h4 className="mb-2 text-lg font-semibold text-black">
+                    Post from Reddit:
+                  </h4>
+                  <div className="rounded-lg bg-customColor4 bg-opacity-20 p-4">
+                    <div className="break-words overflow-hidden text-black">
+                      {expandedPosts.top ? (
+                        <p className="italic">
+                          {response.response["Top_Stock"].post}
+                        </p>
+                      ) : (
+                        <p className="italic">
+                          {truncateText(response.response["Top_Stock"].post)}
+                        </p>
+                      )}
+                      
+                      {response.response["Top_Stock"].post.length > 150 && (
+                        <button 
+                          onClick={() => togglePostExpand("top")} 
+                          className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
+                        >
+                          {expandedPosts.top ? "Show Less" : "Read More"}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
+
+              {/* GPT Analysis Section */}
+              <div className="relative rounded-b-lg bg-customColor6 p-8 text-customColor2 shadow-lg">
+                <button
+                  className="absolute right-2 top-2 text-customColor2 transition-colors hover:text-white"
+                  onClick={() => setGptInfoOpen(true)}
+                >
+                  <FaInfoCircle size={18} />
+                </button>
+
+                <div className="mb-4 flex items-center border-b border-customColor2 pb-2">
+                  <div className="mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 text-customColor6"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold">AI Analysis</h3>
+                </div>
+
+                <div className="space-y-4 text-customColor2">
+                  <div>
+                    <h4 className="text-xl font-semibold">Overview</h4>
+                    <p className="mt-1">
+                      {response.response["Top_Stock"].GPT_Analysis.overview}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Market Sentiment</h4>
+                    <p className="mt-1">
+                      {
+                        response.response["Top_Stock"].GPT_Analysis
+                          .market_sentiment
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Technical Analysis</h4>
+                    <p className="mt-1">
+                      {
+                        response.response["Top_Stock"].GPT_Analysis
+                          .technical_analysis
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Fundamental Analysis</h4>
+                    <p className="mt-1">
+                      {
+                        response.response["Top_Stock"].GPT_Analysis
+                          .fundamental_analysis
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Prediction</h4>
+                    <p className="mt-1">
+                      {response.response["Top_Stock"].GPT_Analysis.prediction}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 border-t border-customColor2 pt-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xl font-bold">Confidence Score</h4>
+                      <div
+                        className={`rounded-full px-4 py-1 text-lg font-bold ${
+                          Number(
+                            response.response["Top_Stock"].GPT_Analysis[
+                              "Confidence Score"
+                            ],
+                          ) < 30
+                            ? "bg-red-700 text-white"
+                            : Number(
+                                  response.response["Top_Stock"].GPT_Analysis[
+                                    "Confidence Score"
+                                  ],
+                                ) < 70
+                              ? "bg-yellow-700 text-white"
+                              : "bg-green-700 text-white"
+                        }`}
+                      >
+                        {
+                          response.response["Top_Stock"].GPT_Analysis[
+                            "Confidence Score"
+                          ]
+                        }
+                        %
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Stock Info Section for worst stock */}
+          <p id="worst-stock" className="mb-6 mt-20 text-center text-5xl font-bold text-customColor2">Worst Stock</p>
+          {response.response["Worst_Stock"] === "None" ? (
+            <div className="rounded-lg bg-customColor2 p-8 text-center shadow-lg">
+              <h3 className="text-3xl font-bold text-black">Worst Stock Not Found!</h3>
+              <p className="mt-3 text-lg text-gray-700">No data available for this category.</p>
             </div>
-          </div>
-          
+          ) : (
+            <>
+              <div className="relative rounded-t-lg bg-customColor2 p-8 shadow-lg">
+                <button
+                  className="absolute right-2 top-2 text-black transition-colors hover:text-gray-600"
+                  onClick={() => setStockInfoOpen(true)}
+                >
+                  <FaInfoCircle size={18} />
+                </button>
+
+                <div className="flex items-center justify-between border-b border-gray-300 pb-4">
+                  <div className="flex items-center">
+                    <div className="mr-3 flex items-center justify-center rounded-full bg-black p-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-customColor2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-3xl font-bold text-black">
+                      {response.response["Worst_Stock"].symbol}{" "}
+                      <span className="text-grey-600 text-xl font-normal">
+                        ({response.response["Worst_Stock"].company_name})
+                      </span>
+                    </h3>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-3xl font-bold text-black">
+                      ${response.response["Worst_Stock"].price}
+                    </p>
+                    <div className="mt-1 flex items-center justify-end space-x-2">
+                      {Number(response.response["Worst_Stock"].percentage_change) >=
+                      0 ? (
+                        <span className="flex items-center text-green-600">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 15l7-7 7 7"
+                            />
+                          </svg>
+                          <span className="font-medium">
+                            {response.response["Worst_Stock"].percentage_change}%
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center text-red-600">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                          <span className="font-medium">
+                            {response.response["Worst_Stock"].percentage_change}%
+                          </span>
+                        </span>
+                      )}
+                      <span className="text-gray-600">
+                        (${response.response["Worst_Stock"].change})
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 grid grid-cols-3 gap-6 text-center">
+                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                    <p className="text-sm text-gray-600">High</p>
+                    <p className="text-xl font-semibold text-black">
+                      ${response.response["Worst_Stock"].high}
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                    <p className="text-sm text-gray-600">Low</p>
+                    <p className="text-xl font-semibold text-black">
+                      ${response.response["Worst_Stock"].low}
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                    <p className="text-sm text-gray-600">RSI</p>
+                    <p className="text-xl font-semibold text-black">
+                      {response.response["Worst_Stock"].rsi}
+                      {Number(response.response["Worst_Stock"].rsi) > 70 && (
+                        <span className="ml-1 text-sm text-red-500">
+                          (Overbought)
+                        </span>
+                      )}
+                      {Number(response.response["Worst_Stock"].rsi) < 30 && (
+                        <span className="ml-1 text-sm text-green-500">
+                          (Oversold)
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Sentiment Section */}
+                <div className="mt-6 rounded-lg border border-gray-200 p-4">
+                  <h4 className="mb-2 text-lg font-semibold text-black">
+                    Sentiment Analysis
+                  </h4>
+                  <div
+                    className={`inline-block rounded-full px-4 py-1 text-lg font-medium ${
+                      response.response["Worst_Stock"].sentiment > 3
+                        ? "bg-green-100 text-green-800"
+                        : response.response["Worst_Stock"].sentiment >= 0
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {response.response["Worst_Stock"].sentiment > 3
+                      ? "Positive"
+                      : response.response["Worst_Stock"].sentiment >= 0
+                        ? "Neutral"
+                        : "Negative"}
+                    ({response.response["Worst_Stock"].sentiment}/10)
+                  </div>
+                </div>
+
+                {/* Reddit Post */}
+                <div className="mt-6" id="worst-stock-post">
+                  <h4 className="mb-2 text-lg font-semibold text-black">
+                    Post from Reddit:
+                  </h4>
+                  <div className="rounded-lg bg-customColor4 bg-opacity-20 p-4">
+                    <div className="break-words overflow-hidden text-black">
+                      {expandedPosts.worst ? (
+                        <p className="italic">
+                          {response.response["Worst_Stock"].post}
+                        </p>
+                      ) : (
+                        <p className="italic">
+                          {truncateText(response.response["Worst_Stock"].post)}
+                        </p>
+                      )}
+                      
+                      {response.response["Worst_Stock"].post.length > 150 && (
+                        <button 
+                          onClick={() => togglePostExpand("worst")} 
+                          className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
+                        >
+                          {expandedPosts.worst ? "Show Less" : "Read More"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* GPT Analysis Section */}
+              <div className="relative rounded-b-lg bg-customColor6 p-8 text-customColor2 shadow-lg">
+                <button
+                  className="absolute right-2 top-2 text-customColor2 transition-colors hover:text-white"
+                  onClick={() => setGptInfoOpen(true)}
+                >
+                  <FaInfoCircle size={18} />
+                </button>
+
+                <div className="mb-4 flex items-center border-b border-customColor2 pb-2">
+                  <div className="mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 text-customColor6"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold">AI Analysis</h3>
+                </div>
+
+                <div className="space-y-4 text-customColor2">
+                  <div>
+                    <h4 className="text-xl font-semibold">Overview</h4>
+                    <p className="mt-1">
+                      {response.response["Worst_Stock"].GPT_Analysis.overview}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Market Sentiment</h4>
+                    <p className="mt-1">
+                      {
+                        response.response["Worst_Stock"].GPT_Analysis
+                          .market_sentiment
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Technical Analysis</h4>
+                    <p className="mt-1">
+                      {
+                        response.response["Worst_Stock"].GPT_Analysis
+                          .technical_analysis
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Fundamental Analysis</h4>
+                    <p className="mt-1">
+                      {
+                        response.response["Worst_Stock"].GPT_Analysis
+                          .fundamental_analysis
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Prediction</h4>
+                    <p className="mt-1">
+                      {response.response["Worst_Stock"].GPT_Analysis.prediction}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 border-t border-customColor2 pt-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xl font-bold">Confidence Score</h4>
+                      <div
+                        className={`rounded-full px-4 py-1 text-lg font-bold ${
+                          Number(
+                            response.response["Worst_Stock"].GPT_Analysis[
+                              "Confidence Score"
+                            ],
+                          ) < 30
+                            ? "bg-red-700 text-white"
+                            : Number(
+                                  response.response["Worst_Stock"].GPT_Analysis[
+                                    "Confidence Score"
+                                  ],
+                                ) <= 70
+                              ? "bg-yellow-700 text-white"
+                              : "bg-green-700 text-white"
+                        }`}
+                      >
+                        {
+                          response.response["Worst_Stock"].GPT_Analysis[
+                            "Confidence Score"
+                          ]
+                        }
+                        %
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ! Stock Info Section for rising stock */}
+          <p id="rising-stock" className="mb-6 mt-20 text-center text-5xl font-bold text-customColor2">Rising Stock</p>
+          {response.response["Rising_Stock"] === "None" ? (
+            <div className="rounded-lg bg-customColor2 p-8 text-center shadow-lg">
+              <h3 className="text-3xl font-bold text-black">Rising Stock Not Found!</h3>
+              <p className="mt-3 text-lg text-gray-700">No data available for this category.</p>
+            </div>
+          ) : (
+            <>
+              <div className="relative rounded-t-lg bg-customColor2 p-8 shadow-lg">
+                <button
+                  className="absolute right-2 top-2 text-black transition-colors hover:text-gray-600"
+                  onClick={() => setStockInfoOpen(true)}
+                >
+                  <FaInfoCircle size={18} />
+                </button>
+
+                <div className="flex items-center justify-between border-b border-gray-300 pb-4">
+                  <div className="flex items-center">
+                    <div className="mr-3 flex items-center justify-center rounded-full bg-black p-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-customColor2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-3xl font-bold text-black">
+                      {response.response["Rising_Stock"].symbol}{" "}
+                      <span className="text-grey-600 text-xl font-normal">
+                        ({response.response["Rising_Stock"].company_name})
+                      </span>
+                    </h3>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-3xl font-bold text-black">
+                      ${response.response["Rising_Stock"].price}
+                    </p>
+                    <div className="mt-1 flex items-center justify-end space-x-2">
+                      {Number(
+                        response.response["Rising_Stock"].percentage_change,
+                      ) >= 0 ? (
+                        <span className="flex items-center text-green-600">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 15l7-7 7 7"
+                            />
+                          </svg>
+                          <span className="font-medium">
+                            {response.response["Rising_Stock"].percentage_change}%
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center text-red-600">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                          <span className="font-medium">
+                            {response.response["Rising_Stock"].percentage_change}%
+                          </span>
+                        </span>
+                      )}
+                      <span className="text-gray-600">
+                        (${response.response["Rising_Stock"].change})
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 grid grid-cols-3 gap-6 text-center">
+                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                    <p className="text-sm text-gray-600">High</p>
+                    <p className="text-xl font-semibold text-black">
+                      ${response.response["Rising_Stock"].high}
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                    <p className="text-sm text-gray-600">Low</p>
+                    <p className="text-xl font-semibold text-black">
+                      ${response.response["Rising_Stock"].low}
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                    <p className="text-sm text-gray-600">RSI</p>
+                    <p className="text-xl font-semibold text-black">
+                      {response.response["Rising_Stock"].rsi}
+                      {Number(response.response["Rising_Stock"].rsi) > 70 && (
+                        <span className="ml-1 text-sm text-red-500">
+                          (Overbought)
+                        </span>
+                      )}
+                      {Number(response.response["Rising_Stock"].rsi) < 30 && (
+                        <span className="ml-1 text-sm text-green-500">
+                          (Oversold)
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Sentiment Section */}
+                <div className="mt-6 rounded-lg border border-gray-200 p-4">
+                  <h4 className="mb-2 text-lg font-semibold text-black">
+                    Sentiment Analysis
+                  </h4>
+                  <div
+                    className={`inline-block rounded-full px-4 py-1 text-lg font-medium ${
+                      response.response["Rising_Stock"].sentiment > 3
+                        ? "bg-green-100 text-green-800"
+                        : response.response["Rising_Stock"].sentiment >= 0
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {response.response["Rising_Stock"].sentiment > 3
+                      ? "Positive"
+                      : response.response["Rising_Stock"].sentiment >= 0
+                        ? "Neutral"
+                        : "Negative"}
+                    ({response.response["Rising_Stock"].sentiment}/10)
+                  </div>
+                </div>
+
+                {/* Reddit Post */}
+                <div className="mt-6" id="rising-stock-post">
+                  <h4 className="mb-2 text-lg font-semibold text-black">
+                    Post from Reddit:
+                  </h4>
+                  <div className="rounded-lg bg-customColor4 bg-opacity-20 p-4">
+                    <div className="break-words overflow-hidden text-black">
+                      {expandedPosts.rising ? (
+                        <p className="italic">
+                          {response.response["Rising_Stock"].post}
+                        </p>
+                      ) : (
+                        <p className="italic">
+                          {truncateText(response.response["Rising_Stock"].post)}
+                        </p>
+                      )}
+                      
+                      {response.response["Rising_Stock"].post.length > 150 && (
+                        <button 
+                          onClick={() => togglePostExpand("rising")} 
+                          className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
+                        >
+                          {expandedPosts.rising ? "Show Less" : "Read More"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* GPT Analysis Section */}
+              <div className="relative rounded-b-lg bg-customColor6 p-8 text-customColor2 shadow-lg">
+                <button
+                  className="absolute right-2 top-2 text-customColor2 transition-colors hover:text-white"
+                  onClick={() => setGptInfoOpen(true)}
+                >
+                  <FaInfoCircle size={18} />
+                </button>
+
+                <div className="mb-4 flex items-center border-b border-customColor2 pb-2">
+                  <div className="mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 text-customColor6"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold">AI Analysis</h3>
+                </div>
+
+                <div className="space-y-4 text-customColor2">
+                  <div>
+                    <h4 className="text-xl font-semibold">Overview</h4>
+                    <p className="mt-1">
+                      {response.response["Rising_Stock"].GPT_Analysis.overview}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Market Sentiment</h4>
+                    <p className="mt-1">
+                      {
+                        response.response["Rising_Stock"].GPT_Analysis
+                          .market_sentiment
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Technical Analysis</h4>
+                    <p className="mt-1">
+                      {
+                        response.response["Rising_Stock"].GPT_Analysis
+                          .technical_analysis
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Fundamental Analysis</h4>
+                    <p className="mt-1">
+                      {
+                        response.response["Rising_Stock"].GPT_Analysis
+                          .fundamental_analysis
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold">Prediction</h4>
+                    <p className="mt-1">
+                      {response.response["Rising_Stock"].GPT_Analysis.prediction}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 border-t border-customColor2 pt-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xl font-bold">Confidence Score</h4>
+                      <div
+                        className={`rounded-full px-4 py-1 text-lg font-bold ${
+                          Number(
+                            response.response["Rising_Stock"].GPT_Analysis[
+                              "Confidence Score"
+                            ],
+                          ) < 30
+                            ? "bg-red-700 text-white"
+                            : Number(
+                                  response.response["Rising_Stock"].GPT_Analysis[
+                                    "Confidence Score"
+                                  ],
+                                ) <= 70
+                              ? "bg-yellow-700 text-white"
+                              : "bg-green-700 text-white"
+                        }`}
+                      >
+                        {
+                          response.response["Rising_Stock"].GPT_Analysis[
+                            "Confidence Score"
+                          ]
+                        }
+                        %
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
           {/* Stock Info Popup */}
-          <InfoPopup isOpen={stockInfoOpen} onClose={() => setStockInfoOpen(false)} title="Stock Information">
+          <InfoPopup
+            isOpen={stockInfoOpen}
+            onClose={() => setStockInfoOpen(false)}
+            title="Stock Information"
+          >
             <div className="space-y-4">
               <div>
                 <h4 className="font-bold">Price</h4>
@@ -337,66 +1157,131 @@ export default function Dashboard() {
               </div>
               <div>
                 <h4 className="font-bold">Change</h4>
-                <p>The dollar amount change in price from the previous day's close.</p>
+                <p>
+                  The dollar amount change in price from the previous day's
+                  close.
+                </p>
               </div>
               <div>
                 <h4 className="font-bold">Percentage Change</h4>
-                <p>The percentage change in price from the previous day's close.</p>
+                <p>
+                  The percentage change in price from the previous day's close.
+                </p>
               </div>
               <div>
                 <h4 className="font-bold">High</h4>
-                <p>The highest price the stock reached during the current trading day.</p>
+                <p>
+                  The highest price the stock reached during the current trading
+                  day.
+                </p>
               </div>
               <div>
                 <h4 className="font-bold">Low</h4>
-                <p>The lowest price the stock reached during the current trading day.</p>
+                <p>
+                  The lowest price the stock reached during the current trading
+                  day.
+                </p>
               </div>
               <div>
                 <h4 className="font-bold">RSI (Relative Strength Index)</h4>
-                <p>A momentum indicator that measures the magnitude of recent price changes to evaluate overbought or oversold conditions:</p>
-                <ul className="list-disc ml-5 mt-1">
-                  <li>Above 70: Potentially overbought (may indicate a coming price decrease)</li>
-                  <li>Below 30: Potentially oversold (may indicate a coming price increase)</li>
+                <p>
+                  A momentum indicator that measures the magnitude of recent
+                  price changes to evaluate overbought or oversold conditions:
+                </p>
+                <ul className="ml-5 mt-1 list-disc">
+                  <li>
+                    Above 70: Potentially overbought (may indicate a coming
+                    price decrease)
+                  </li>
+                  <li>
+                    Below 30: Potentially oversold (may indicate a coming price
+                    increase)
+                  </li>
                   <li>Between 30-70: Neutral territory</li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-bold">Sentiment Analysis</h4>
-                <p>A score indicating the overall sentiment from the Reddit post, ranging from negative (-10) to positive (10).</p>
+                <p>
+                  A score indicating the overall sentiment from the Reddit post,
+                  ranging from -10 (extremely negative) to 10 (extremely positive)
+                  and 0 - 3 (neutral).
+                </p>
               </div>
               <div>
                 <h4 className="font-bold">Post From Reddit</h4>
-                <p>The text content of the Reddit post that triggered the analysis.</p>
+                <p>
+                  The text content of the Reddit post that triggered the
+                  analysis.
+                </p>
+              </div>
+              <div>
+                <h4 className="font-bold">NOTE</h4>
+                <p>
+                  For some stocks, some or all of the data may not be available.
+                 <li>
+             
+                 if the sentiment is 0, it means the sentiment analysis was unavailable or the post was neutral.
+                  </li> 
+                  <li>
+                    if the stock data liek price is empty that no info on that stock was found in the API.
+                    </li>
+                </p>
               </div>
             </div>
           </InfoPopup>
-          
+
           {/* GPT Analysis Info Popup */}
-          <InfoPopup isOpen={gptInfoOpen} onClose={() => setGptInfoOpen(false)} title="GPT Analysis Information">
+          <InfoPopup
+            isOpen={gptInfoOpen}
+            onClose={() => setGptInfoOpen(false)}
+            title="GPT Analysis Information"
+          >
             <div className="space-y-4">
               <div>
                 <h4 className="font-bold">Overview</h4>
-                <p>A general summary of the stock's performance and position in the market.</p>
+                <p>
+                  A general summary of the stock's performance and position in
+                  the market.
+                </p>
               </div>
               <div>
                 <h4 className="font-bold">Market Sentiment</h4>
-                <p>Analysis of the overall emotional attitude toward the stock by investors and the market as a whole.</p>
+                <p>
+                  Analysis of the overall emotional attitude toward the stock by
+                  investors and the market as a whole.
+                </p>
               </div>
               <div>
                 <h4 className="font-bold">Technical Analysis</h4>
-                <p>Evaluation based on price patterns, trading signals, and various technical indicators. This focuses on historical price movement and volume.</p>
+                <p>
+                  Evaluation based on price patterns, trading signals, and
+                  various technical indicators. This focuses on historical price
+                  movement and volume.
+                </p>
               </div>
               <div>
                 <h4 className="font-bold">Fundamental Analysis</h4>
-                <p>Assessment of the company's financial health, business model, and growth potential based on financial statements, market position, and economic factors.</p>
+                <p>
+                  Assessment of the company's financial health, business model,
+                  and growth potential based on financial statements, market
+                  position, and economic factors.
+                </p>
               </div>
               <div>
                 <h4 className="font-bold">Prediction</h4>
-                <p>A forecast of the potential future price movement based on the combined analysis.</p>
+                <p>
+                  A forecast of the potential future price movement based on the
+                  combined analysis.
+                </p>
               </div>
               <div>
                 <h4 className="font-bold">Confidence Score</h4>
-                <p>A percentage indicating how confident the AI is in its analysis and prediction. Higher scores suggest stronger evidence supporting the prediction.</p>
+                <p>
+                  A percentage indicating how confident the AI is in its
+                  analysis and prediction. Higher scores suggest stronger
+                  evidence supporting the prediction.
+                </p>
               </div>
             </div>
           </InfoPopup>
@@ -405,4 +1290,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
