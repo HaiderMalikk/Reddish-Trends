@@ -1,3 +1,45 @@
+.rsi-box {
+  display: flex;
+  flex-direction: row; /* Default to row */
+  align-items: center; /* Align items vertically in the center */
+  justify-content: center
+}
+
+@media (max-width: 768px) {
+  .text-6xl{
+    font-size: 2.5rem;
+  }
+  .text-3xl{
+    font-size: 1.5rem;
+  }
+  .text-xl{
+    font-size: 0.8rem;
+  }
+  .rsi-box{
+    flex-direction: column;
+  }
+  .rsi-tip{
+    font-size: 0.55rem;
+  }
+  .welcome-msg{
+    font-size: 1.2rem;
+  }
+  .time-tracker {
+    flex-direction: column;
+    align-items: center; /* Align items to the start */
+    justify-content: center;
+    padding-left: 2.5rem; /* Adjust padding as needed */
+    padding-right: 2.5rem; /* Adjust padding as needed */
+  }
+  .time-info-button {
+    /* push to top left */
+    position: absolute;
+    margin-left: 16rem; /* Adjust margin as needed */
+    margin-bottom: 5rem; /* Adjust margin as needed */
+  }
+}
+
+
 /* custom spinner */
 .spinner {
   width: 44px;
@@ -55,3 +97,4 @@
     transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
   }
 }
+

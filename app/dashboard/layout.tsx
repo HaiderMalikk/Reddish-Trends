@@ -15,6 +15,7 @@ import Link from "next/link"; // link for navigation between pages
 import logo from "../../public/logo.svg"; // Import the logo
 import logoAlt from "../../public/logo-w-text-alt.svg"; // Import the logo
 import Image from "next/image"; // Import the Image component
+import "./styles/layout-styles.css"
 
 // Define the props type for DashboardLayout to include children
 interface DashboardLayoutProps {
@@ -27,6 +28,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter(); // Access the router for navigation
   const pathname = usePathname(); // Access the current pathname for routing
   const [loggingOut, setLoggingOut] = useState(false); // State to manage logout process
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // State for mobile menu
 
   // Function to handle logout
   const handleLogout = async () => {
@@ -44,6 +46,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   if (!isLoaded) {
     return <div>Loading...</div>;
   }
+
+
 
   // Show loading screen during logout process
   if (loggingOut) {
@@ -82,8 +86,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               />
             </a>
           </div>
-          {/* navigation links on header (underline on active page) */}
-          <nav className="flex items-center space-x-4">
+          {/* Desktop navigation */}
+          <nav className="hidden md:flex items-center space-x-4">
             <Link
               href="/dashboard"
               className={`hover:text-gray-300 ${
@@ -92,7 +96,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               Dashboard
             </Link>
-            {/* profile */}
             <Link
               href="/dashboard/profile"
               className={`hover:text-gray-300 ${
@@ -101,12 +104,59 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               Profile
             </Link>
-            {/* logout */}
             <button onClick={handleLogout} className="hover:text-gray-300">
               Logout
             </button>
           </nav>
+          
+          {/* Hamburger menu for mobile */}
+          <div className="md:hidden">
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+              className="hamburger-button"
+              aria-label="Toggle menu"
+            >
+              <div className={`hamburger-line ${mobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></div>
+              <div className={`hamburger-line ${mobileMenuOpen ? 'opacity-0' : ''}`}></div>
+              <div className={`hamburger-line ${mobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></div>
+            </button>
+          </div>
         </div>
+        
+        {/* Mobile menu overlay */}
+        {mobileMenuOpen && (
+          <div className="mobile-menu">
+            <nav className="flex flex-col items-center space-y-4 p-4">
+              <Link
+                href="/dashboard"
+                className={`mobile-menu-item ${
+                  pathname === "/dashboard" ? "underline font-bold" : ""
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/dashboard/profile"
+                className={`mobile-menu-item ${
+                  pathname === "/dashboard/profile" ? "underline font-bold" : ""
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Profile
+              </Link>
+              <button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleLogout();
+                }} 
+                className="mobile-menu-item text-left "
+              >
+                Logout
+              </button>
+            </nav>
+          </div>
+        )}
       </header>
       <main>{children}</main>
     </div>

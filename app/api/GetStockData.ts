@@ -1,7 +1,4 @@
 'use client';
-interface Response {
-
-} // TODO add types
 
 export async function get_data(request: any) {
   console.log("Getting response from Flask API in flask call file");

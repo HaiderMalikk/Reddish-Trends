@@ -1,16 +1,37 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import useUserData from "../../hooks/GetUserData"; // user data hook
 import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user management
 import { useRouter } from "next/navigation"; // Correct import for useRouter
 import "../styles/home-page-styles.css";
 import defaultPP from "../../../public/defaultprofilepic.svg";
+import { useUserFavorites } from "../../hooks/UserFavs"; // Import the favorites hook
+import Toast from "../../components/Toast"; // Import the Toast component
 
 export default function Profile() {
   const { userData, loading } = useUserData(); // get user data
   const { user } = useUser(); // Use Clerk hook for user management (logout)
   const router = useRouter(); // Access the router for navigation
+  const email = user?.primaryEmailAddress?.emailAddress;
+  const { removeFavorite, refreshFavorites } = useUserFavorites(email); // Get removeFavorite function
+  
+  // Local state for favorites to enable immediate UI updates
+  const [localFavorites, setLocalFavorites] = useState<Array<{symbol: string, companyName: string}>>([]);
+  
+  // Toast notification state
+  const [toast, setToast] = useState<{show: boolean; message: string; type: 'success' | 'error'}>({
+    show: false,
+    message: '',
+    type: 'success'
+  });
+
+  // Update local favorites when userData changes
+  useEffect(() => {
+    if (userData?.favorites) {
+      setLocalFavorites(userData.favorites);
+    }
+  }, [userData?.favorites]);
 
   // If user is not logged in, show a message and redirect after 1 second
   useEffect(() => {
@@ -68,11 +89,60 @@ export default function Profile() {
     );
   }
 
+  const handleRemoveFavorite = async (symbol: string) => {
+    try {
+      // Update local state immediately for responsive UI
+      setLocalFavorites(prev => prev.filter(fav => fav.symbol !== symbol));
+      
+      // Show success toast BEFORE the API call to ensure it appears
+      setToast({
+        show: true,
+        message: `${symbol} removed from favorites`,
+        type: 'success'
+      });
+      
+      // Make API call to remove the favorite
+      await removeFavorite(symbol);
+      
+      // Refresh favorites data
+      refreshFavorites();
+      
+    } catch (error) {
+      console.error("Error removing favorite:", error);
+      
+      // Show error toast
+      setToast({
+        show: true,
+        message: `Failed to remove ${symbol} from favorites`,
+        type: 'error'
+      });
+      
+      // Revert the local change if API call failed
+      if (userData?.favorites) {
+        setLocalFavorites(userData.favorites);
+      }
+    }
+  };
+
+  const closeToast = () => {
+    setToast({ ...toast, show: false });
+  };
+
   return (
-    <div className="min-h-screen bg-customColor4 p-6">
-      <div className="mx-auto max-w-4xl w-full rounded-lg bg-white p-12 text-gray-700 shadow-md text-center mb-10">
+    <div className="min-h-screen bg-customColor4 p-6 relative">
+      {/* Toast notification */}
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={closeToast}
+        />
+      )}
+
+      {/* welcome message to my 2 person userbase */}
+      <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-customColor4 p-12 text-center text-black shadow-md">
         <h1 className="text-6xl font-semibold">Profile</h1>
-        <p className="mt-4 text-xl">
+        <p className="mt-4 text-gray-600" style={{ fontSize: "1.2rem" }}>
           Welcome, {userData.firstName} {userData.lastName}!
         </p>
       </div>
@@ -89,18 +159,56 @@ export default function Profile() {
           <p className="mt-4 text-lg text-gray-700">
             <strong>First Name:</strong> {userData.firstName}
           </p>
-          <p className="text-lg text-gray-700">
+          <p className="text-lg text-gray-700 mb-6">
             <strong>Last Name:</strong> {userData.lastName}
           </p>
-          <p className="text-lg text-gray-700">
+          <p className="text-lg text-gray-700 flex flex-col items-center">
             <strong>Email:</strong> {userData.email}
           </p>
           {userData.createdAt && (
-            <p className="text-lg text-gray-700">
+            <p className="text-lg text-gray-700 flex flex-col items-center">
               <strong>Account Created At:</strong> {userData.createdAt}
             </p>
           )}
         </div>
+      </div>
+      
+      {/* Favorites Section */}
+      <div className="mx-auto max-w-4xl mt-8 rounded-lg bg-customColor2 p-8 shadow-lg mb-8">
+        <h2 className="text-2xl font-semibold text-center mb-6 text-black">Your Favorite Stocks</h2>
+        
+        {localFavorites && localFavorites.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white rounded-lg overflow-hidden">
+              <thead className="bg-customColor6 text-white">
+                <tr>
+                  <th className="py-3 px-4 text-left">Symbol</th>
+                  <th className="py-3 px-4 text-left">Company Name</th>
+                  <th className="py-3 px-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {localFavorites.map((fav) => (
+                  <tr key={fav.symbol} className="hover:bg-gray-100">
+                    <td className="py-3 px-4 font-medium text-black">{fav.symbol}</td>
+                    <td className="py-3 px-4 text-black">{fav.companyName}</td>
+                    <td className="py-3 px-4 text-center">
+                      <button
+                        onClick={() => handleRemoveFavorite(fav.symbol)}
+                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                        aria-label={`Remove ${fav.symbol} from favorites`}
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">You haven't added any favorite stocks yet.</p>
+        )}
       </div>
     </div>
   );

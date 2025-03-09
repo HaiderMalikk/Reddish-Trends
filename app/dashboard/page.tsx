@@ -4,10 +4,12 @@ import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user m
 import "./styles/home-page-styles.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Correct import for useRouter
-import { get_data } from "./get_data";
+import { get_data } from "../api/GetStockData";
 import InfoPopup from "../components/InfoPopup"; // Import InfoPopup component
-import { FaInfoCircle } from "react-icons/fa"; // Import info icon
-
+import { FaInfoCircle, FaStar, FaRegStar } from "react-icons/fa"; // Import icons
+import { useAnalyticsTracking } from "../hooks/PostUserAnalytics"; // Import analytics tracking
+import { useUserFavorites } from "../hooks/UserFavs"; // Import favorites hook
+import Toast from "../components/Toast"; // Import the toast component
 
 // Define types for the response
 interface GPTAnalysis {
@@ -34,12 +36,15 @@ interface StockData {
 }
 
 interface FlaskResponse {
+  last_updated: string;
   response: {
     Top_Stock: StockData | "None";
     Worst_Stock: StockData | "None";
     Rising_Stock: StockData | "None";
   };
 }
+
+
 
 export default function Dashboard() {
   const { userData, loading } = useUserData(); // get user data
@@ -50,13 +55,38 @@ export default function Dashboard() {
   const [isApiLoading, setIsApiLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0); // Add state for progress
   const [countdown, setCountdown] = useState<string>(""); // Add state for countdown
+  const { trackGeneralAnalysis, trackRedoAnalysis } = useAnalyticsTracking(); // Analytics tracking hooks
+  const {
+    favorites,
+    addFavorite,
+    removeFavorite,
+    isFavorite,
+    loading: favsLoading,
+  } = useUserFavorites(userData?.email);
 
-  
+  // Toast notification state
+  const [toast, setToast] = useState<{show: boolean; message: string; type: 'success' | 'error'}>({
+    show: false,
+    message: '',
+    type: 'success'
+  });
+
+  // Add an effect to automatically hide the toast after 3 seconds
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast(prev => ({ ...prev, show: false }));
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show, toast.message]); // Re-run when toast changes
+
   // Add state for info popups
   const [stockInfoOpen, setStockInfoOpen] = useState(false);
   const [gptInfoOpen, setGptInfoOpen] = useState(false);
   const [stockUpdateInfoOpen, setStockUpdateInfoOpen] = useState(false);
-  
+
   // Add state to track which posts are expanded
   const [expandedPosts, setExpandedPosts] = useState<{
     top: boolean;
@@ -67,53 +97,98 @@ export default function Dashboard() {
     worst: false,
     rising: false,
   });
-  
+
   // Add functions to scroll to specific sections
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
+      section.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const incrementProgress = () => {
     setProgress((prevProgress) => {
-      if (prevProgress >= 95) { // if at 90 pause it so it dose reach 100
+      if (prevProgress >= 95) {
+        // if at 90 pause it so it dose reach 100
         return 95;
       }
       return prevProgress + 1;
     });
   };
 
-  // Function to calculate time remaining until midnight EST
+  // Function to calculate time remaining until midnight EST as update happens at midnight EST
   const calculateTimeUntilMidnightEST = () => {
     const now = new Date();
-    
+
     // Convert to EST (UTC-5)
     const estOffset = -5 * 60; // EST offset in minutes
     const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
     const estMinutes = (utcMinutes + estOffset + 24 * 60) % (24 * 60);
-    
+
     // Calculate minutes until midnight EST
     const minutesUntilMidnight = 24 * 60 - estMinutes;
-    
+
     // Convert to hours and minutes
     const hours = Math.floor(minutesUntilMidnight / 60);
     const minutes = minutesUntilMidnight % 60;
     const seconds = 59 - now.getSeconds();
-    
+
     // Format as HH:MM:SS
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
+
+  // time since last update
+  const parseLastUpdateTime = (lastUpdateTime: string) => {
+    // Parse the last update time string
+    const [date, time, zone] = lastUpdateTime.split(" ");
+    const [year, month, day] = date.split("-").map(Number);
+    const [hour, minute, second] = time.split(":").map(Number);
+
+    // Create a Date object in the EST timezone
+    const estDate = new Date(
+      Date.UTC(year, month - 1, day, hour + 5, minute, second),
+    );
+
+    // Convert to the user's local time
+    return estDate;
+  };
+
+  const calculateElapsedTime = (lastUpdateTime: Date) => {
+    const now = new Date();
+    const elapsed = now.getTime() - lastUpdateTime.getTime();
+
+    const hours = Math.floor(elapsed / (1000 * 60 * 60));
+    const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  // counter
+  const [elapsedTime, setElapsedTime] = useState<string>("");
+
+  useEffect(() => {
+    let n = 0;
+    if (response && response.last_updated) {
+      const lastUpdateTime = parseLastUpdateTime(response.last_updated);
+      setElapsedTime(calculateElapsedTime(lastUpdateTime));
+
+      const timer = setInterval(() => {
+        setElapsedTime(calculateElapsedTime(lastUpdateTime));
+      }, n);
+      n = 1000;
+      return () => clearInterval(timer);
+    }
+  }, [response]);
 
   // Update countdown timer every second
   useEffect(() => {
-    let n = 0; // onload display curr time then only once a sec update it 
+    let n = 0; // onload display curr time then only once a sec update it
     const timer = setInterval(() => {
       setCountdown(calculateTimeUntilMidnightEST());
     }, n);
     n = 1000;
-    
+
     return () => clearInterval(timer);
   }, []);
 
@@ -130,6 +205,17 @@ export default function Dashboard() {
     const interval = setInterval(incrementProgress, 3000); // Increment progress every 3000ms
 
     try {
+      // Track analytics based on request type
+      if (user && userData) {
+        if (request.type === "getgeneralanalysis") {
+          console.log("Tracking general analysis");
+          await trackGeneralAnalysis(userData.email);
+        } else if (request.type === "redogeneralanalysis") {
+          console.log("Tracking redo general analysis");
+          await trackRedoAnalysis(userData.email);
+        }
+      }
+
       const response = await get_data(request);
       console.log("Response from Flask");
       console.log(response);
@@ -144,6 +230,7 @@ export default function Dashboard() {
       setApiError("Failed to load data. Please try again later.");
     } finally {
       setIsApiLoading(false);
+      clearInterval(interval);
     }
   };
 
@@ -154,17 +241,17 @@ export default function Dashboard() {
         ...prev,
         [type]: !prev[type],
       };
-      
+
       // If we're collapsing the post, scroll back to its section
       if (prev[type] && !newState[type]) {
         setTimeout(() => {
           const section = document.getElementById(`${type}-stock-post`);
           if (section) {
-            section.scrollIntoView({ behavior: 'smooth' });
+            section.scrollIntoView({ behavior: "smooth" });
           }
         }, 100); // Small delay to ensure state is updated
       }
-      
+
       return newState;
     });
   };
@@ -175,12 +262,12 @@ export default function Dashboard() {
     return text.substring(0, maxLength) + "...";
   };
 
-  // if we have user make the call even if user if loading or data is loading make the call to flask
+  // once user make the call
   useEffect(() => {
     if (user) {
-      handel_flask_call({ type: "getgeneralanalysis"});
+      handel_flask_call({ type: "getgeneralanalysis" });
     }
-  }, []); // only call once on mount 
+  }, [user, userData]); // Added user dependency to ensure it's available before making the call
 
   // If user is not logged in, show a message and redirect after 1 second
   useEffect(() => {
@@ -222,7 +309,7 @@ export default function Dashboard() {
   // Show loading screen while API data is loading
   if (isApiLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-black flex-col">
+      <div className="flex h-screen flex-col items-center justify-center bg-black">
         {/* Spinner */}
         <div className="spinner m-8">
           <div></div>
@@ -234,7 +321,7 @@ export default function Dashboard() {
         </div>
         <h1 className="text-white">Loading market data...</h1>
         <h1 className="text-white">Please stay on this page.</h1>
-        <div className="min-w-[300px] h-1 bg-gray-200 mt-4">
+        <div className="mt-4 h-1 min-w-[300px] bg-gray-200">
           <div
             className="h-full bg-customColor3 transition-all duration-500"
             style={{ width: `${progress}%` }}
@@ -278,16 +365,57 @@ export default function Dashboard() {
     );
   }
 
-  //  * after user is loaded and no error load other apis no need for checks
-  console.log("User Loaded", userData);
+  // Handle favorite toggle for a stock
+  const handleFavoriteToggle = async (stock: StockData) => {
+    try {
+      if (isFavorite(stock.symbol)) {
+        await removeFavorite(stock.symbol);
+        // Show success toast for removing favorite
+        setToast({
+          show: true,
+          message: `${stock.symbol} removed from favorites`,
+          type: 'success'
+        });
+      } else {
+        await addFavorite(stock.symbol, stock.company_name);
+        // Show success toast for adding favorite
+        setToast({
+          show: true,
+          message: `${stock.symbol} added to favorites`,
+          type: 'success'
+        });
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+      // Show error toast
+      setToast({
+        show: true,
+        message: `Failed to update favorites for ${stock.symbol}`,
+        type: 'error'
+      });
+    }
+  };
+
+  const closeToast = () => {
+    setToast(prev => ({ ...prev, show: false }));
+  };
 
   return (
     // bg div
     <div className="flex min-h-screen flex-col items-center bg-customColor4 p-6">
+      {/* Toast notification */}
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={closeToast}
+        />
+      )}
+
       {/* welcome message to my 2 person userbase */}
-      <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-gradient-to-br from-customColor4 from-10% to-customColor2 p-12 text-center text-black shadow-md">
+      <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-customColor4 p-12 text-center text-black shadow-md">
         <h1 className="text-6xl font-semibold">Dashboard</h1>
-        <p className="mt-4 text-xl text-gray-600">
+        <p className="welcome-msg mt-4 text-xl text-gray-600">
           Welcome, {userData.firstName} {userData.lastName}!
         </p>
       </div>
@@ -300,52 +428,72 @@ export default function Dashboard() {
 
           {/* Quick Navigation Buttons */}
           <div className="mb-10 flex justify-center space-x-4">
-            <button 
-              onClick={() => scrollToSection('top-stock')} 
-              className="rounded-lg bg-customColor2 px-6 py-2 font-bold text-black shadow-md transition hover:bg-opacity-80"
+            <button
+              onClick={() => scrollToSection("top-stock")}
+              className="rounded-lg bg-customColor2 px-8 py-2 font-bold text-black shadow-md transition hover:bg-opacity-80"
             >
               Top Stock
             </button>
-            <button 
-              onClick={() => scrollToSection('worst-stock')} 
+            <button
+              onClick={() => scrollToSection("worst-stock")}
               className="rounded-lg bg-customColor2 px-6 py-2 font-bold text-black shadow-md transition hover:bg-opacity-80"
             >
               Worst Stock
             </button>
-            <button 
-              onClick={() => scrollToSection('rising-stock')} 
+            <button
+              onClick={() => scrollToSection("rising-stock")}
               className="rounded-lg bg-customColor2 px-6 py-2 font-bold text-black shadow-md transition hover:bg-opacity-80"
             >
               Rising Stock
             </button>
           </div>
-          
+
           {/* Refresh and Countdown Section */}
-          <div className="mb-10 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
-            <button 
+          <div className="mb-10 flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
+            <button
               onClick={handleRefresh}
-              className="rounded-lg bg-customColor3 px-10 py-3 font-bold text-white shadow-md transition hover:bg-customColor1 flex items-center"
+              className="flex items-center rounded-lg bg-customColor3 px-10 py-3 font-bold text-white shadow-md transition hover:bg-customColor1"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="mr-2 h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                  clipRule="evenodd"
+                />
               </svg>
               Refresh Stocks of the Day
             </button>
-            <div className="flex items-center bg-gray-100 px-6 py-3 rounded-lg">
-              <span className="text-gray-800 font-medium mr-2">Stocks update in:</span>
-              <span className="font-mono font-bold text-red-600">{countdown}</span>
-              <button onClick={() => setStockUpdateInfoOpen(true)} className="ml-4 text-customColor6 hover:text-gray-500">
-              <FaInfoCircle size={18} />
-              </button>
-            </div>
+            <div className="flex items-center bg-gray-100 px-6 py-3 rounded-lg time-tracker">
+  <button onClick={() => setStockUpdateInfoOpen(true)} className="text-customColor6 hover:text-gray-500 time-info-button mr-2 ">
+    <FaInfoCircle size={18} />
+  </button>
+  <div className="text-gray-800 font-medium mr-4">Stocks update in:</div>
+  <div className="font-mono font-bold text-red-600">{countdown}</div>
+  <div className="text-gray-800 font-medium mr-4 ml-4">Time Since Last Update:</div>
+  <div className="font-mono font-bold text-red-600">{elapsedTime}</div>
+</div>
           </div>
 
           {/* Stock Info Section */}
-          <p id="top-stock" className="mb-6 mt-20 text-center text-5xl font-bold text-customColor2">Top Stock</p>
+          <p
+            id="top-stock"
+            className="mb-6 mt-20 text-center text-5xl font-bold text-customColor2"
+          >
+            Top Stock
+          </p>
           {response.response["Top_Stock"] === "None" ? (
             <div className="rounded-lg bg-customColor2 p-8 text-center shadow-lg">
-              <h3 className="text-3xl font-bold text-black">Top Stock Not Found!</h3>
-              <p className="mt-3 text-lg text-gray-700">No data available for this category.</p>
+              <h3 className="text-3xl font-bold text-black">
+                Top Stock Not Found!
+              </h3>
+              <p className="mt-3 text-lg text-gray-700">
+                No data available for this category.
+              </p>
             </div>
           ) : (
             <>
@@ -355,6 +503,23 @@ export default function Dashboard() {
                   onClick={() => setStockInfoOpen(true)}
                 >
                   <FaInfoCircle size={18} />
+                </button>
+
+                {/* Add favorite button */}
+                <button
+                  className="absolute left-2 top-2 text-yellow-500 transition-colors hover:text-yellow-300"
+                  onClick={() =>
+                    handleFavoriteToggle(
+                      response.response["Top_Stock"] as StockData,
+                    )
+                  }
+                  disabled={favsLoading}
+                >
+                  {isFavorite(response.response["Top_Stock"].symbol) ? (
+                    <FaStar size={24} />
+                  ) : (
+                    <FaRegStar size={24} />
+                  )}
                 </button>
 
                 <div className="flex items-center justify-between border-b border-gray-300 pb-4">
@@ -387,8 +552,9 @@ export default function Dashboard() {
                       ${response.response["Top_Stock"].price}
                     </p>
                     <div className="mt-1 flex items-center justify-end space-x-2">
-                      {Number(response.response["Top_Stock"].percentage_change) >=
-                      0 ? (
+                      {Number(
+                        response.response["Top_Stock"].percentage_change,
+                      ) >= 0 ? (
                         <span className="flex items-center text-green-600">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -451,24 +617,24 @@ export default function Dashboard() {
                   </div>
                   <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
                     <p className="text-sm text-gray-600">RSI</p>
-                    <p className="text-xl font-semibold text-black">
+                    <div className="rsi-box items-center text-xl font-semibold text-black">
                       {response.response["Top_Stock"].rsi}
                       {Number(response.response["Top_Stock"].rsi) > 70 && (
-                        <span className="ml-1 text-sm text-red-500">
+                        <div className="rsi-tip ml-1 text-sm text-red-500">
                           (Overbought)
-                        </span>
+                        </div>
                       )}
                       {Number(response.response["Top_Stock"].rsi) < 30 && (
-                        <span className="ml-1 text-sm text-green-500">
+                        <div className="rsi-tip ml-1 text-sm text-green-500">
                           (Oversold)
-                        </span>
+                        </div>
                       )}
-                    </p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Sentiment Section */}
-                <div className="mt-6 rounded-lg border border-gray-200 p-4">
+                <div className="mt-6 rounded-lg border border-gray-300 p-4">
                   <h4 className="mb-2 text-lg font-semibold text-black">
                     Sentiment Analysis
                   </h4>
@@ -496,7 +662,7 @@ export default function Dashboard() {
                     Post from Reddit:
                   </h4>
                   <div className="rounded-lg bg-customColor4 bg-opacity-20 p-4">
-                    <div className="break-words overflow-hidden text-black">
+                    <div className="overflow-hidden break-words text-black">
                       {expandedPosts.top ? (
                         <p className="italic">
                           {response.response["Top_Stock"].post}
@@ -506,10 +672,10 @@ export default function Dashboard() {
                           {truncateText(response.response["Top_Stock"].post)}
                         </p>
                       )}
-                      
+
                       {response.response["Top_Stock"].post.length > 150 && (
-                        <button 
-                          onClick={() => togglePostExpand("top")} 
+                        <button
+                          onClick={() => togglePostExpand("top")}
                           className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
                         >
                           {expandedPosts.top ? "Show Less" : "Read More"}
@@ -568,7 +734,9 @@ export default function Dashboard() {
                   </div>
 
                   <div>
-                    <h4 className="text-xl font-semibold">Technical Analysis</h4>
+                    <h4 className="text-xl font-semibold">
+                      Technical Analysis
+                    </h4>
                     <p className="mt-1">
                       {
                         response.response["Top_Stock"].GPT_Analysis
@@ -578,7 +746,9 @@ export default function Dashboard() {
                   </div>
 
                   <div>
-                    <h4 className="text-xl font-semibold">Fundamental Analysis</h4>
+                    <h4 className="text-xl font-semibold">
+                      Fundamental Analysis
+                    </h4>
                     <p className="mt-1">
                       {
                         response.response["Top_Stock"].GPT_Analysis
@@ -629,11 +799,20 @@ export default function Dashboard() {
           )}
 
           {/* Stock Info Section for worst stock */}
-          <p id="worst-stock" className="mb-6 mt-20 text-center text-5xl font-bold text-customColor2">Worst Stock</p>
+          <p
+            id="worst-stock"
+            className="mb-6 mt-20 text-center text-5xl font-bold text-customColor2"
+          >
+            Worst Stock
+          </p>
           {response.response["Worst_Stock"] === "None" ? (
             <div className="rounded-lg bg-customColor2 p-8 text-center shadow-lg">
-              <h3 className="text-3xl font-bold text-black">Worst Stock Not Found!</h3>
-              <p className="mt-3 text-lg text-gray-700">No data available for this category.</p>
+              <h3 className="text-3xl font-bold text-black">
+                Worst Stock Not Found!
+              </h3>
+              <p className="mt-3 text-lg text-gray-700">
+                No data available for this category.
+              </p>
             </div>
           ) : (
             <>
@@ -643,6 +822,23 @@ export default function Dashboard() {
                   onClick={() => setStockInfoOpen(true)}
                 >
                   <FaInfoCircle size={18} />
+                </button>
+
+                {/* Add favorite button */}
+                <button
+                  className="absolute left-2 top-2 text-yellow-500 transition-colors hover:text-yellow-300"
+                  onClick={() =>
+                    handleFavoriteToggle(
+                      response.response["Worst_Stock"] as StockData,
+                    )
+                  }
+                  disabled={favsLoading}
+                >
+                  {isFavorite(response.response["Worst_Stock"].symbol) ? (
+                    <FaStar size={24} />
+                  ) : (
+                    <FaRegStar size={24} />
+                  )}
                 </button>
 
                 <div className="flex items-center justify-between border-b border-gray-300 pb-4">
@@ -675,8 +871,9 @@ export default function Dashboard() {
                       ${response.response["Worst_Stock"].price}
                     </p>
                     <div className="mt-1 flex items-center justify-end space-x-2">
-                      {Number(response.response["Worst_Stock"].percentage_change) >=
-                      0 ? (
+                      {Number(
+                        response.response["Worst_Stock"].percentage_change,
+                      ) >= 0 ? (
                         <span className="flex items-center text-green-600">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -693,7 +890,8 @@ export default function Dashboard() {
                             />
                           </svg>
                           <span className="font-medium">
-                            {response.response["Worst_Stock"].percentage_change}%
+                            {response.response["Worst_Stock"].percentage_change}
+                            %
                           </span>
                         </span>
                       ) : (
@@ -713,7 +911,8 @@ export default function Dashboard() {
                             />
                           </svg>
                           <span className="font-medium">
-                            {response.response["Worst_Stock"].percentage_change}%
+                            {response.response["Worst_Stock"].percentage_change}
+                            %
                           </span>
                         </span>
                       )}
@@ -737,21 +936,21 @@ export default function Dashboard() {
                       ${response.response["Worst_Stock"].low}
                     </p>
                   </div>
-                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                  <div className="flex flex-col items-center rounded-lg bg-customColor4 bg-opacity-30 p-3">
                     <p className="text-sm text-gray-600">RSI</p>
-                    <p className="text-xl font-semibold text-black">
+                    <div className="items-center text-xl font-semibold text-black">
                       {response.response["Worst_Stock"].rsi}
                       {Number(response.response["Worst_Stock"].rsi) > 70 && (
-                        <span className="ml-1 text-sm text-red-500">
+                        <div className="rsi-tip ml-1 text-sm text-red-500">
                           (Overbought)
-                        </span>
+                        </div>
                       )}
                       {Number(response.response["Worst_Stock"].rsi) < 30 && (
-                        <span className="ml-1 text-sm text-green-500">
+                        <div className="rsi-tip ml-1 text-sm text-green-500">
                           (Oversold)
-                        </span>
+                        </div>
                       )}
-                    </p>
+                    </div>
                   </div>
                 </div>
 
@@ -784,7 +983,7 @@ export default function Dashboard() {
                     Post from Reddit:
                   </h4>
                   <div className="rounded-lg bg-customColor4 bg-opacity-20 p-4">
-                    <div className="break-words overflow-hidden text-black">
+                    <div className="overflow-hidden break-words text-black">
                       {expandedPosts.worst ? (
                         <p className="italic">
                           {response.response["Worst_Stock"].post}
@@ -794,10 +993,10 @@ export default function Dashboard() {
                           {truncateText(response.response["Worst_Stock"].post)}
                         </p>
                       )}
-                      
+
                       {response.response["Worst_Stock"].post.length > 150 && (
-                        <button 
-                          onClick={() => togglePostExpand("worst")} 
+                        <button
+                          onClick={() => togglePostExpand("worst")}
                           className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
                         >
                           {expandedPosts.worst ? "Show Less" : "Read More"}
@@ -856,7 +1055,9 @@ export default function Dashboard() {
                   </div>
 
                   <div>
-                    <h4 className="text-xl font-semibold">Technical Analysis</h4>
+                    <h4 className="text-xl font-semibold">
+                      Technical Analysis
+                    </h4>
                     <p className="mt-1">
                       {
                         response.response["Worst_Stock"].GPT_Analysis
@@ -866,7 +1067,9 @@ export default function Dashboard() {
                   </div>
 
                   <div>
-                    <h4 className="text-xl font-semibold">Fundamental Analysis</h4>
+                    <h4 className="text-xl font-semibold">
+                      Fundamental Analysis
+                    </h4>
                     <p className="mt-1">
                       {
                         response.response["Worst_Stock"].GPT_Analysis
@@ -917,11 +1120,20 @@ export default function Dashboard() {
           )}
 
           {/* ! Stock Info Section for rising stock */}
-          <p id="rising-stock" className="mb-6 mt-20 text-center text-5xl font-bold text-customColor2">Rising Stock</p>
+          <p
+            id="rising-stock"
+            className="mb-6 mt-20 text-center text-5xl font-bold text-customColor2"
+          >
+            Rising Stock
+          </p>
           {response.response["Rising_Stock"] === "None" ? (
             <div className="rounded-lg bg-customColor2 p-8 text-center shadow-lg">
-              <h3 className="text-3xl font-bold text-black">Rising Stock Not Found!</h3>
-              <p className="mt-3 text-lg text-gray-700">No data available for this category.</p>
+              <h3 className="text-3xl font-bold text-black">
+                Rising Stock Not Found!
+              </h3>
+              <p className="mt-3 text-lg text-gray-700">
+                No data available for this category.
+              </p>
             </div>
           ) : (
             <>
@@ -931,6 +1143,23 @@ export default function Dashboard() {
                   onClick={() => setStockInfoOpen(true)}
                 >
                   <FaInfoCircle size={18} />
+                </button>
+
+                {/* Add favorite button */}
+                <button
+                  className="absolute left-2 top-2 text-yellow-500 transition-colors hover:text-yellow-300"
+                  onClick={() =>
+                    handleFavoriteToggle(
+                      response.response["Rising_Stock"] as StockData,
+                    )
+                  }
+                  disabled={favsLoading}
+                >
+                  {isFavorite(response.response["Rising_Stock"].symbol) ? (
+                    <FaStar size={24} />
+                  ) : (
+                    <FaRegStar size={24} />
+                  )}
                 </button>
 
                 <div className="flex items-center justify-between border-b border-gray-300 pb-4">
@@ -982,7 +1211,11 @@ export default function Dashboard() {
                             />
                           </svg>
                           <span className="font-medium">
-                            {response.response["Rising_Stock"].percentage_change}%
+                            {
+                              response.response["Rising_Stock"]
+                                .percentage_change
+                            }
+                            %
                           </span>
                         </span>
                       ) : (
@@ -1002,7 +1235,11 @@ export default function Dashboard() {
                             />
                           </svg>
                           <span className="font-medium">
-                            {response.response["Rising_Stock"].percentage_change}%
+                            {
+                              response.response["Rising_Stock"]
+                                .percentage_change
+                            }
+                            %
                           </span>
                         </span>
                       )}
@@ -1026,21 +1263,21 @@ export default function Dashboard() {
                       ${response.response["Rising_Stock"].low}
                     </p>
                   </div>
-                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                  <div className="flex flex-col items-center rounded-lg bg-customColor4 bg-opacity-30 p-3">
                     <p className="text-sm text-gray-600">RSI</p>
-                    <p className="text-xl font-semibold text-black">
+                    <div className="items-center text-xl font-semibold text-black">
                       {response.response["Rising_Stock"].rsi}
                       {Number(response.response["Rising_Stock"].rsi) > 70 && (
-                        <span className="ml-1 text-sm text-red-500">
+                        <div className="rsi-tip ml-1 text-sm text-red-500">
                           (Overbought)
-                        </span>
+                        </div>
                       )}
                       {Number(response.response["Rising_Stock"].rsi) < 30 && (
-                        <span className="ml-1 text-sm text-green-500">
+                        <div className="rsi-tip ml-1 text-sm text-green-500">
                           (Oversold)
-                        </span>
+                        </div>
                       )}
-                    </p>
+                    </div>
                   </div>
                 </div>
 
@@ -1073,7 +1310,7 @@ export default function Dashboard() {
                     Post from Reddit:
                   </h4>
                   <div className="rounded-lg bg-customColor4 bg-opacity-20 p-4">
-                    <div className="break-words overflow-hidden text-black">
+                    <div className="overflow-hidden break-words text-black">
                       {expandedPosts.rising ? (
                         <p className="italic">
                           {response.response["Rising_Stock"].post}
@@ -1083,10 +1320,10 @@ export default function Dashboard() {
                           {truncateText(response.response["Rising_Stock"].post)}
                         </p>
                       )}
-                      
+
                       {response.response["Rising_Stock"].post.length > 150 && (
-                        <button 
-                          onClick={() => togglePostExpand("rising")} 
+                        <button
+                          onClick={() => togglePostExpand("rising")}
                           className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
                         >
                           {expandedPosts.rising ? "Show Less" : "Read More"}
@@ -1145,7 +1382,9 @@ export default function Dashboard() {
                   </div>
 
                   <div>
-                    <h4 className="text-xl font-semibold">Technical Analysis</h4>
+                    <h4 className="text-xl font-semibold">
+                      Technical Analysis
+                    </h4>
                     <p className="mt-1">
                       {
                         response.response["Rising_Stock"].GPT_Analysis
@@ -1155,7 +1394,9 @@ export default function Dashboard() {
                   </div>
 
                   <div>
-                    <h4 className="text-xl font-semibold">Fundamental Analysis</h4>
+                    <h4 className="text-xl font-semibold">
+                      Fundamental Analysis
+                    </h4>
                     <p className="mt-1">
                       {
                         response.response["Rising_Stock"].GPT_Analysis
@@ -1167,7 +1408,10 @@ export default function Dashboard() {
                   <div>
                     <h4 className="text-xl font-semibold">Prediction</h4>
                     <p className="mt-1">
-                      {response.response["Rising_Stock"].GPT_Analysis.prediction}
+                      {
+                        response.response["Rising_Stock"].GPT_Analysis
+                          .prediction
+                      }
                     </p>
                   </div>
 
@@ -1183,9 +1427,8 @@ export default function Dashboard() {
                           ) < 30
                             ? "bg-red-700 text-white"
                             : Number(
-                                  response.response["Rising_Stock"].GPT_Analysis[
-                                    "Confidence Score"
-                                  ],
+                                  response.response["Rising_Stock"]
+                                    .GPT_Analysis["Confidence Score"],
                                 ) <= 70
                               ? "bg-yellow-700 text-white"
                               : "bg-green-700 text-white"
@@ -1265,8 +1508,8 @@ export default function Dashboard() {
                 <h4 className="font-bold">Sentiment Analysis</h4>
                 <p>
                   A score indicating the overall sentiment from the Reddit post,
-                  ranging from -10 (extremely negative) to 10 (extremely positive)
-                  and 0 - 3 (neutral).
+                  ranging from -10 (extremely negative) to 10 (extremely
+                  positive) and 0 - 3 (neutral).
                 </p>
               </div>
               <div>
@@ -1280,13 +1523,14 @@ export default function Dashboard() {
                 <h4 className="font-bold">NOTE</h4>
                 <p>
                   For some stocks, some or all of the data may not be available.
-                 <li>
-             
-                 if the sentiment is 0, it means the sentiment analysis was unavailable or the post was neutral.
-                  </li> 
                   <li>
-                    if the stock data liek price is empty that no info on that stock was found in the API.
-                    </li>
+                    if the sentiment is 0, it means the sentiment analysis was
+                    unavailable or the post was neutral.
+                  </li>
+                  <li>
+                    if the stock data liek price is empty that no info on that
+                    stock was found in the API.
+                  </li>
                 </p>
               </div>
             </div>
@@ -1355,8 +1599,15 @@ export default function Dashboard() {
             <div className="space-y-4">
               <div>
                 <h4 className="font-bold">Stock Updates</h4>
-                <p>The stock of the day is garanteed to be updated at 00:00 EST every day</p>
-                <p>If any user requests a refresh for the stock of the day, the stock of the day will be updated with those stocks for everyone</p>
+                <p>
+                  The stock of the day is garanteed to be updated at 00:00 EST
+                  every day
+                </p>
+                <p>
+                  If any user requests a refresh for the stock of the day, the
+                  stock of the day will be updated with those stocks for
+                  everyone
+                </p>
               </div>
             </div>
           </InfoPopup>

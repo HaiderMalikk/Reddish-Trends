@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { useUserFavorites } from "./UserFavs";
 
 // Define types for the user data
 interface UserData {
@@ -9,13 +10,23 @@ interface UserData {
   profileImageUrl: string | null;
   message: string;
   createdAt: string | null;
-}
+  favorites: {
+    symbol: string;
+    companyName: string;
+  }[];
+} 
 
 export default function GetUserData() {
   const { user, isLoaded } = useUser();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
-
+  
+  // Get email for favorites
+  const email = user?.primaryEmailAddress?.emailAddress;
+  
+  // Use the favorites hook
+  const { favorites, loading: favsLoading } = useUserFavorites(email);
+  
   useEffect(() => {
     if (isLoaded && user) {
       setLoading(true);
@@ -51,6 +62,7 @@ export default function GetUserData() {
               profileImageUrl,
               message,
               createdAt,
+              favorites: favorites || []
             });
           } else {
             console.error("Error:", data);
@@ -61,6 +73,7 @@ export default function GetUserData() {
               profileImageUrl: null,
               message: `Error: ${data.message}`,
               createdAt: null,
+              favorites: []
             });
           }
         } catch (error) {
@@ -72,6 +85,7 @@ export default function GetUserData() {
             profileImageUrl: null,
             message: "Error checking or creating user",
             createdAt: null,
+            favorites: []
           });
         } finally {
           setLoading(false);
@@ -80,7 +94,7 @@ export default function GetUserData() {
 
       checkOrCreateUser();
     }
-  }, [isLoaded, user]);
+  }, [isLoaded, user, favorites]);
 
-  return { userData, loading };
+  return { userData, loading: loading || favsLoading };
 }

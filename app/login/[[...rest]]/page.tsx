@@ -5,10 +5,6 @@ import { useRouter } from "next/navigation"; // Import the useRouter hook for na
 import { useUser, ClerkProvider, SignIn } from "@clerk/nextjs"; // Import Clerk components for sign-in and userData
 import ".././../styles/login-page-style.css";
 
-// Type for Clerk user and loading state
-interface User {
-  // Define types for user object if necessary in the future
-}
 
 export default function LoginPage() {
   const router = useRouter(); // Access the router for navigation

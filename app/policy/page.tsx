@@ -119,6 +119,7 @@ export default function PrivacyPolicy() {
           <li>Withdraw consent for data collection</li>
           <li>Request data deletion</li>
           <li>Understand how your data is processed</li>
+          <p>If you wish to exercise any of these rights, please contact us at the email address provided in Section 9 or by clicking the link provided on our website footer.</p>
         </ul>
 
         <h2 className="mt-6 text-2xl font-semibold">
