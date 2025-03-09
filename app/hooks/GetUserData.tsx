@@ -14,19 +14,19 @@ interface UserData {
     symbol: string;
     companyName: string;
   }[];
-} 
+}
 
 export default function GetUserData() {
   const { user, isLoaded } = useUser();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   // Get email for favorites
   const email = user?.primaryEmailAddress?.emailAddress;
-  
+
   // Use the favorites hook
   const { favorites, loading: favsLoading } = useUserFavorites(email);
-  
+
   useEffect(() => {
     if (isLoaded && user) {
       setLoading(true);
@@ -62,7 +62,7 @@ export default function GetUserData() {
               profileImageUrl,
               message,
               createdAt,
-              favorites: favorites || []
+              favorites: favorites || [],
             });
           } else {
             console.error("Error:", data);
@@ -73,7 +73,7 @@ export default function GetUserData() {
               profileImageUrl: null,
               message: `Error: ${data.message}`,
               createdAt: null,
-              favorites: []
+              favorites: [],
             });
           }
         } catch (error) {
@@ -85,7 +85,7 @@ export default function GetUserData() {
             profileImageUrl: null,
             message: "Error checking or creating user",
             createdAt: null,
-            favorites: []
+            favorites: [],
           });
         } finally {
           setLoading(false);

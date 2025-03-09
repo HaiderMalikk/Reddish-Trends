@@ -2,14 +2,14 @@
 import useUserData from "../hooks/GetUserData"; // user data hook
 import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user management
 import "./styles/home-page-styles.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Correct import for useRouter
-import { get_data } from "../api/GetStockData";
 import InfoPopup from "../components/InfoPopup"; // Import InfoPopup component
 import { FaInfoCircle, FaStar, FaRegStar } from "react-icons/fa"; // Import icons
 import { useAnalyticsTracking } from "../hooks/PostUserAnalytics"; // Import analytics tracking
 import { useUserFavorites } from "../hooks/UserFavs"; // Import favorites hook
 import Toast from "../components/Toast"; // Import the toast component
+import axios, { AxiosResponse } from "axios"; // Import axios for API requests
 
 // Define types for the response
 interface GPTAnalysis {
@@ -44,8 +44,6 @@ interface FlaskResponse {
   };
 }
 
-
-
 export default function Dashboard() {
   const { userData, loading } = useUserData(); // get user data
   const { user } = useUser(); // Use Clerk hook for user management
@@ -65,22 +63,19 @@ export default function Dashboard() {
   } = useUserFavorites(userData?.email);
 
   // Toast notification state
-  const [toast, setToast] = useState<{show: boolean; message: string; type: 'success' | 'error'}>({
+  const [toast, setToast] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error";
+  }>({
     show: false,
-    message: '',
-    type: 'success'
+    message: "",
+    type: "success",
   });
 
-  // Add an effect to automatically hide the toast after 3 seconds
-  useEffect(() => {
-    if (toast.show) {
-      const timer = setTimeout(() => {
-        setToast(prev => ({ ...prev, show: false }));
-      }, 3000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [toast.show, toast.message]); // Re-run when toast changes
+  const closeToast = useCallback(() => {
+    setToast((prev) => ({ ...prev, show: false }));
+  }, []);
 
   // Add state for info popups
   const [stockInfoOpen, setStockInfoOpen] = useState(false);
@@ -146,7 +141,7 @@ export default function Dashboard() {
 
     // Create a Date object in the EST timezone
     const estDate = new Date(
-      Date.UTC(year, month - 1, day, hour + 5, minute, second),
+      Date.UTC(year, month - 1, day, hour + 4, minute, second),
     );
 
     // Convert to the user's local time
@@ -215,13 +210,15 @@ export default function Dashboard() {
           await trackRedoAnalysis(userData.email);
         }
       }
-
-      const response = await get_data(request);
+      const response: AxiosResponse<FlaskResponse> = await axios.get(
+        "/api/get-stock-data",
+        { params: { request: JSON.stringify(request) } },
+      );
       console.log("Response from Flask");
-      console.log(response);
-      setResponse(response as FlaskResponse);
+      console.log(response.data);
+      setResponse(response.data as FlaskResponse);
       setProgress(100); // Set progress to 100 when data is fetched
-      if (!response) {
+      if (!response.data) {
         console.error("Error fetching data from Flask response is null");
         setApiError("Failed to load data. Please try again later.");
       }
@@ -374,7 +371,7 @@ export default function Dashboard() {
         setToast({
           show: true,
           message: `${stock.symbol} removed from favorites`,
-          type: 'success'
+          type: "success",
         });
       } else {
         await addFavorite(stock.symbol, stock.company_name);
@@ -382,7 +379,7 @@ export default function Dashboard() {
         setToast({
           show: true,
           message: `${stock.symbol} added to favorites`,
-          type: 'success'
+          type: "success",
         });
       }
     } catch (error) {
@@ -391,13 +388,9 @@ export default function Dashboard() {
       setToast({
         show: true,
         message: `Failed to update favorites for ${stock.symbol}`,
-        type: 'error'
+        type: "error",
       });
     }
-  };
-
-  const closeToast = () => {
-    setToast(prev => ({ ...prev, show: false }));
   };
 
   return (
@@ -405,11 +398,7 @@ export default function Dashboard() {
     <div className="flex min-h-screen flex-col items-center bg-customColor4 p-6">
       {/* Toast notification */}
       {toast.show && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={closeToast}
-        />
+        <Toast message={toast.message} type={toast.type} onClose={closeToast} />
       )}
 
       {/* welcome message to my 2 person userbase */}
@@ -468,15 +457,26 @@ export default function Dashboard() {
               </svg>
               Refresh Stocks of the Day
             </button>
-            <div className="flex items-center bg-gray-100 px-6 py-3 rounded-lg time-tracker">
-  <button onClick={() => setStockUpdateInfoOpen(true)} className="text-customColor6 hover:text-gray-500 time-info-button mr-2 ">
-    <FaInfoCircle size={18} />
-  </button>
-  <div className="text-gray-800 font-medium mr-4">Stocks update in:</div>
-  <div className="font-mono font-bold text-red-600">{countdown}</div>
-  <div className="text-gray-800 font-medium mr-4 ml-4">Time Since Last Update:</div>
-  <div className="font-mono font-bold text-red-600">{elapsedTime}</div>
-</div>
+            <div className="time-tracker flex items-center rounded-lg bg-gray-100 px-6 py-3">
+              <button
+                onClick={() => setStockUpdateInfoOpen(true)}
+                className="time-info-button mr-3 text-customColor6 hover:text-gray-500"
+              >
+                <FaInfoCircle size={18} />
+              </button>
+              <div className="mr-4 font-medium text-gray-800">
+                Stocks update in:
+              </div>
+              <div className="font-mono font-bold text-red-600">
+                {countdown}
+              </div>
+              <div className="ml-4 mr-4 font-medium text-gray-800">
+                Time Since Last Update:
+              </div>
+              <div className="font-mono font-bold text-red-600">
+                {elapsedTime}
+              </div>
+            </div>
           </div>
 
           {/* Stock Info Section */}
@@ -1607,6 +1607,12 @@ export default function Dashboard() {
                   If any user requests a refresh for the stock of the day, the
                   stock of the day will be updated with those stocks for
                   everyone
+                </p>
+                <p>
+                  If any user logs on and the result is outdated or the time has
+                  passed 00:00 EST the analysis will run again but the old
+                  result will be shown immediately refresh the page after a
+                  minute to get the new result
                 </p>
               </div>
             </div>

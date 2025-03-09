@@ -114,7 +114,8 @@
     "**/*.ts",
     "**/*.tsx",
     "app/layout.tss",
-    "app/layout.tsx"
-, "app/api/GetStockData.ts"  ],
+    "app/layout.tsx",
+    "app/api/GetStockData.ts"
+  ],
   "exclude": ["node_modules"]
 }

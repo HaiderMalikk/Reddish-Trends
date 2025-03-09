@@ -2,26 +2,26 @@
   display: flex;
   flex-direction: row; /* Default to row */
   align-items: center; /* Align items vertically in the center */
-  justify-content: center
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
-  .text-6xl{
+  .text-6xl {
     font-size: 2.5rem;
   }
-  .text-3xl{
+  .text-3xl {
     font-size: 1.5rem;
   }
-  .text-xl{
+  .text-xl {
     font-size: 0.8rem;
   }
-  .rsi-box{
+  .rsi-box {
     flex-direction: column;
   }
-  .rsi-tip{
-    font-size: 0.55rem;
+  .rsi-tip {
+    font-size: 0.7rem;
   }
-  .welcome-msg{
+  .welcome-msg {
     font-size: 1.2rem;
   }
   .time-tracker {
@@ -34,11 +34,10 @@
   .time-info-button {
     /* push to top left */
     position: absolute;
-    margin-left: 16rem; /* Adjust margin as needed */
-    margin-bottom: 5rem; /* Adjust margin as needed */
+    margin-left: 16.5rem; /* Adjust margin as needed */
+    margin-bottom: 4.5rem; /* Adjust margin as needed */
   }
 }
-
 
 /* custom spinner */
 .spinner {
@@ -97,4 +96,3 @@
     transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
   }
 }
-

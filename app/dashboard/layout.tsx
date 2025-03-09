@@ -15,7 +15,7 @@ import Link from "next/link"; // link for navigation between pages
 import logo from "../../public/logo.svg"; // Import the logo
 import logoAlt from "../../public/logo-w-text-alt.svg"; // Import the logo
 import Image from "next/image"; // Import the Image component
-import "./styles/layout-styles.css"
+import "./styles/layout-styles.css";
 
 // Define the props type for DashboardLayout to include children
 interface DashboardLayoutProps {
@@ -46,8 +46,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   if (!isLoaded) {
     return <div>Loading...</div>;
   }
-
-
 
   // Show loading screen during logout process
   if (loggingOut) {
@@ -87,7 +85,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </a>
           </div>
           {/* Desktop navigation */}
-          <nav className="hidden md:flex items-center space-x-4">
+          <nav className="hidden items-center space-x-4 md:flex">
             <Link
               href="/dashboard"
               className={`hover:text-gray-300 ${
@@ -108,21 +106,27 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               Logout
             </button>
           </nav>
-          
+
           {/* Hamburger menu for mobile */}
           <div className="md:hidden">
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="hamburger-button"
               aria-label="Toggle menu"
             >
-              <div className={`hamburger-line ${mobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></div>
-              <div className={`hamburger-line ${mobileMenuOpen ? 'opacity-0' : ''}`}></div>
-              <div className={`hamburger-line ${mobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></div>
+              <div
+                className={`hamburger-line ${mobileMenuOpen ? "translate-y-1.5 rotate-45" : ""}`}
+              ></div>
+              <div
+                className={`hamburger-line ${mobileMenuOpen ? "opacity-0" : ""}`}
+              ></div>
+              <div
+                className={`hamburger-line ${mobileMenuOpen ? "-translate-y-1.5 -rotate-45" : ""}`}
+              ></div>
             </button>
           </div>
         </div>
-        
+
         {/* Mobile menu overlay */}
         {mobileMenuOpen && (
           <div className="mobile-menu">
@@ -130,7 +134,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <Link
                 href="/dashboard"
                 className={`mobile-menu-item ${
-                  pathname === "/dashboard" ? "underline font-bold" : ""
+                  pathname === "/dashboard" ? "font-bold underline" : ""
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -139,18 +143,18 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <Link
                 href="/dashboard/profile"
                 className={`mobile-menu-item ${
-                  pathname === "/dashboard/profile" ? "underline font-bold" : ""
+                  pathname === "/dashboard/profile" ? "font-bold underline" : ""
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Profile
               </Link>
-              <button 
+              <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   handleLogout();
-                }} 
-                className="mobile-menu-item text-left "
+                }}
+                className="mobile-menu-item text-left"
               >
                 Logout
               </button>

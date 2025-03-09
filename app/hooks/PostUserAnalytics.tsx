@@ -1,16 +1,18 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-
-export const incrementAnalysisRequest = async (email: string, analysisType: string) => {
+export const incrementAnalysisRequest = async (
+  email: string,
+  analysisType: string,
+) => {
   if (!email || !analysisType) {
-    console.error('Missing user (email) or analysisType');
+    console.error("Missing user (email) or analysisType");
     return null;
   }
 
   try {
-    const response = await fetch('/api/update-analytics', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/update-analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email, // This should be the user's email
         analysisType,
@@ -18,13 +20,15 @@ export const incrementAnalysisRequest = async (email: string, analysisType: stri
     });
 
     if (!response.ok) {
-      console.error(`Failed to update analytics data: ${response.status} ${response.statusText}`);
+      console.error(
+        `Failed to update analytics data: ${response.status} ${response.statusText}`,
+      );
       return null;
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error updating analytics data:', error);
+    console.error("Error updating analytics data:", error);
     return null;
   }
 };
@@ -34,24 +38,29 @@ export const incrementAnalysisRequest = async (email: string, analysisType: stri
  */
 export const useAnalyticsTracking = () => {
   const [isTracking, setIsTracking] = useState(false);
-  const [recentRequests, setRecentRequests] = useState<Record<string, number>>({});
+  const [recentRequests, setRecentRequests] = useState<Record<string, number>>(
+    {},
+  );
 
   const trackAnalysis = async (userEmail: string, type: string) => {
     if (!userEmail || isTracking) return null;
-    
+
     // Add debouncing to prevent multiple quick submissions
     const cacheKey = `${userEmail}-${type}`;
     const currentTime = Date.now();
-    
+
     // Prevent duplicate requests within 5 seconds
-    if (recentRequests[cacheKey] && (currentTime - recentRequests[cacheKey] < 5000)) {
-      console.log('Skipping duplicate analytics request');
+    if (
+      recentRequests[cacheKey] &&
+      currentTime - recentRequests[cacheKey] < 5000
+    ) {
+      console.log("Skipping duplicate analytics request");
       return null;
     }
-    
+
     setIsTracking(true);
-    setRecentRequests(prev => ({ ...prev, [cacheKey]: currentTime }));
-    
+    setRecentRequests((prev) => ({ ...prev, [cacheKey]: currentTime }));
+
     try {
       return await incrementAnalysisRequest(userEmail, type); // Pass email as userI
     } finally {
@@ -60,16 +69,16 @@ export const useAnalyticsTracking = () => {
   };
 
   const trackGeneralAnalysis = async (userEmail: string) => {
-    return trackAnalysis(userEmail, 'general_analysis');
+    return trackAnalysis(userEmail, "general_analysis");
   };
 
   const trackRedoAnalysis = async (userEmail: string) => {
-    return trackAnalysis(userEmail, 'redo_analysis');
+    return trackAnalysis(userEmail, "redo_analysis");
   };
 
   return {
     trackGeneralAnalysis,
     trackRedoAnalysis,
-    isTracking
+    isTracking,
   };
 };

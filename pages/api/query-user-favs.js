@@ -12,8 +12,10 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Missing email parameter" });
     }
 
-    if (!action || !['get', 'add', 'remove'].includes(action)) {
-      return res.status(400).json({ message: "Invalid or missing action parameter" });
+    if (!action || !["get", "add", "remove"].includes(action)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or missing action parameter" });
     }
 
     // Query the user document by email
@@ -23,76 +25,80 @@ export default async function handler(req, res) {
       .where("email", "==", email)
       .limit(1)
       .get();
-    
+
     if (userSnapshot.empty) {
       console.error(`User not found with email: ${email}`);
       return res.status(404).json({ message: "User not found" });
     }
-    
+
     // Get the first document from the query
     const userDoc = userSnapshot.docs[0];
     const userRef = userDoc.ref;
     const userData = userDoc.data();
-    
+
     // Handle different actions
-    if (action === 'get') {
+    if (action === "get") {
       // Return the current favorites array
-      return res.status(200).json({ 
-        favorites: userData.favorites || []
+      return res.status(200).json({
+        favorites: userData.favorites || [],
       });
-    } 
-    else if (action === 'add') {
+    } else if (action === "add") {
       // Validate the favorite object
       if (!favorite || !favorite.symbol || !favorite.companyName) {
         return res.status(400).json({ message: "Invalid favorite data" });
       }
-      
+
       // Check if favorites array exists
       let currentFavorites = userData.favorites || [];
-      
+
       // Check if stock already exists in favorites
-      const existingIndex = currentFavorites.findIndex(fav => fav.symbol === favorite.symbol);
-      
+      const existingIndex = currentFavorites.findIndex(
+        (fav) => fav.symbol === favorite.symbol,
+      );
+
       if (existingIndex === -1) {
         // Add to favorites if not already present
         currentFavorites.push({
           symbol: favorite.symbol,
-          companyName: favorite.companyName
+          companyName: favorite.companyName,
         });
       }
-      
+
       // Update the document
       await userRef.update({
-        favorites: currentFavorites
+        favorites: currentFavorites,
       });
-      
-      return res.status(200).json({ 
+
+      return res.status(200).json({
         message: "Favorite added successfully",
-        favorites: currentFavorites
+        favorites: currentFavorites,
       });
-    } 
-    else if (action === 'remove') {
+    } else if (action === "remove") {
       // Validate symbol parameter
       if (!symbol) {
         return res.status(400).json({ message: "Missing symbol parameter" });
       }
-      
+
       // Filter out the stock to remove
       let currentFavorites = userData.favorites || [];
-      const updatedFavorites = currentFavorites.filter(fav => fav.symbol !== symbol);
-      
+      const updatedFavorites = currentFavorites.filter(
+        (fav) => fav.symbol !== symbol,
+      );
+
       // Update the document
       await userRef.update({
-        favorites: updatedFavorites
+        favorites: updatedFavorites,
       });
-      
-      return res.status(200).json({ 
+
+      return res.status(200).json({
         message: "Favorite removed successfully",
-        favorites: updatedFavorites
+        favorites: updatedFavorites,
       });
     }
   } catch (error) {
     console.error("Error processing favorites:", error);
-    res.status(500).json({ message: "Error processing favorites", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error processing favorites", error: error.message });
   }
 }

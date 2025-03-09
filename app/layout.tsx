@@ -184,7 +184,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
               {/* Right Section: Contact & Resources Centered */}
               <div className="mt-8 flex flex-col justify-between md:mt-0 md:w-1/2 md:flex-row">
                 <div className="contact-resources text-center md:mr-8 md:text-left">
-                  <h2 className="text-xl font-semibold">Contact</h2>
+                  <h2 className="footer-sections font-semibold">Contact</h2>
                   <ul className="mt-2 space-y-2">
                     <li>
                       <Link
@@ -206,7 +206,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 </div>
 
                 <div className="contact-resources text-center md:text-left">
-                  <h2 className="text-xl font-semibold">Resources</h2>
+                  <h2 className="footer-sections font-semibold">Resources</h2>
                   <ul className="mt-2 space-y-2">
                     <li>
                       <Link
@@ -240,7 +240,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 </div>
 
                 <div className="contact-resources text-center md:text-left">
-                  <h2 className="text-xl font-semibold">Legal</h2>
+                  <h2 className="footer-sections font-semibold">Legal</h2>
                   <ul className="mt-2 space-y-2">
                     <li>
                       <Link
