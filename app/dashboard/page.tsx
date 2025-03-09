@@ -49,20 +49,14 @@ export default function Dashboard() {
   const [apiError, setApiError] = useState<string | null>(null);
   const [isApiLoading, setIsApiLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0); // Add state for progress
+  const [countdown, setCountdown] = useState<string>(""); // Add state for countdown
 
-  const incrementProgress = () => {
-    setProgress((prevProgress) => {
-      if (prevProgress >= 95) { // if at 90 pause it so it dose reach 100
-        return 95;
-      }
-      return prevProgress + 1;
-    });
-  };
-
+  
   // Add state for info popups
   const [stockInfoOpen, setStockInfoOpen] = useState(false);
   const [gptInfoOpen, setGptInfoOpen] = useState(false);
-
+  const [stockUpdateInfoOpen, setStockUpdateInfoOpen] = useState(false);
+  
   // Add state to track which posts are expanded
   const [expandedPosts, setExpandedPosts] = useState<{
     top: boolean;
@@ -73,13 +67,59 @@ export default function Dashboard() {
     worst: false,
     rising: false,
   });
-
+  
   // Add functions to scroll to specific sections
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const incrementProgress = () => {
+    setProgress((prevProgress) => {
+      if (prevProgress >= 95) { // if at 90 pause it so it dose reach 100
+        return 95;
+      }
+      return prevProgress + 1;
+    });
+  };
+
+  // Function to calculate time remaining until midnight EST
+  const calculateTimeUntilMidnightEST = () => {
+    const now = new Date();
+    
+    // Convert to EST (UTC-5)
+    const estOffset = -5 * 60; // EST offset in minutes
+    const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+    const estMinutes = (utcMinutes + estOffset + 24 * 60) % (24 * 60);
+    
+    // Calculate minutes until midnight EST
+    const minutesUntilMidnight = 24 * 60 - estMinutes;
+    
+    // Convert to hours and minutes
+    const hours = Math.floor(minutesUntilMidnight / 60);
+    const minutes = minutesUntilMidnight % 60;
+    const seconds = 59 - now.getSeconds();
+    
+    // Format as HH:MM:SS
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  // Update countdown timer every second
+  useEffect(() => {
+    let n = 0; // onload display curr time then only once a sec update it 
+    const timer = setInterval(() => {
+      setCountdown(calculateTimeUntilMidnightEST());
+    }, n);
+    n = 1000;
+    
+    return () => clearInterval(timer);
+  }, []);
+
+  // Handle refresh button click
+  const handleRefresh = () => {
+    handel_flask_call({ type: "redogeneralanalysis" });
   };
 
   const handel_flask_call = async (request: any) => {
@@ -138,9 +178,9 @@ export default function Dashboard() {
   // if we have user make the call even if user if loading or data is loading make the call to flask
   useEffect(() => {
     if (user) {
-      handel_flask_call({ type: "getgeneralanalysis" });
+      handel_flask_call({ type: "getgeneralanalysis"});
     }
-  }, []);
+  }, []); // only call once on mount 
 
   // If user is not logged in, show a message and redirect after 1 second
   useEffect(() => {
@@ -193,9 +233,10 @@ export default function Dashboard() {
           <div></div>
         </div>
         <h1 className="text-white">Loading market data...</h1>
+        <h1 className="text-white">Please stay on this page.</h1>
         <div className="min-w-[300px] h-1 bg-gray-200 mt-4">
           <div
-            className="h-full bg-blue-500 transition-all duration-500"
+            className="h-full bg-customColor3 transition-all duration-500"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
@@ -277,6 +318,26 @@ export default function Dashboard() {
             >
               Rising Stock
             </button>
+          </div>
+          
+          {/* Refresh and Countdown Section */}
+          <div className="mb-10 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <button 
+              onClick={handleRefresh}
+              className="rounded-lg bg-customColor3 px-10 py-3 font-bold text-white shadow-md transition hover:bg-customColor1 flex items-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+              </svg>
+              Refresh Stocks of the Day
+            </button>
+            <div className="flex items-center bg-gray-100 px-6 py-3 rounded-lg">
+              <span className="text-gray-800 font-medium mr-2">Stocks update in:</span>
+              <span className="font-mono font-bold text-red-600">{countdown}</span>
+              <button onClick={() => setStockUpdateInfoOpen(true)} className="ml-4 text-customColor6 hover:text-gray-500">
+              <FaInfoCircle size={18} />
+              </button>
+            </div>
           </div>
 
           {/* Stock Info Section */}
@@ -1282,6 +1343,20 @@ export default function Dashboard() {
                   analysis and prediction. Higher scores suggest stronger
                   evidence supporting the prediction.
                 </p>
+              </div>
+            </div>
+          </InfoPopup>
+          {/* time until */}
+          <InfoPopup
+            isOpen={stockUpdateInfoOpen}
+            onClose={() => setStockUpdateInfoOpen(false)}
+            title="Stock Update Information"
+          >
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-bold">Stock Updates</h4>
+                <p>The stock of the day is garanteed to be updated at 00:00 EST every day</p>
+                <p>If any user requests a refresh for the stock of the day, the stock of the day will be updated with those stocks for everyone</p>
               </div>
             </div>
           </InfoPopup>
