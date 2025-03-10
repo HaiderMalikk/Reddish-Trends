@@ -5,9 +5,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import logotext from "../public/logo-w-text.svg";
 import logocursor from "../public/logo-alt.svg";
-import image1 from "../public/feature1.webp";
-import image2 from "../public/feature2.webp";
-import image3 from "../public/feature3.webp";
+import image1 from "../public/feature1.png";
+import image2 from "../public/feature2.png";
+import image3 from "../public/feature3.png";
 import altharionlogo from "../public/altharion-logo.svg";
 import linklogo from "../public/link-black.svg";
 import AnimatedButton from "./components/AnimatedButton";
@@ -213,9 +213,10 @@ export default function HomePage() {
             className="rounded-lg shadow-2xl"
           />
           <p className="mt-4 max-w-[350px] px-4 text-customColor6 sm:px-0">
-            <strong>Hybrid Market Analysis</strong> – We analyze social
-            sentiment and financial trends together and recommend actions based
-            on both.
+            <strong>Social Sentiment Analysis</strong> – We use social media
+            like Reddit to gauge the sentiment of the market. we use posts and
+            comments from popular subreddits to analyze the sentiment of the
+            market and provide you with insights into the market sentiment.
           </p>
         </div>
         <div
@@ -232,9 +233,10 @@ export default function HomePage() {
             className="rounded-lg shadow-2xl"
           />
           <p className="mt-4 max-w-[350px] px-4 text-customColor6 sm:px-0">
-            <strong>Comprehensive Market Overview</strong> – Sentiment data from
-            social media, technical indicators, and more. Users can get a
-            general overview of the market or a specific stock.
+            <strong>Financial Analysis</strong> – We use the social media data
+            and combine it with financial data to provide you with a
+            comprehensive market overview. things like price changes, high/lows,
+            and more are all taken into account to provide you a brief overview.
           </p>
         </div>
         <div
@@ -251,9 +253,10 @@ export default function HomePage() {
             className="rounded-lg shadow-2xl"
           />
           <p className="mt-4 max-w-[350px] px-4 text-customColor6 sm:px-0">
-            <strong>LLM-Driven Predictions</strong> – We combine all data
-            sources and run them through an advanced LLM trained on past events
-            to generating accurate stock recommendations.
+            <strong>AI-Driven Predictions</strong> – We combine all the data
+            together and use AI models to make predictions on the future of the
+            stock. we provide you with the best, worst, and upcoming stocks
+            based on our analysis and predictions for each one.
           </p>
         </div>
       </div>

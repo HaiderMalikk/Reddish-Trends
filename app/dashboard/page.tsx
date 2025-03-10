@@ -21,6 +21,12 @@ interface GPTAnalysis {
   "Confidence Score": string;
 }
 
+interface PostData {
+  title: string;
+  text: string;
+  comments: string[];
+}
+
 interface StockData {
   symbol: string;
   company_name: string;
@@ -31,7 +37,7 @@ interface StockData {
   low: string;
   rsi: string;
   sentiment: number;
-  post: string;
+  post: PostData;
   GPT_Analysis: GPTAnalysis;
 }
 
@@ -254,9 +260,59 @@ export default function Dashboard() {
   };
 
   // Function to truncate text
-  const truncateText = (text: string, maxLength: number = 150) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + "...";
+  const truncateText = (text: string, maxWords: number = 50) => {
+    if (!text) return "";
+    const words = text.split(" ");
+    if (words.length <= maxWords) return text;
+    return words.slice(0, maxWords).join(" ") + "...";
+  };
+
+  // Function to render post content
+  const renderPostContent = (
+    post: PostData,
+    isExpanded: boolean,
+    type: "top" | "worst" | "rising",
+  ) => {
+    if (!post || !post.title) {
+      return <p className="italic">No post data available</p>;
+    }
+
+    return (
+      <div className="overflow-hidden break-words text-black">
+        <h5 className="mb-2 font-bold">{post.title}</h5>
+
+        {isExpanded ? (
+          <>
+            <p className="mb-4 italic">{post.text}</p>
+
+            {post.comments && post.comments.length > 0 && (
+              <div className="mt-4 border-t border-gray-200 pt-3">
+                <h6 className="mb-2 font-bold">Top Comments:</h6>
+                <ul className="space-y-3">
+                  {post.comments.map((comment, index) => (
+                    <li key={index} className="border-l-2 border-gray-300 pl-3">
+                      {comment}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="italic">{truncateText(post.text)}</p>
+        )}
+
+        {((post.text && post.text.split(" ").length > 50) ||
+          (post.comments && post.comments.length > 0)) && (
+          <button
+            onClick={() => togglePostExpand(type)}
+            className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
+          >
+            {isExpanded ? "Show Less" : "Read More"}
+          </button>
+        )}
+      </div>
+    );
   };
 
   // once user make the call
@@ -662,26 +718,11 @@ export default function Dashboard() {
                     Post from Reddit:
                   </h4>
                   <div className="rounded-lg bg-customColor4 bg-opacity-20 p-4">
-                    <div className="overflow-hidden break-words text-black">
-                      {expandedPosts.top ? (
-                        <p className="italic">
-                          {response.response["Top_Stock"].post}
-                        </p>
-                      ) : (
-                        <p className="italic">
-                          {truncateText(response.response["Top_Stock"].post)}
-                        </p>
-                      )}
-
-                      {response.response["Top_Stock"].post.length > 150 && (
-                        <button
-                          onClick={() => togglePostExpand("top")}
-                          className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
-                        >
-                          {expandedPosts.top ? "Show Less" : "Read More"}
-                        </button>
-                      )}
-                    </div>
+                    {renderPostContent(
+                      response.response["Top_Stock"].post,
+                      expandedPosts.top,
+                      "top",
+                    )}
                   </div>
                 </div>
               </div>
@@ -983,26 +1024,11 @@ export default function Dashboard() {
                     Post from Reddit:
                   </h4>
                   <div className="rounded-lg bg-customColor4 bg-opacity-20 p-4">
-                    <div className="overflow-hidden break-words text-black">
-                      {expandedPosts.worst ? (
-                        <p className="italic">
-                          {response.response["Worst_Stock"].post}
-                        </p>
-                      ) : (
-                        <p className="italic">
-                          {truncateText(response.response["Worst_Stock"].post)}
-                        </p>
-                      )}
-
-                      {response.response["Worst_Stock"].post.length > 150 && (
-                        <button
-                          onClick={() => togglePostExpand("worst")}
-                          className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
-                        >
-                          {expandedPosts.worst ? "Show Less" : "Read More"}
-                        </button>
-                      )}
-                    </div>
+                    {renderPostContent(
+                      response.response["Worst_Stock"].post,
+                      expandedPosts.worst,
+                      "worst",
+                    )}
                   </div>
                 </div>
               </div>
@@ -1310,26 +1336,11 @@ export default function Dashboard() {
                     Post from Reddit:
                   </h4>
                   <div className="rounded-lg bg-customColor4 bg-opacity-20 p-4">
-                    <div className="overflow-hidden break-words text-black">
-                      {expandedPosts.rising ? (
-                        <p className="italic">
-                          {response.response["Rising_Stock"].post}
-                        </p>
-                      ) : (
-                        <p className="italic">
-                          {truncateText(response.response["Rising_Stock"].post)}
-                        </p>
-                      )}
-
-                      {response.response["Rising_Stock"].post.length > 150 && (
-                        <button
-                          onClick={() => togglePostExpand("rising")}
-                          className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
-                        >
-                          {expandedPosts.rising ? "Show Less" : "Read More"}
-                        </button>
-                      )}
-                    </div>
+                    {renderPostContent(
+                      response.response["Rising_Stock"].post,
+                      expandedPosts.rising,
+                      "rising",
+                    )}
                   </div>
                 </div>
               </div>
@@ -1515,8 +1526,8 @@ export default function Dashboard() {
               <div>
                 <h4 className="font-bold">Post From Reddit</h4>
                 <p>
-                  The text content of the Reddit post that triggered the
-                  analysis.
+                  The title and content of the Reddit post related to this
+                  stock, along with top comments from the Reddit community.
                 </p>
               </div>
               <div>
