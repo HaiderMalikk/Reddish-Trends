@@ -10,6 +10,8 @@ import { useAnalyticsTracking } from "../hooks/PostUserAnalytics"; // Import ana
 import { useUserFavorites } from "../hooks/UserFavs"; // Import favorites hook
 import Toast from "../components/Toast"; // Import the toast component
 import axios, { AxiosResponse } from "axios"; // Import axios for API requests
+import InfoIcon from "../components/InfoIcon";
+import RefreshButton from "../components/RefreshButton";
 
 // Define types for the response
 interface GPTAnalysis {
@@ -495,24 +497,7 @@ export default function Dashboard() {
 
           {/* Refresh and Countdown Section */}
           <div className="mb-10 flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
-            <button
-              onClick={handleRefresh}
-              className="flex items-center rounded-lg bg-customColor3 px-10 py-3 font-bold text-white shadow-md transition hover:bg-customColor1"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="mr-2 h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Refresh Stocks of the Day
-            </button>
+            <RefreshButton onClick={handleRefresh}></RefreshButton>
             <div className="time-tracker flex items-center rounded-lg bg-gray-100 px-6 py-3">
               <button
                 onClick={() => setStockUpdateInfoOpen(true)}
@@ -966,7 +951,10 @@ export default function Dashboard() {
 
                 <div className="mt-6 grid grid-cols-3 gap-6 text-center">
                   <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
-                    <p className="text-sm text-gray-600">High</p>
+                    <div className="text-sm text-gray-600">
+                      <span>High</span>
+                      <InfoIcon tooltipText="The highest price the stock reached during the current trading day" />
+                    </div>
                     <p className="text-xl font-semibold text-black">
                       ${response.response["Worst_Stock"].high}
                     </p>

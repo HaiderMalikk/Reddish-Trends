@@ -95,6 +95,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               Dashboard
             </Link>
             <Link
+              href="/dashboard/playground"
+              className={`hover:text-gray-300 ${
+                pathname === "/dashboard/playground" ? "underline" : ""
+              }`}
+            >
+              Playground
+            </Link>
+            <Link
               href="/dashboard/profile"
               className={`hover:text-gray-300 ${
                 pathname === "/dashboard/profile" ? "underline" : ""
@@ -139,6 +147,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Dashboard
+              </Link>
+              <Link
+                href="/dashboard/playground"
+                className={`mobile-menu-item ${
+                  pathname === "/dashboard/playground"
+                    ? "font-bold underline"
+                    : ""
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Playground
               </Link>
               <Link
                 href="/dashboard/profile"
