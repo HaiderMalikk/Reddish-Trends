@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./styles/toast-styles.css";
 // Simple toast notification component
 const Toast = ({
@@ -11,22 +11,38 @@ const Toast = ({
   type: "success" | "error";
   onClose: () => void;
 }) => {
+  const [isFading, setIsFading] = useState(false);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const fadeOutTime = 300; // Match this with the CSS animation duration
+    const totalDisplayTime = 3000;
+
+    const fadeOutTimer = setTimeout(() => {
+      setIsFading(true);
+    }, totalDisplayTime - fadeOutTime);
+
+    const closeTimer = setTimeout(() => {
       onClose();
-    }, 3000);
-    return () => clearTimeout(timer);
+    }, totalDisplayTime);
+
+    return () => {
+      clearTimeout(fadeOutTimer);
+      clearTimeout(closeTimer);
+    };
   }, [onClose]);
 
   const bgColor = type === "success" ? "bg-green-500" : "bg-red-500";
 
   return (
     <div
-      className={`fixed right-4 top-4 ${bgColor} animate-fadeIn z-[1000] flex items-center rounded-md px-6 py-3 text-white shadow-xl`}
+      className={`fixed right-4 top-20 ${bgColor} ${isFading ? "animate-fadeOut" : "animate-fadeIn"} z-[1000] flex items-center rounded-lg px-6 py-3 text-white shadow-xl`}
     >
       <span className="text-lg font-medium">{message}</span>
       <button
-        onClick={onClose}
+        onClick={() => {
+          setIsFading(true);
+          setTimeout(onClose, 300);
+        }}
         className="ml-4 text-xl font-bold hover:text-gray-200"
       >
         ×

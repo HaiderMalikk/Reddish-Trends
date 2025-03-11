@@ -12,6 +12,7 @@ import Toast from "../components/Toast"; // Import the toast component
 import axios, { AxiosResponse } from "axios"; // Import axios for API requests
 import InfoIcon from "../components/InfoIcon";
 import RefreshButton from "../components/RefreshButton";
+import RedditLink from "../components/RedditLink";
 
 // Define types for the response
 interface GPTAnalysis {
@@ -27,6 +28,7 @@ interface PostData {
   title: string;
   text: string;
   comments: string[];
+  link: string;
 }
 
 interface StockData {
@@ -296,6 +298,7 @@ export default function Dashboard() {
                       {comment}
                     </li>
                   ))}
+                  <RedditLink link={post.link} />
                 </ul>
               </div>
             )}
@@ -498,7 +501,7 @@ export default function Dashboard() {
           {/* Refresh and Countdown Section */}
           <div className="mb-10 flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
             <RefreshButton onClick={handleRefresh}></RefreshButton>
-            <div className="time-tracker flex items-center rounded-lg bg-gray-100 px-6 py-3">
+            <div className="time-tracker flex items-center rounded-lg bg-customColor2 px-6 py-3">
               <button
                 onClick={() => setStockUpdateInfoOpen(true)}
                 className="time-info-button mr-3 text-customColor6 hover:text-gray-500"
@@ -693,7 +696,7 @@ export default function Dashboard() {
                       : response.response["Top_Stock"].sentiment >= 0
                         ? "Neutral"
                         : "Negative"}
-                    ({response.response["Top_Stock"].sentiment}/10)
+                    ({response.response["Top_Stock"].sentiment * 10}%)
                   </div>
                 </div>
 
@@ -953,7 +956,6 @@ export default function Dashboard() {
                   <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
                     <div className="text-sm text-gray-600">
                       <span>High</span>
-                      <InfoIcon tooltipText="The highest price the stock reached during the current trading day" />
                     </div>
                     <p className="text-xl font-semibold text-black">
                       ${response.response["Worst_Stock"].high}
@@ -965,9 +967,9 @@ export default function Dashboard() {
                       ${response.response["Worst_Stock"].low}
                     </p>
                   </div>
-                  <div className="flex flex-col items-center rounded-lg bg-customColor4 bg-opacity-30 p-3">
+                  <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
                     <p className="text-sm text-gray-600">RSI</p>
-                    <div className="items-center text-xl font-semibold text-black">
+                    <div className="rsi-box items-center text-xl font-semibold text-black">
                       {response.response["Worst_Stock"].rsi}
                       {Number(response.response["Worst_Stock"].rsi) > 70 && (
                         <div className="rsi-tip ml-1 text-sm text-red-500">
@@ -1279,7 +1281,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex flex-col items-center rounded-lg bg-customColor4 bg-opacity-30 p-3">
                     <p className="text-sm text-gray-600">RSI</p>
-                    <div className="items-center text-xl font-semibold text-black">
+                    <div className="rsi-box items-center text-xl font-semibold text-black">
                       {response.response["Rising_Stock"].rsi}
                       {Number(response.response["Rising_Stock"].rsi) > 70 && (
                         <div className="rsi-tip ml-1 text-sm text-red-500">

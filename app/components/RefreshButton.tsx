@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/refresh-button-styles.css";
 
 interface RefreshButtonProps {
@@ -8,9 +8,42 @@ interface RefreshButtonProps {
 export default function RefreshButton({
   onClick,
 }: RefreshButtonProps): React.ReactElement {
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Initial check
+    checkIfMobile();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", checkIfMobile);
+
+    // Clean up
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
+
+  const handleClick = () => {
+    // If on mobile, scroll to top
+    if (isMobile) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+
+    // Call the original onClick if provided
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <div>
-      <button className="button" type="button" onClick={onClick}>
+      <button className="button" type="button" onClick={handleClick}>
         <span className="button__text">Refresh</span>
         <span className="button__icon">
           <svg

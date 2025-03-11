@@ -102,4 +102,9 @@ body {
   .footer-sections {
     font-size: 1.25rem;
   }
+
+  body,
+  html {
+    overflow-x: hidden; /* Reinforcing no horizontal scroll for mobile */
+  }
 }

@@ -1,0 +1,72 @@
+.reddit-link-button {
+  background-color: #f5f5f5;
+  border: 1px solid #ff4500;
+  padding: 5px 2.2em 5px 15px; /* Slightly more padding on the right */
+  position: relative;
+  width: auto; /* Change from fixed width to auto */
+  min-width: 15em; /* Set minimum width */
+  height: 2.5em; /* Slightly taller for better proportion */
+  transition: 0.5s;
+  font-size: 17px;
+  border-radius: 0.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reddit-link-button p {
+  position: relative; /* Change from absolute to relative */
+  margin: 0;
+  padding: 0;
+  transition: 0.5s;
+  color: #ff4500;
+  /* Remove top and left auto properties as they're not needed with relative positioning */
+}
+
+.reddit-link-button svg {
+  position: absolute;
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); /* Adjust for perfect centering */
+  right: 0.7em; /* Move icon slightly more to the right */
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  transition: 0.5s;
+  height: 1em;
+  fill: #fff;
+  width: 1.2em; /* Explicitly define width */
+}
+
+.reddit-link-button:hover p {
+  transform: translateX(
+    -0.3em
+  ); /* Reduce the shift to prevent going off the left side */
+  color: #fff;
+}
+
+.reddit-link-button:hover svg {
+  opacity: 1;
+}
+
+.reddit-link-button:hover {
+  background-color: #ff4500;
+}
+
+@media screen and (max-width: 768px) {
+  .reddit-link-button {
+    min-width: 12em; /* Smaller minimum width on mobile */
+    height: 2.2em; /* Reduced height */
+    padding: 4px 2em 4px 12px; /* Slightly smaller padding */
+    font-size: 0.85rem; /* Smaller font size */
+    border-radius: 0.5em; /* Slightly smaller border radius */
+    margin: 0 auto; /* Center the button horizontally */
+    display: block; /* Make it a block element to allow margin auto to work */
+    width: fit-content; /* Size to content */
+  }
+
+  .reddit-link-button svg {
+    right: 0.6em; /* Adjust icon position */
+    height: 0.9em; /* Smaller icon */
+    width: 1.1em; /* Smaller icon width */
+  }
+}

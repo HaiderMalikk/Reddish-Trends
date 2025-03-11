@@ -6,10 +6,10 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  border: 1px solid #0078e8;
-  background-color: #0082fc;
+  border: 2.5px solid #f5efe7;
+  background-color: #f5efe7;
   overflow: hidden;
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
 }
 
 .button,
@@ -19,17 +19,17 @@
 }
 
 .button .button__text {
-  transform: translateX(30px);
-  color: #fff;
+  transform: translateX(135%);
+  color: #000;
   font-weight: 600;
 }
 
 .button .button__icon {
   position: absolute;
-  transform: translateX(109px);
+  transform: translateX(190px);
   height: 100%;
-  width: 39px;
-  background-color: #0078e8;
+  width: 50px;
+  background-color: #d8c4b6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,11 +37,11 @@
 
 .button .svg {
   width: 20px;
-  fill: #fff;
+  fill: #f5efe7;
 }
 
 .button:hover {
-  background: #0078e8;
+  background: #d8c4b6;
 }
 
 .button:hover .button__text {
@@ -50,13 +50,35 @@
 
 .button:hover .button__icon {
   width: 148px;
-  transform: translateX(0);
+  transform: translateX(30%);
 }
 
 .button:active .button__icon {
-  background-color: #006cd0;
+  background-color: #f5efe7;
 }
 
 .button:active {
-  border: 1px solid #006cd0;
+  border: 1px solid #f5efe7;
+}
+
+/* Media query for mobile devices */
+@media screen and (max-width: 768px) {
+  .button {
+    width: 18.8rem; /* Increased width for mobile */
+    height: 3.5rem; /* Slightly taller for better touch target */
+  }
+
+  .button .button__text {
+    transform: translateX(150%); /* Adjusted text position for wider button */
+    font-size: 1.1rem; /* Slightly larger text */
+  }
+
+  .button .button__icon {
+    transform: translateX(250px); /* Adjusted initial position for icon */
+  }
+
+  .button:hover .button__icon {
+    width: 200px; /* Wider icon area on hover for mobile */
+    transform: translateX(25%); /* Adjusted position for hover state */
+  }
 }
