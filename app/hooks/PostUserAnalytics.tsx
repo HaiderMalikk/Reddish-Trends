@@ -3,6 +3,7 @@ import { useState } from "react";
 export const incrementAnalysisRequest = async (
   email: string,
   analysisType: string,
+  parameters?: object,
 ) => {
   if (!email || !analysisType) {
     console.error("Missing user (email) or analysisType");
@@ -16,6 +17,7 @@ export const incrementAnalysisRequest = async (
       body: JSON.stringify({
         email, // This should be the user's email
         analysisType,
+        parameters, // Add parameters for logging
       }),
     });
 
@@ -42,7 +44,7 @@ export const useAnalyticsTracking = () => {
     {},
   );
 
-  const trackAnalysis = async (userEmail: string, type: string) => {
+  const trackAnalysis = async (userEmail: string, type: string, parameters?: object) => {
     if (!userEmail || isTracking) return null;
 
     // Add debouncing to prevent multiple quick submissions
@@ -62,7 +64,7 @@ export const useAnalyticsTracking = () => {
     setRecentRequests((prev) => ({ ...prev, [cacheKey]: currentTime }));
 
     try {
-      return await incrementAnalysisRequest(userEmail, type); // Pass email as userI
+      return await incrementAnalysisRequest(userEmail, type, parameters);
     } finally {
       setIsTracking(false);
     }
@@ -75,10 +77,16 @@ export const useAnalyticsTracking = () => {
   const trackRedoAnalysis = async (userEmail: string) => {
     return trackAnalysis(userEmail, "redo_analysis");
   };
+  
+  // Add playground analysis tracking
+  const trackPlaygroundAnalysis = async (userEmail: string, parameters: object) => {
+    return trackAnalysis(userEmail, "playground_analysis", parameters);
+  };
 
   return {
     trackGeneralAnalysis,
     trackRedoAnalysis,
+    trackPlaygroundAnalysis,
     isTracking,
   };
 };

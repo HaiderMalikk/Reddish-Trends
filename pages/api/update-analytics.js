@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { email, analysisType } = req.body;
+    const { email, analysisType, parameters } = req.body;
 
     if (!email) {
       return res.status(400).json({ message: "Missing email parameter" });
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
     if (
       !analysisType ||
-      !["general_analysis", "redo_analysis"].includes(analysisType)
+      !["general_analysis", "redo_analysis", "playground_analysis"].includes(analysisType)
     ) {
       return res
         .status(400)
@@ -55,20 +55,66 @@ export default async function handler(req, res) {
         const currentCount = userData.requests[analysisType].count || 0;
         const currentLog = userData.requests[analysisType].log || [];
 
+        // For playground analysis, include the parameters in the log
+        if (analysisType === "playground_analysis" && parameters) {
+          updateData = {
+            requests: {
+              ...userData.requests,
+              [analysisType]: {
+                count: currentCount + 1,
+                log: [...currentLog, { timestamp, parameters }],
+              },
+            },
+          };
+        } else {
+          updateData = {
+            requests: {
+              ...userData.requests,
+              [analysisType]: {
+                count: currentCount + 1,
+                log: [...currentLog, timestamp],
+              },
+            },
+          };
+        }
+      } else {
+        // Analysis type object doesn't exist but requests object does
+        if (analysisType === "playground_analysis" && parameters) {
+          updateData = {
+            requests: {
+              ...userData.requests,
+              [analysisType]: {
+                count: 1,
+                log: [{ timestamp, parameters }],
+              },
+            },
+          };
+        } else {
+          updateData = {
+            requests: {
+              ...userData.requests,
+              [analysisType]: {
+                count: 1,
+                log: [timestamp],
+              },
+            },
+          };
+        }
+      }
+    } else {
+      // Requests object doesn't exist, create it with the analysis type object
+      if (analysisType === "playground_analysis" && parameters) {
         updateData = {
           requests: {
-            ...userData.requests,
             [analysisType]: {
-              count: currentCount + 1,
-              log: [...currentLog, timestamp],
+              count: 1,
+              log: [{ timestamp, parameters }],
             },
           },
         };
       } else {
-        // Analysis type object doesn't exist but requests object does
         updateData = {
           requests: {
-            ...userData.requests,
             [analysisType]: {
               count: 1,
               log: [timestamp],
@@ -76,16 +122,6 @@ export default async function handler(req, res) {
           },
         };
       }
-    } else {
-      // Requests object doesn't exist, create it with the analysis type object
-      updateData = {
-        requests: {
-          [analysisType]: {
-            count: 1,
-            log: [timestamp],
-          },
-        },
-      };
     }
 
     // Update the document

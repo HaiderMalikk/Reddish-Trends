@@ -33,6 +33,7 @@ export default async function handler(req, res) {
       if (userSnapshot.empty) {
         // If user doesn't exist, create them in Firebase Auth and Firestore
         let userRecord;
+        const timestamp = admin.firestore.Timestamp.now();
 
         try {
           userRecord = await admin.auth().getUserByEmail(email);
@@ -51,7 +52,7 @@ export default async function handler(req, res) {
         // data to add to firestore for user profile
         await admin.firestore().collection("users").doc(userRecord.uid).set({
           email, // add email to user profile
-          createdAt: new Date().toISOString(), // add creation date to user profile
+          createdAt: timestamp, // add creation date to user profile
         });
       }
       // if user exists

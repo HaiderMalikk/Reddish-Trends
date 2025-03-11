@@ -10,7 +10,6 @@ import { useAnalyticsTracking } from "../hooks/PostUserAnalytics"; // Import ana
 import { useUserFavorites } from "../hooks/UserFavs"; // Import favorites hook
 import Toast from "../components/Toast"; // Import the toast component
 import axios, { AxiosResponse } from "axios"; // Import axios for API requests
-import InfoIcon from "../components/InfoIcon";
 import RefreshButton from "../components/RefreshButton";
 import RedditLink from "../components/RedditLink";
 

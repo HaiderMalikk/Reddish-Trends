@@ -1,13 +1,418 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../styles/playground-styles.css";
+import axios from "axios";
+import useUserData from "../../hooks/GetUserData";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useAnalyticsTracking } from "../../hooks/PostUserAnalytics";
+
+// Define interfaces for our request data
+interface RequestParameters {
+  subreddits: string[];
+  limit: number;
+  comment_limit: number;
+  sort: string;
+  period: string;
+  stocks?: string[]; // Make stocks optional
+}
+
+interface RequestData {
+  request: {
+    type: string;
+    parameters: RequestParameters;
+  }
+}
 
 export default function PlaygroundPage() {
+  // Get user data and authentication state
+  const { userData, loading: userDataLoading } = useUserData();
+  const { user } = useUser();
+  const router = useRouter();
+  const { trackPlaygroundAnalysis, isTracking } = useAnalyticsTracking();
+  
+  // State for form inputs
+  const [analysisType, setAnalysisType] = useState<string>("getplaygroundgeneralanalysis");
+  const [subreddits, setSubreddits] = useState<string>("wallstreetbets,stocks,stockmarket");
+  const [stocks, setStocks] = useState<string>("$AAPL,$TSLA");
+  const [limit, setLimit] = useState<number>(10);
+  const [commentLimit, setCommentLimit] = useState<number>(10);
+  const [sort, setSort] = useState<string>("hot");
+  const [period, setPeriod] = useState<string>("1mo");
+  
+  // State for API response and loading state
+  const [results, setResults] = useState<any>(null);
+  const [formLoading, setFormLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isApiLoading, setIsApiLoading] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [lastRequest, setLastRequest] = useState<RequestData | null>(null);
+
+  // Function to increment progress bar
+  const incrementProgress = () => {
+    setProgress((prevProgress) => {
+      if (prevProgress >= 95) {
+        return 95;
+      }
+      return prevProgress + 1;
+    });
+  };
+
+  // Check if user is logged in
+  useEffect(() => {
+    if (!user) {
+      const timer = setTimeout(() => {
+        router.push("/login");
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [user, router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    setError(null);
+    setIsApiLoading(true);
+    setProgress(10);
+    const interval = setInterval(incrementProgress, 3000);
+    
+    try {
+      // Build request object with proper typing
+      const requestData: RequestData = {
+        request: {
+          type: analysisType,
+          parameters: {
+            subreddits: subreddits.split(',').map(s => s.trim()),
+            limit: limit,
+            comment_limit: commentLimit,
+            sort: sort,
+            period: period,
+          }
+        }
+      };
+      
+      // Add stocks parameter only for specific analysis
+      if (analysisType === "getplaygroundspecificanalysis") {
+        requestData.request.parameters.stocks = stocks.split(',').map(s => s.trim());
+      }
+      
+      // Save this request for potential retry
+      setLastRequest(requestData);
+      
+      console.log("Sending request:", requestData);
+      
+      // Track analytics with parameters
+      if (user && userData) {
+        // Create parameters object to log with the analytics
+        const trackingParams = {
+          analysisType: analysisType,
+          subreddits: subreddits,
+          limit: limit,
+          commentLimit: commentLimit,
+          sort: sort,
+          period: period,
+          stocks: analysisType === "getplaygroundspecificanalysis" ? stocks : undefined,
+        };
+        
+        await trackPlaygroundAnalysis(userData.email, trackingParams);
+      }
+      
+      // Send request to our API endpoint
+      const response = await axios.post('/api/playground-analysis', requestData);
+      
+      console.log("Received response:", response.data);
+      setResults(response.data);
+      setProgress(100);
+    } catch (err: any) {
+      console.error("Error submitting playground request:", err);
+      setApiError(err.message || "An error occurred while processing your request");
+      setError(err.message || "An error occurred while processing your request");
+    } finally {
+      setFormLoading(false);
+      setIsApiLoading(false);
+      clearInterval(interval);
+    }
+  };
+
+  // Function to retry the last request if it failed
+  const handleRetry = async () => {
+    if (!lastRequest) return;
+    
+    setIsApiLoading(true);
+    setApiError(null);
+    setProgress(10);
+    const interval = setInterval(incrementProgress, 3000);
+    
+    try {
+      // Track analytics for retry with the same parameters
+      if (user && userData && lastRequest) {
+        const { type, parameters } = lastRequest.request;
+        
+        // Create parameters object for tracking
+        const trackingParams = {
+          analysisType: type,
+          subreddits: parameters.subreddits.join(','),
+          limit: parameters.limit,
+          commentLimit: parameters.comment_limit,
+          sort: parameters.sort,
+          period: parameters.period,
+          stocks: parameters.stocks ? parameters.stocks.join(',') : undefined,
+          isRetry: true // Mark this as a retry attempt
+        };
+        
+        await trackPlaygroundAnalysis(userData.email, trackingParams);
+      }
+      
+      console.log("Retrying request:", lastRequest);
+      
+      // Send the same request again
+      const response = await axios.post('/api/playground-analysis', lastRequest);
+      
+      console.log("Received response:", response.data);
+      setResults(response.data);
+      setProgress(100);
+    } catch (err: any) {
+      console.error("Error retrying playground request:", err);
+      setApiError(err.message || "An error occurred while processing your retry request");
+    } finally {
+      setIsApiLoading(false);
+      clearInterval(interval);
+    }
+  };
+
+  // If user is not logged in, show a message and redirect
+  if (!user) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-black">
+        <h1 className="text-white">
+          Please log in to view this page. Redirecting you to the login page...
+        </h1>
+      </div>
+    );
+  }
+
+  // Show loading screen while user data is loading
+  if (userDataLoading || !userData) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-black">
+        {/* Spinner */}
+        <div className="spinner m-8">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <h1 className="text-white">Loading...</h1>
+      </div>
+    );
+  }
+
+  // Show loading screen while API data is loading
+  if (isApiLoading) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-black">
+        {/* Spinner */}
+        <div className="spinner m-8">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <h1 className="text-white">Loading market data...</h1>
+        <h1 className="text-white">Please stay on this page.</h1>
+        <div className="mt-4 h-1 min-w-[300px] bg-gray-200">
+          <div
+            className="h-full bg-customColor3 transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error screen if an error occurred
+  if (userData.message && userData.message.startsWith("Error")) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-black">
+        {/* Error message Error, then error then recommendation */}
+        <h1 className="text-4xl font-semibold text-red-600">Error</h1>
+        {/* error message */}
+        <p className="mt-4 text-lg text-white">{userData.message}</p>
+        {/* recommendation */}
+        <p className="mt-4 text-lg text-gray-300">
+          Please try refreshing the page or trying again later. If the problem
+          persists, please contact us using the contact info at the bottom of
+          the page.
+        </p>
+      </div>
+    );
+  }
+
+  // Show API error if there was an error fetching data from Flask
+  if (apiError) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-black">
+        <h1 className="text-4xl font-semibold text-red-600">API Error</h1>
+        <p className="mt-4 text-lg text-white">{apiError}</p>
+        <button
+          onClick={handleRetry}
+          className="mt-6 rounded-lg bg-customColor5 px-6 py-2 text-black transition hover:bg-opacity-90"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="playground-wrapper">
-      <div className="playground-content">
-        <div className="rounded-lg border-2 border-white bg-black p-4 text-2xl text-white">
-          Welcome to the Playground
+      <div className="playground-content p-4">
+        <div className="rounded-lg border-2 border-white bg-black p-4 mb-6">
+          <h1 className="text-2xl text-white mb-2">Playground</h1>
+          <p className="text-gray-300">
+            Customize your stock analysis parameters and see the results in real-time
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Form Section */}
+          <div className="bg-black bg-opacity-70 rounded-lg border-2 border-white p-4">
+            <h2 className="text-xl text-white mb-4">Analysis Parameters</h2>
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-white mb-1">Analysis Type</label>
+                <select 
+                  value={analysisType}
+                  onChange={(e) => setAnalysisType(e.target.value)}
+                  className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+                >
+                  <option value="getplaygroundgeneralanalysis">General Analysis</option>
+                  <option value="getplaygroundspecificanalysis">Specific Stock Analysis</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-white mb-1">Subreddits (comma-separated)</label>
+                <input 
+                  type="text" 
+                  value={subreddits}
+                  onChange={(e) => setSubreddits(e.target.value)}
+                  className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+                />
+              </div>
+              
+              {analysisType === "getplaygroundspecificanalysis" && (
+                <div>
+                  <label className="block text-white mb-1">Stocks (comma-separated)</label>
+                  <input 
+                    type="text" 
+                    value={stocks}
+                    onChange={(e) => setStocks(e.target.value)}
+                    className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+                  />
+                </div>
+              )}
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-white mb-1">Post Limit</label>
+                  <input 
+                    type="number" 
+                    value={limit}
+                    onChange={(e) => setLimit(parseInt(e.target.value))}
+                    className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-white mb-1">Comment Limit</label>
+                  <input 
+                    type="number" 
+                    value={commentLimit}
+                    onChange={(e) => setCommentLimit(parseInt(e.target.value))}
+                    className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-white mb-1">Sort</label>
+                  <select 
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                    className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+                  >
+                    <option value="hot">Hot</option>
+                    <option value="new">New</option>
+                    <option value="top">Top</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-white mb-1">Period</label>
+                  <select 
+                    value={period}
+                    onChange={(e) => setPeriod(e.target.value)}
+                    className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+                  >
+                    <option value="1d">1 Day</option>
+                    <option value="1wk">1 Week</option>
+                    <option value="1mo">1 Month</option>
+                    <option value="3mo">3 Months</option>
+                    <option value="1y">1 Year</option>
+                  </select>
+                </div>
+              </div>
+              
+              <button 
+                type="submit" 
+                disabled={formLoading || isTracking}
+                className="w-full p-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
+              >
+                {formLoading || isTracking ? "Processing..." : "Run Analysis"}
+              </button>
+            </form>
+          </div>
+          
+          {/* Results Section */}
+          <div className="bg-black bg-opacity-70 rounded-lg border-2 border-white p-4">
+            <h2 className="text-xl text-white mb-4">Analysis Results</h2>
+            
+            {formLoading && (
+              <div className="text-center py-8">
+                <p className="text-white">Processing your request...</p>
+                <div className="mt-4 w-8 h-8 border-t-2 border-blue-500 border-solid rounded-full animate-spin mx-auto"></div>
+              </div>
+            )}
+            
+            {error && (
+              <div className="bg-red-900 bg-opacity-50 border border-red-700 text-white p-4 rounded">
+                <p className="font-bold">Error:</p>
+                <p>{error}</p>
+              </div>
+            )}
+            
+            {!formLoading && !error && results && (
+              <div className="overflow-auto max-h-[500px]">
+                <pre className="text-green-400 text-sm whitespace-pre-wrap">
+                  {JSON.stringify(results, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            {!formLoading && !error && !results && (
+              <div className="text-center py-8 text-gray-400">
+                <p>No analysis results yet. Configure your parameters and run the analysis.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
