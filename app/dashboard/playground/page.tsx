@@ -102,7 +102,14 @@ export default function PlaygroundPage() {
       
       console.log("Sending request:", requestData);
       
-      // Track analytics with parameters
+      // Send request to our API endpoint
+      const response = await axios.post('/api/playground-analysis', requestData);
+      
+      console.log("Received response:", response.data);
+      setResults(response.data);
+      setProgress(100);
+      
+      // Only track analytics after successful API response
       if (user && userData) {
         // Create parameters object to log with the analytics
         const trackingParams = {
@@ -117,13 +124,6 @@ export default function PlaygroundPage() {
         
         await trackPlaygroundAnalysis(userData.email, trackingParams);
       }
-      
-      // Send request to our API endpoint
-      const response = await axios.post('/api/playground-analysis', requestData);
-      
-      console.log("Received response:", response.data);
-      setResults(response.data);
-      setProgress(100);
     } catch (err: any) {
       console.error("Error submitting playground request:", err);
       setApiError(err.message || "An error occurred while processing your request");
@@ -145,7 +145,16 @@ export default function PlaygroundPage() {
     const interval = setInterval(incrementProgress, 3000);
     
     try {
-      // Track analytics for retry with the same parameters
+      console.log("Retrying request:", lastRequest);
+      
+      // Send the same request again
+      const response = await axios.post('/api/playground-analysis', lastRequest);
+      
+      console.log("Received response:", response.data);
+      setResults(response.data);
+      setProgress(100);
+      
+      // Only track analytics for retry after successful API response
       if (user && userData && lastRequest) {
         const { type, parameters } = lastRequest.request;
         
@@ -163,15 +172,6 @@ export default function PlaygroundPage() {
         
         await trackPlaygroundAnalysis(userData.email, trackingParams);
       }
-      
-      console.log("Retrying request:", lastRequest);
-      
-      // Send the same request again
-      const response = await axios.post('/api/playground-analysis', lastRequest);
-      
-      console.log("Received response:", response.data);
-      setResults(response.data);
-      setProgress(100);
     } catch (err: any) {
       console.error("Error retrying playground request:", err);
       setApiError(err.message || "An error occurred while processing your retry request");

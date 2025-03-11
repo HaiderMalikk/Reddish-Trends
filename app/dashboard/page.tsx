@@ -209,7 +209,16 @@ export default function Dashboard() {
     const interval = setInterval(incrementProgress, 3000); // Increment progress every 3000ms
 
     try {
-      // Track analytics based on request type
+      const response: AxiosResponse<FlaskResponse> = await axios.get(
+        "/api/get-stock-data",
+        { params: { request: JSON.stringify(request) } },
+      );
+      console.log("Response from Flask");
+      console.log(response.data);
+      setResponse(response.data as FlaskResponse);
+      setProgress(100); // Set progress to 100 when data is fetched
+      
+      // Only track analytics if request is successful
       if (user && userData) {
         if (request.type === "getgeneralanalysis") {
           console.log("Tracking general analysis");
@@ -219,14 +228,7 @@ export default function Dashboard() {
           await trackRedoAnalysis(userData.email);
         }
       }
-      const response: AxiosResponse<FlaskResponse> = await axios.get(
-        "/api/get-stock-data",
-        { params: { request: JSON.stringify(request) } },
-      );
-      console.log("Response from Flask");
-      console.log(response.data);
-      setResponse(response.data as FlaskResponse);
-      setProgress(100); // Set progress to 100 when data is fetched
+      
       if (!response.data) {
         console.error("Error fetching data from Flask response is null");
         setApiError("Failed to load data. Please try again later.");
