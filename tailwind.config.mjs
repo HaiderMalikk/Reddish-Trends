@@ -19,6 +19,7 @@ module.exports = {
         customColor4: "#D8C4B6",
         customColor5: "#f5f5f5",
         customColor6: "#000000",
+        reddish: "#c44240",
       },
       fontFamily: {
         signature: ["var(--font-poppins)", "sans-serif"],

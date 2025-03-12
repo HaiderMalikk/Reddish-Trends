@@ -34,6 +34,7 @@
   width: 100%;
   flex: 1;
   min-height: calc(var(--vh) - 64px); /* Adjust only for header height */
+  background-attachment: fixed; /* Fix background to prevent it from moving during scroll */
   background-color: #d8c4b6;
   background-image: radial-gradient(#f5efe7 2px, transparent 0);
   background-size: 30px 30px;
@@ -46,6 +47,7 @@
   align-items: center;
   justify-content: center;
   overflow-y: auto; /* Allow scrolling for content */
+  scroll-behavior: smooth; /* Add smooth scrolling to the container */
 }
 
 .playground-wrapper {
@@ -56,6 +58,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  position: relative; /* Add position relative for proper scrolling context */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 @media screen and (max-width: 768px) {
@@ -120,4 +124,23 @@
   100% {
     transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
   }
+}
+
+/* Add scroll margin for stock description sections */
+[id^="stock-"] {
+  scroll-margin-top: 100px; /* Increased margin to ensure proper scroll positioning */
+  position: relative; /* Ensure position context */
+  z-index: 1; /* Ensure proper stacking */
+}
+
+/* Ensure stock description sections have proper positioning for scroll targets */
+.bg-customColor2 {
+  position: relative;
+  scroll-margin-top: 80px;
+}
+
+/* Make sure the entire document uses smooth scrolling */
+html, body {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }

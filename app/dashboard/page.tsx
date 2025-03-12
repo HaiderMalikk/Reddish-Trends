@@ -62,7 +62,8 @@ export default function Dashboard() {
   const [isApiLoading, setIsApiLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0); // Add state for progress
   const [countdown, setCountdown] = useState<string>(""); // Add state for countdown
-  const { trackGeneralAnalysis, trackRedoGeneralAnalysis } = useAnalyticsTracking(); // Analytics tracking hooks
+  const { trackGeneralAnalysis, trackRedoGeneralAnalysis } =
+    useAnalyticsTracking(); // Analytics tracking hooks
   const {
     favorites,
     addFavorite,
@@ -217,7 +218,7 @@ export default function Dashboard() {
       console.log(response.data);
       setResponse(response.data as FlaskResponse);
       setProgress(100); // Set progress to 100 when data is fetched
-      
+
       // Only track analytics if request is successful
       if (user && userData) {
         if (request.type === "getgeneralanalysis") {
@@ -228,7 +229,7 @@ export default function Dashboard() {
           await trackRedoGeneralAnalysis(userData.email);
         }
       }
-      
+
       if (!response.data) {
         console.error("Error fetching data from Flask response is null");
         setApiError("Failed to load data. Please try again later.");
@@ -392,6 +393,7 @@ export default function Dashboard() {
 
   // Show error screen if an error occurred
   if (userData.message.startsWith("Error")) {
+    console.log("user:", userData);
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-black">
         {/* Error message Error, then error then recommendation */}
@@ -405,6 +407,7 @@ export default function Dashboard() {
           the page.
         </p>
       </div>
+      
     );
   }
 
@@ -454,10 +457,11 @@ export default function Dashboard() {
       });
     }
   };
+  
 
   return (
     // bg div
-    <div className="flex min-h-screen flex-col items-center bg-customColor4 p-6">
+    <div className="flex min-h-screen flex-col items-center bg-reddish p-6">
       {/* Toast notification */}
       {toast.show && (
         <Toast message={toast.message} type={toast.type} onClose={closeToast} />
@@ -1005,7 +1009,7 @@ export default function Dashboard() {
                       : response.response["Worst_Stock"].sentiment >= 0
                         ? "Neutral"
                         : "Negative"}
-                    ({response.response["Worst_Stock"].sentiment}/10)
+                    ({response.response["Worst_Stock"].sentiment * 10}%)
                   </div>
                 </div>
 
@@ -1317,7 +1321,7 @@ export default function Dashboard() {
                       : response.response["Rising_Stock"].sentiment >= 0
                         ? "Neutral"
                         : "Negative"}
-                    ({response.response["Rising_Stock"].sentiment}/10)
+                    ({response.response["Rising_Stock"].sentiment * 10}%)
                   </div>
                 </div>
 
@@ -1456,7 +1460,7 @@ export default function Dashboard() {
             onClose={() => setStockInfoOpen(false)}
             title="Stock Information"
           >
-            <div className="space-y-4">
+            <div className="">
               <div>
                 <h4 className="font-bold">Price</h4>
                 <p>The current trading price of the stock.</p>

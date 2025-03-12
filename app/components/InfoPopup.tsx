@@ -85,31 +85,38 @@ const InfoPopup = ({
         className="relative max-h-[80vh] w-[90%] max-w-md overflow-y-auto rounded-lg bg-customColor2 p-5 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-6 flex items-center justify-between">
-          <div className="mt-16 flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-customColor4/20">
-              <svg
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="h-4 w-4 text-customColor4"
-              >
-                <path
-                  clipRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  fillRule="evenodd"
-                ></path>
-              </svg>
+        {/* Completely redesigned header with fixed positioning for the title and button */}
+        <div className="sticky top-0 z-10 mb-6 bg-customColor2 pb-4 pt-16">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-customColor4/20">
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="h-4 w-4 text-customColor4 pointer-events-none"
+                >
+                  <path
+                    clipRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    fillRule="evenodd"
+                  ></path>
+                </svg>
+              </div>
+              <p className="text-3xl text-black">{title}</p>
             </div>
-            <p className="text-3xl text-black">{title}</p>
+            
+            {/* Simplified close button with explicit z-index */}
+            <button
+              onClick={handleClose}
+              className="z-20 h-12 w-12 cursor-pointer rounded-full bg-customColor2 text-customColor6 transition-colors hover:bg-gray-200 focus:outline-none"
+              aria-label="Close"
+              type="button"
+            >
+              <IoMdClose size={24} className="m-auto" />
+            </button>
           </div>
-          <button
-            onClick={handleClose}
-            className="mt-16 inline-flex h-12 w-12 items-center justify-center rounded-full transition-colors hover:bg-gray-200 focus:bg-gray-300 focus:outline-none"
-            aria-label="Close"
-          >
-            <IoMdClose size={24} className="text-customColor6" />
-          </button>
         </div>
+        
         <div className="text-customColor6">{children}</div>
       </div>
     </div>

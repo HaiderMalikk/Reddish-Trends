@@ -6,7 +6,8 @@ import useUserData from "../../hooks/GetUserData";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useAnalyticsTracking } from "../../hooks/PostUserAnalytics";
-
+import InfoPopup from "../../components/InfoPopup"; // Import InfoPopup component
+import StockCard from "../../components/StockCard"; // Import InfoPopup component
 // Define interfaces for our request data
 interface RequestParameters {
   subreddits: string[];
@@ -48,6 +49,70 @@ export default function PlaygroundPage() {
   const [progress, setProgress] = useState<number>(0);
   const [apiError, setApiError] = useState<string | null>(null);
   const [lastRequest, setLastRequest] = useState<RequestData | null>(null);
+  const [totalProcessingTime, setTotalProcessingTime] = useState<number>(0);
+
+  // stopck info state
+  const [stockInfoOpen, setStockInfoOpen] = useState(false);
+
+  // Add state to track which posts are expanded
+  const [expandedPosts, setExpandedPosts] = useState<{[key: string]: boolean}>({});
+  
+  // Function to toggle expanded state of posts
+  const togglePostExpand = (stockId: string) => {
+    setExpandedPosts((prev) => {
+      const newState = {
+        ...prev,
+        [stockId]: !prev[stockId]
+      };
+      
+      // If we're collapsing the post, scroll back to its section
+      if (prev[stockId] && !newState[stockId]) {
+        setTimeout(() => {
+          const section = document.getElementById(`stock-${stockId}`);
+          if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 100); // Small delay to ensure state is updated
+      }
+      
+      return newState;
+    });
+  };
+  
+  // Function to truncate text
+  const truncateText = (text: string, maxWords: number = 50) => {
+    if (!text) return "";
+    const words = text.split(" ");
+    if (words.length <= maxWords) return text;
+    return words.slice(0, maxWords).join(" ") + "...";
+  };
+  
+  // Function to render stock description with expand/collapse functionality
+  const renderStockDescription = (stock: any, stockId: string) => {
+    const isExpanded = expandedPosts[stockId] || false;
+    const description = stock.description || "";
+    
+    if (!description) return null;
+    
+    const shouldTruncate = description.split(" ").length > 50;
+    
+    return (
+      <div id={`stock-${stockId}`} className="mt-2">
+        <p className="text-black">
+          {shouldTruncate && !isExpanded ? truncateText(description) : description}
+        </p>
+        
+        {shouldTruncate && (
+          <button
+            onClick={() => togglePostExpand(stockId)}
+            className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
+          >
+            {isExpanded ? "Show Less" : "Read More"}
+          </button>
+        )}
+      </div>
+    );
+  };
 
   // Function to increment progress bar
   const incrementProgress = () => {
@@ -57,6 +122,50 @@ export default function PlaygroundPage() {
       }
       return prevProgress + 1;
     });
+  };
+
+  // Calculate estimated processing time based on request parameters
+  const calculateProcessingTime = (requestData: RequestData): number => {
+    const { parameters } = requestData.request;
+    const subreddits = parameters.subreddits.length;
+    const posts = parameters.limit;
+    const comments = parameters.comment_limit;
+    
+    // Each subreddit takes constant time of 5 sec
+    // Each post takes 1 second
+    // Each 10 comments takes 1 second
+    const postTime = posts * 0.5;
+    const commentTime = Math.ceil(comments / 15) * 1;
+    
+    // Calculate total time 5 is for subreddits, plus 5 fro err
+    const totalTime = (5 * (postTime + commentTime)) + 5;
+    
+    console.log(`Estimated processing time: ${totalTime} seconds`);
+    return totalTime;
+  };
+
+  // Function to update progress based on estimated processing time
+  const startProgressUpdates = (processingTime: number) => {
+    // Start at 5% to show immediate feedback
+    setProgress(5);
+    
+    // Calculate how often to update (aim for about 20 updates during the process)
+    const updateInterval = Math.max(processingTime / 20, 0.5); // At least every half second
+    const progressIncrement = 90 / (processingTime / updateInterval); // 90% of the bar (leave 5% at start and end)
+    
+    let currentProgress = 5;
+    const interval = setInterval(() => {
+      currentProgress += progressIncrement;
+      
+      if (currentProgress >= 95) {
+        clearInterval(interval);
+        setProgress(95); // Cap at 95% until we get the response
+      } else {
+        setProgress(currentProgress);
+      }
+    }, updateInterval * 1000);
+    
+    return interval;
   };
 
   // Check if user is logged in
@@ -74,8 +183,7 @@ export default function PlaygroundPage() {
     setFormLoading(true);
     setError(null);
     setIsApiLoading(true);
-    setProgress(10);
-    const interval = setInterval(incrementProgress, 3000);
+    setProgress(5); // Start at 5%
     
     try {
       // Build request object with proper typing
@@ -100,6 +208,11 @@ export default function PlaygroundPage() {
       // Save this request for potential retry
       setLastRequest(requestData);
       
+      // Calculate expected processing time and start progress updates
+      const processingTime = calculateProcessingTime(requestData);
+      setTotalProcessingTime(processingTime);
+      const progressInterval = startProgressUpdates(processingTime);
+      
       console.log("Sending request:", requestData);
       
       // Send request to our API endpoint
@@ -108,6 +221,7 @@ export default function PlaygroundPage() {
       console.log("Received response:", response.data);
       setResults(response.data);
       setProgress(100);
+      clearInterval(progressInterval);
       
       // Only track analytics after successful API response
       if (user && userData) {
@@ -131,7 +245,6 @@ export default function PlaygroundPage() {
     } finally {
       setFormLoading(false);
       setIsApiLoading(false);
-      clearInterval(interval);
     }
   };
 
@@ -141,11 +254,15 @@ export default function PlaygroundPage() {
     
     setIsApiLoading(true);
     setApiError(null);
-    setProgress(10);
-    const interval = setInterval(incrementProgress, 3000);
+    setProgress(5);
     
     try {
       console.log("Retrying request:", lastRequest);
+      
+      // Calculate expected processing time and start progress updates
+      const processingTime = calculateProcessingTime(lastRequest);
+      setTotalProcessingTime(processingTime);
+      const progressInterval = startProgressUpdates(processingTime);
       
       // Send the same request again
       const response = await axios.post('/api/playground-analysis', lastRequest);
@@ -153,6 +270,7 @@ export default function PlaygroundPage() {
       console.log("Received response:", response.data);
       setResults(response.data);
       setProgress(100);
+      clearInterval(progressInterval);
       
       // Only track analytics for retry after successful API response
       if (user && userData && lastRequest) {
@@ -177,7 +295,6 @@ export default function PlaygroundPage() {
       setApiError(err.message || "An error occurred while processing your retry request");
     } finally {
       setIsApiLoading(false);
-      clearInterval(interval);
     }
   };
 
@@ -231,6 +348,11 @@ export default function PlaygroundPage() {
             style={{ width: `${progress}%` }}
           ></div>
         </div>
+        {totalProcessingTime > 0 && (
+          <p className="mt-2 text-sm text-gray-400">
+            Estimated time: {Math.ceil(totalProcessingTime * (1 - progress/100))} seconds remaining
+          </p>
+        )}
       </div>
     );
   }
@@ -272,16 +394,16 @@ export default function PlaygroundPage() {
   return (
     <div className="playground-wrapper">
       <div className="playground-content p-4">
-        <div className="rounded-lg border-2 border-white bg-black p-4 mb-6">
-          <h1 className="text-2xl text-white mb-2">Playground</h1>
-          <p className="text-gray-300">
-            Customize your stock analysis parameters and see the results in real-time
+        <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-white bg-black p-12 text-center text-black shadow-md">
+          <h1 className="text-6xl font-semibold text-white">Playground</h1>
+          <p className="welcome-msg mt-4 text-xl text-gray-300">
+            Customize your stock analysis parameters and explore real-time market insights
           </p>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="flex flex-col space-y-6">
           {/* Form Section */}
-          <div className="bg-black bg-opacity-70 rounded-lg border-2 border-white p-4">
+          <div className="bg-black bg-opacity-70 rounded-lg border-2 border-white p-4 mx-auto w-full max-w-4xl">
             <h2 className="text-xl text-white mb-4">Analysis Parameters</h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -382,7 +504,7 @@ export default function PlaygroundPage() {
           </div>
           
           {/* Results Section */}
-          <div className="bg-black bg-opacity-70 rounded-lg border-2 border-white p-4">
+          <div className="bg-black bg-opacity-70 rounded-lg border-2 border-white p-4 mx-auto w-full max-w-4xl">
             <h2 className="text-xl text-white mb-4">Analysis Results</h2>
             
             {formLoading && (
@@ -400,10 +522,94 @@ export default function PlaygroundPage() {
             )}
             
             {!formLoading && !error && results && (
-              <div className="overflow-auto max-h-[500px]">
-                <pre className="text-green-400 text-sm whitespace-pre-wrap">
-                  {JSON.stringify(results, null, 2)}
-                </pre>
+              <div className="space-y-8">
+                {analysisType === "getplaygroundgeneralanalysis" ? (
+                  // Display general analysis results
+                  results.analysis_results.map((subredditData: any, index: number) => {
+                    const subredditName = Object.keys(subredditData)[0];
+                    const categories = subredditData[subredditName];
+                    
+                    return (
+                      <div key={index} className="bg-customColor2 rounded-lg p-6">
+                        <h3 className="text-2xl font-bold text-black mb-4 border-b border-black pb-2">
+                          r/{subredditName}
+                        </h3>
+                        
+                        {/* Top Stocks */}
+                        <div className="mb-6">
+                          <h4 className="text-xl font-semibold text-black mb-3">Top Stocks</h4>
+                          {categories.top_stocks.length > 0 ? (
+                            categories.top_stocks.map((stock: any, stockIndex: number) => (
+                              <div key={stockIndex}>
+                                <StockCard stock={stock} />
+                                {renderStockDescription(stock, `top-${subredditName}-${stockIndex}`)}
+                              </div>
+                            ))
+                          ) : (
+                            <p className="text-black italic">No top stocks found for this subreddit</p>
+                          )}
+                        </div>
+                        
+                        {/* Worst Stocks */}
+                        <div className="mb-6">
+                          <h4 className="text-xl font-semibold text-black mb-3">Worst Stocks</h4>
+                          {categories.worst_stocks.length > 0 ? (
+                            categories.worst_stocks.map((stock: any, stockIndex: number) => (
+                              <div key={stockIndex}>
+                                <StockCard stock={stock} />
+                                {renderStockDescription(stock, `worst-${subredditName}-${stockIndex}`)}
+                              </div>
+                            ))
+                          ) : (
+                            <p className="text-black italic">No worst stocks found for this subreddit</p>
+                          )}
+                        </div>
+                        
+                        {/* Rising Stocks */}
+                        <div className="mb-6">
+                          <h4 className="text-xl font-semibold text-black mb-3">Rising Stocks</h4>
+                          {categories.rising_stocks.length > 0 ? (
+                            categories.rising_stocks.map((stock: any, stockIndex: number) => (
+                              <div key={stockIndex}>
+                                <StockCard stock={stock} />
+                                {renderStockDescription(stock, `rising-${subredditName}-${stockIndex}`)}
+                              </div>
+                            ))
+                          ) : (
+                            <p className="text-black italic">No rising stocks found for this subreddit</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  // Display specific stock analysis results
+                  results.analysis_results.map((subredditData: any, index: number) => {
+                    const subredditName = Object.keys(subredditData)[0];
+                    const stocks = subredditData[subredditName].specific_stock;
+                    
+                    return (
+                      <div key={index} className="bg-customColor2 rounded-lg p-6">
+                        <h3 className="text-2xl font-bold text-black mb-4 border-b border-black pb-2">
+                          r/{subredditName}
+                        </h3>
+                        
+                        {stocks.length > 0 ? (
+                          <div className="space-y-4">
+                            {stocks.map((stock: any, stockIndex: number) => (
+                              <div key={stockIndex}>
+                                <StockCard stock={stock} />
+                                {renderStockDescription(stock, `specific-${subredditName}-${stockIndex}`)}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-black italic">No stocks found for this subreddit</p>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             )}
             
@@ -415,6 +621,50 @@ export default function PlaygroundPage() {
           </div>
         </div>
       </div>
+      
+      {/* Stock Info Popup */}
+      <InfoPopup
+        isOpen={stockInfoOpen}
+        onClose={() => setStockInfoOpen(false)}
+        title="Stock Information"
+      >
+        <div className="space-y-4">
+          <div>
+            <h4 className="font-bold">Price</h4>
+            <p>The current trading price of the stock.</p>
+          </div>
+          <div>
+            <h4 className="font-bold">Change</h4>
+            <p>The dollar amount change in price from the previous day's close.</p>
+          </div>
+          <div>
+            <h4 className="font-bold">Percentage Change</h4>
+            <p>The percentage change in price from the previous day's close.</p>
+          </div>
+          <div>
+            <h4 className="font-bold">High</h4>
+            <p>The highest price the stock reached during the current trading day.</p>
+          </div>
+          <div>
+            <h4 className="font-bold">Low</h4>
+            <p>The lowest price the stock reached during the current trading day.</p>
+          </div>
+          <div>
+            <h4 className="font-bold">RSI (Relative Strength Index)</h4>
+            <p>A momentum indicator that measures the magnitude of recent price changes:
+              <ul className="ml-5 mt-1 list-disc">
+                <li>Above 70: Potentially overbought</li>
+                <li>Below 30: Potentially oversold</li>
+                <li>Between 30-70: Neutral territory</li>
+              </ul>
+            </p>
+          </div>
+          <div>
+            <h4 className="font-bold">Sentiment Analysis</h4>
+            <p>A score indicating the overall sentiment from Reddit posts and comments.</p>
+          </div>
+        </div>
+      </InfoPopup>
     </div>
   );
 }
