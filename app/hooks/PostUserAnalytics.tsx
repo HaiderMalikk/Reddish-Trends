@@ -74,8 +74,8 @@ export const useAnalyticsTracking = () => {
     return trackAnalysis(userEmail, "general_analysis");
   };
 
-  const trackRedoAnalysis = async (userEmail: string) => {
-    return trackAnalysis(userEmail, "redo_analysis");
+  const trackRedoGeneralAnalysis = async (userEmail: string) => {
+    return trackAnalysis(userEmail, "redo_general_analysis");
   };
   
   // Add playground analysis tracking
@@ -85,7 +85,7 @@ export const useAnalyticsTracking = () => {
 
   return {
     trackGeneralAnalysis,
-    trackRedoAnalysis,
+    trackRedoGeneralAnalysis,
     trackPlaygroundAnalysis,
     isTracking,
   };

@@ -62,7 +62,7 @@ export default function Dashboard() {
   const [isApiLoading, setIsApiLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0); // Add state for progress
   const [countdown, setCountdown] = useState<string>(""); // Add state for countdown
-  const { trackGeneralAnalysis, trackRedoAnalysis } = useAnalyticsTracking(); // Analytics tracking hooks
+  const { trackGeneralAnalysis, trackRedoGeneralAnalysis } = useAnalyticsTracking(); // Analytics tracking hooks
   const {
     favorites,
     addFavorite,
@@ -225,7 +225,7 @@ export default function Dashboard() {
           await trackGeneralAnalysis(userData.email);
         } else if (request.type === "redogeneralanalysis") {
           console.log("Tracking redo general analysis");
-          await trackRedoAnalysis(userData.email);
+          await trackRedoGeneralAnalysis(userData.email);
         }
       }
       

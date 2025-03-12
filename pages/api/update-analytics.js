@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
     if (
       !analysisType ||
-      !["general_analysis", "redo_analysis", "playground_analysis"].includes(analysisType)
+      !["general_analysis", "redo_general_analysis", "playground_analysis"].includes(analysisType)
     ) {
       return res
         .status(400)

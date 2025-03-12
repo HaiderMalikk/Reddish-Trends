@@ -42,3 +42,5 @@ next-env.d.ts
 
 todo.txt
 .qodo
+
+.vscode/
