@@ -11,13 +11,13 @@
 <img src="./public/linkgrey.png" alt="Home" width="42"/>
 </a>
 
-## Project Idea: TradeSenseAI
+## Project Idea: Reddish Trends
 
-TradeSenseAI is a hybrid stock prediction system that combines social sentiment analysis with traditional financial data and advanced analytics to provide a more accurate, holistic prediction model.
+Reddish Trends is a hybrid stock prediction system that combines social sentiment analysis with traditional financial data and advanced analytics to provide a more accurate, holistic prediction model.
 
 ## 🔥 How It Works
 
-Instead of just using social media sentiment or just stock trends and market info, TradeSenseAI combines both to make a unique trading helper:
+Instead of just using social media sentiment or just stock trends and market info, Reddish Trends combines both to make a unique trading helper:
 - It analyzes social media posts to gauge public sentiment about a company or stock while also using traditional financial data such as stock prices, trading volumes, and economic indicators to make predictions.
 - It provides stock predictions and recommends actions based on the analysis of both social media and financial data.
 
@@ -29,7 +29,7 @@ Instead of just using social media sentiment or just stock trends and market inf
 - ✅ Historical correlations (patterns between sentiment & price changes)
 
 ### 1️⃣ Data Collection: Multi-Source Input
-TradeSenseAI gathers both financial data and social data in real time.
+Reddish Trends gathers both financial data and social data in real time.
 
 #### 📊 Stock Market Data (Financial Indicators)
 Use Yahoo Finance API / Alpha Vantage / IEX Cloud to get:
@@ -72,7 +72,7 @@ A stunning UI that:
 - 💡 📅 Earnings Calendar Alerts – Detects pre-earnings stock trends
 - 💡 📢 Sentiment-Based Alerts – “Tesla has 90% positive sentiment! 🚀”
 
-### Why TradeSenseAI?
+### Why Reddish Trends?
 - ✅ Not just social media hype → Uses financial analysis too
 - ✅ Not just price trends → Adds market psychology from social trends
 - ✅ Real-world relevance → People already use sentiment for trading
@@ -87,7 +87,7 @@ A stunning UI that:
 - **Hosting:** Vercel, Heroku
 
 ## Why the Website Was Made
-TradeSenseAI was created to provide traders with a more comprehensive tool for stock prediction by combining traditional financial data with social sentiment analysis. This approach aims to offer more accurate predictions and actionable insights, helping traders make informed decisions in the stock market.
+Reddish Trends was created to provide traders with a more comprehensive tool for stock prediction by combining traditional financial data with social sentiment analysis. This approach aims to offer more accurate predictions and actionable insights, helping traders make informed decisions in the stock market.
 - Please note that the webiste is still in progress and the fetures may be subject to change in the future.
 
 ## File Structure

@@ -9,7 +9,7 @@ export default function PrivacyPolicy() {
 
         <h2 className="mt-6 text-2xl font-semibold">1. Introduction</h2>
         <p>
-          Welcome to Trade Sense AI ("we," "our," or "us"). This Privacy Policy
+          Welcome to Reddish Trends ("we," "our," or "us"). This Privacy Policy
           explains how we collect, use, disclose, and safeguard your information
           when you use our trading insights website and services.
         </p>
@@ -136,7 +136,7 @@ export default function PrivacyPolicy() {
 
         <h2 className="mt-6 text-2xl font-semibold">9. Contact Information</h2>
         <p>For privacy-related questions or concerns, contact us at:</p>
-        <p>tradesenseai@googlegroups.com</p>
+        <p>reddishtrends@googlegroups.com</p>
 
         <h2 className="mt-6 text-2xl font-semibold">10. Governing Law</h2>
         <p>

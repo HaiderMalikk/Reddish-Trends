@@ -1,5 +1,5 @@
 {
-  "name": "trade-sense-ai",
+  "name": "reddish-trends",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -51,7 +51,7 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3"
   },
-  "description": "Trade Sense AI is a platform that provides real-time stock market data and analysis based on stock data and news sentiment analysis.",
+  "description": "Reddish Trends is a platform that provides real-time stock market data and analysis based on stock data and news sentiment analysis.",
   "main": "index.js",
   "keywords": [],
   "author": "",

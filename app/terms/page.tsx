@@ -9,14 +9,14 @@ export default function TermsOfService() {
 
         <h2 className="mt-6 text-2xl font-semibold">1. Acceptance of Terms</h2>
         <p>
-          By accessing or using TradeSenseAI ("we," "our," or "us"), you agree
+          By accessing or using Reddish Trends ("we," "our," or "us"), you agree
           to be bound by these Terms of Service and all applicable laws. If you
           do not agree, please do not use our platform.
         </p>
 
         <h2 className="mt-6 text-2xl font-semibold">2. Use of the Service</h2>
         <p>
-          You agree to use TradeSenseAI for lawful purposes only. You must not:
+          You agree to use Reddish Trends for lawful purposes only. You must not:
         </p>
         <ul className="list-inside list-disc">
           <li>Violate any applicable laws or regulations</li>
@@ -39,14 +39,14 @@ export default function TermsOfService() {
           4. Intellectual Property
         </h2>
         <p>
-          All content on TradeSenseAI, including text, graphics, logos, and
+          All content on Reddish Trends, including text, graphics, logos, and
           software, is our property or licensed to us and is protected by
           intellectual property laws. Unauthorized use is strictly prohibited.
         </p>
 
         <h2 className="mt-6 text-2xl font-semibold">5. Disclaimer</h2>
         <p>
-          The content provided by TradeSenseAI is for informational purposes
+          The content provided by Reddish Trends is for informational purposes
           only. We do not guarantee the accuracy or reliability of any trading
           insights provided on the platform.
         </p>
@@ -81,7 +81,7 @@ export default function TermsOfService() {
 
         <h2 className="mt-6 text-2xl font-semibold">10. Contact Information</h2>
         <p>For any questions regarding these Terms, contact us at:</p>
-        <p>tradesenseai@googlegroups.com</p>
+        <p>reddishtrends@googlegroups.com</p>
       </div>
     </div>
   );

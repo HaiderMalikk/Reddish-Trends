@@ -75,10 +75,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <html lang="en" className={poppins.variable}>
         {/* meta tags for SEO */}
         <Head>
-          <title>Trade Sense AI - AI-Powered Stock Predictions</title>
+          <title>Reddish Trends - AI-Powered Stock Predictions</title>
           <meta
             name="description"
-            content="Trade Sense AI combines social sentiment analysis and financial data to provide accurate stock predictions and recommendations."
+            content="Reddish Trends combines social sentiment analysis and financial data to provide accurate stock predictions and recommendations."
           />
           <meta
             name="keywords"
@@ -89,7 +89,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           {/* Open Graph Meta Tags for Social Media */}
           <meta
             property="og:title"
-            content="Trade Sense AI - AI-Powered Stock Predictions"
+            content="Reddish Trends - AI-Powered Stock Predictions"
           />
           <meta
             property="og:description"
@@ -106,7 +106,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <meta name="twitter:card" content="summary_large_image" />
           <meta
             name="twitter:title"
-            content="Trade Sense AI - AI-Powered Stock Predictions"
+            content="Reddish Trends - AI-Powered Stock Predictions"
           />
           <meta
             name="twitter:description"
@@ -169,7 +169,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <div className="md:w-1/2">
                 <h1 className="font-serif text-6xl">Hello</h1>
                 <p className="project-description mt-4">
-                  Trade Sense AI, a project of{" "}
+                  Reddish Trends, a project of{" "}
                   <a
                     className="underline hover:text-gray-300"
                     href="https://haidermalikk.github.io/HaiderMaliksWebsite/"
@@ -188,7 +188,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   <ul className="mt-2 space-y-2">
                     <li>
                       <Link
-                        href="mailto:tradesenseai@googlegroups.com?subject=Contact%20from%20Website"
+                        href="mailto:reddishtrends@googlegroups.com?subject=Contact%20from%20Website"
                         className="underline hover:text-gray-300"
                       >
                         Contact Us

@@ -130,14 +130,16 @@ export default function HomePage() {
       >
         {/* catchy line to intoduce */}
         <p className="mx-4 mb-10 text-4xl text-customColor4 sm:mx-20 md:mx-40 lg:mx-60">
-          Welcome to TradeSense – the future of trading.
+          Welcome to Reddish Trends - A Reddit Powered Market Analyzer.
         </p>
         <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
-          TradeSense combines social sentiment and financial data to help you
-          make smarter trading decisions. it takes the guesswork out of the
-          stock market. by providing you with the most accurate and up-to-date
-          information that takes into account both social sentiment and
-          financial data. Get the edge you need to succeed in the stock market.
+          Reddish Trends combines social sentiment and financial data to help you
+          make smarter trading decisions. it takes advantage of the power of the
+          Reddit community to provide insights into the market. It uses AI to make
+          predictions on the future of the stock and provides you with the best,
+          worst, and upcoming stocks based on our analysis. It also provides you
+          with a comprehensive market overview, including price changes, highs/lows,
+          and more.
         </p>
         {/* Powered by Altharion */}
         <div
