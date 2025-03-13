@@ -35,7 +35,7 @@ const Toast = ({
 
   return (
     <div
-      className={`fixed right-4 top-20 ${bgColor} ${isFading ? "animate-fadeOut" : "animate-fadeIn"} z-[1000] flex items-center rounded-lg px-6 py-3 text-white shadow-xl`}
+      className={`fixed right-4 top-20 ${bgColor} ${isFading ? "animate-fadeOut" : "animate-fadeIn"} z-[1000] flex items-center rounded-lg px-6 py-3 text-customColor2 shadow-xl`}
     >
       <span className="text-lg font-medium">{message}</span>
       <button

@@ -38,7 +38,7 @@ export default function LoginPage() {
           <h1 className="text-white">Loading...</h1>
         </div>
       ) : (
-        <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-customColor2">
+        <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-reddish">
           <h1 className="mb-4 text-4xl font-bold text-customColor6">
             Coming Very Soon! Check back later.
           </h1>

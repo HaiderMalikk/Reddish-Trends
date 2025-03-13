@@ -105,10 +105,12 @@ export default function Dashboard() {
 
   // Add functions to scroll to specific sections
   const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
+    setTimeout(() => {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
   };
 
   const incrementProgress = () => {
@@ -342,7 +344,7 @@ export default function Dashboard() {
   if (!user) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
-        <h1 className="text-white">
+        <h1 className="text-customColor2">
           Please log in to view this page. Redirecting you to the login page...
         </h1>
       </div>
@@ -361,7 +363,7 @@ export default function Dashboard() {
           <div></div>
           <div></div>
         </div>
-        <h1 className="text-white">Loading...</h1>
+        <h1 className="text-customColor2">Loading...</h1>
       </div>
     );
   }
@@ -379,8 +381,8 @@ export default function Dashboard() {
           <div></div>
           <div></div>
         </div>
-        <h1 className="text-white">Loading market data...</h1>
-        <h1 className="text-white">Please stay on this page.</h1>
+        <h1 className="text-customColor2">Loading market data...</h1>
+        <h1 className="text-customColor2">Please stay on this page.</h1>
         <div className="mt-4 h-1 min-w-[300px] bg-gray-200">
           <div
             className="h-full bg-customColor3 transition-all duration-500"
@@ -399,7 +401,7 @@ export default function Dashboard() {
         {/* Error message Error, then error then recommendation */}
         <h1 className="text-4xl font-semibold text-red-600">Error</h1>
         {/* error message */}
-        <p className="mt-4 text-lg text-white">{userData.message}</p>
+        <p className="mt-4 text-lg text-customColor2">{userData.message}</p>
         {/* recommendation */}
         <p className="mt-4 text-lg text-gray-300">
           Please try refreshing the page or trying again later. If the problem
@@ -407,7 +409,6 @@ export default function Dashboard() {
           the page.
         </p>
       </div>
-      
     );
   }
 
@@ -416,7 +417,7 @@ export default function Dashboard() {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-black">
         <h1 className="text-4xl font-semibold text-red-600">API Error</h1>
-        <p className="mt-4 text-lg text-white">{apiError}</p>
+        <p className="mt-4 text-lg text-customColor2">{apiError}</p>
         <button
           onClick={() => handel_flask_call({ type: "getgeneralanalysis" })}
           className="mt-6 rounded-lg bg-customColor5 px-6 py-2 text-black transition hover:bg-opacity-90"
@@ -457,7 +458,6 @@ export default function Dashboard() {
       });
     }
   };
-  
 
   return (
     // bg div
@@ -729,7 +729,7 @@ export default function Dashboard() {
                   <FaInfoCircle size={18} />
                 </button>
 
-                <div className="mb-4 flex items-center border-b border-customColor2 pb-2">
+                <div className="mb-4 flex items-center border-b border-customColor2 pt-2">
                   <div className="mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -808,14 +808,14 @@ export default function Dashboard() {
                               "Confidence Score"
                             ],
                           ) < 30
-                            ? "bg-red-700 text-white"
+                            ? "bg-red-700 text-customColor2"
                             : Number(
                                   response.response["Top_Stock"].GPT_Analysis[
                                     "Confidence Score"
                                   ],
                                 ) < 70
-                              ? "bg-yellow-700 text-white"
-                              : "bg-green-700 text-white"
+                              ? "bg-yellow-700 text-customColor2"
+                              : "bg-green-700 text-customColor2"
                         }`}
                       >
                         {
@@ -1037,7 +1037,7 @@ export default function Dashboard() {
                   <FaInfoCircle size={18} />
                 </button>
 
-                <div className="mb-4 flex items-center border-b border-customColor2 pb-2">
+                <div className="mb-4 flex items-center border-b border-customColor2 pt-2">
                   <div className="mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -1116,14 +1116,14 @@ export default function Dashboard() {
                               "Confidence Score"
                             ],
                           ) < 30
-                            ? "bg-red-700 text-white"
+                            ? "bg-red-700 text-customColor2"
                             : Number(
                                   response.response["Worst_Stock"].GPT_Analysis[
                                     "Confidence Score"
                                   ],
                                 ) <= 70
-                              ? "bg-yellow-700 text-white"
-                              : "bg-green-700 text-white"
+                              ? "bg-yellow-700 text-customColor2"
+                              : "bg-green-700 text-customColor2"
                         }`}
                       >
                         {
@@ -1349,7 +1349,7 @@ export default function Dashboard() {
                   <FaInfoCircle size={18} />
                 </button>
 
-                <div className="mb-4 flex items-center border-b border-customColor2 pb-2">
+                <div className="mb-4 flex items-center border-b border-customColor2 pt-2">
                   <div className="mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -1431,13 +1431,13 @@ export default function Dashboard() {
                               "Confidence Score"
                             ],
                           ) < 30
-                            ? "bg-red-700 text-white"
+                            ? "bg-red-700 text-customColor2"
                             : Number(
                                   response.response["Rising_Stock"]
                                     .GPT_Analysis["Confidence Score"],
                                 ) <= 70
-                              ? "bg-yellow-700 text-white"
-                              : "bg-green-700 text-white"
+                              ? "bg-yellow-700 text-customColor2"
+                              : "bg-green-700 text-customColor2"
                         }`}
                       >
                         {
@@ -1462,38 +1462,40 @@ export default function Dashboard() {
           >
             <div className="">
               <div>
-                <h4 className="font-bold">Price</h4>
+                <h4 className="pt-2 font-bold">Price</h4>
                 <p>The current trading price of the stock.</p>
               </div>
               <div>
-                <h4 className="font-bold">Change</h4>
+                <h4 className="pt-2 font-bold">Change</h4>
                 <p>
                   The dollar amount change in price from the previous day's
                   close.
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">Percentage Change</h4>
+                <h4 className="pt-2 font-bold">Percentage Change</h4>
                 <p>
                   The percentage change in price from the previous day's close.
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">High</h4>
+                <h4 className="pt-2 font-bold">High</h4>
                 <p>
                   The highest price the stock reached during the current trading
                   day.
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">Low</h4>
+                <h4 className="pt-2 font-bold">Low</h4>
                 <p>
                   The lowest price the stock reached during the current trading
                   day.
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">RSI (Relative Strength Index)</h4>
+                <h4 className="pt-2 font-bold">
+                  RSI (Relative Strength Index)
+                </h4>
                 <p>
                   A momentum indicator that measures the magnitude of recent
                   price changes to evaluate overbought or oversold conditions:
@@ -1511,7 +1513,7 @@ export default function Dashboard() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold">Sentiment Analysis</h4>
+                <h4 className="pt-2 font-bold">Sentiment Analysis</h4>
                 <p>
                   A score indicating the overall sentiment from the Reddit post,
                   ranging from -10 (extremely negative) to 10 (extremely
@@ -1519,14 +1521,14 @@ export default function Dashboard() {
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">Post From Reddit</h4>
+                <h4 className="pt-2 font-bold">Post From Reddit</h4>
                 <p>
                   The title and content of the Reddit post related to this
                   stock, along with top comments from the Reddit community.
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">NOTE</h4>
+                <h4 className="pt-2 font-bold">NOTE</h4>
                 <p>
                   For some stocks, some or all of the data may not be available.
                   <li>
@@ -1550,21 +1552,21 @@ export default function Dashboard() {
           >
             <div className="space-y-4">
               <div>
-                <h4 className="font-bold">Overview</h4>
+                <h4 className="pt-2 font-bold">Overview</h4>
                 <p>
                   A general summary of the stock's performance and position in
                   the market.
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">Market Sentiment</h4>
+                <h4 className="pt-2 font-bold">Market Sentiment</h4>
                 <p>
                   Analysis of the overall emotional attitude toward the stock by
                   investors and the market as a whole.
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">Technical Analysis</h4>
+                <h4 className="pt-2 font-bold">Technical Analysis</h4>
                 <p>
                   Evaluation based on price patterns, trading signals, and
                   various technical indicators. This focuses on historical price
@@ -1572,7 +1574,7 @@ export default function Dashboard() {
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">Fundamental Analysis</h4>
+                <h4 className="pt-2 font-bold">Fundamental Analysis</h4>
                 <p>
                   Assessment of the company's financial health, business model,
                   and growth potential based on financial statements, market
@@ -1580,14 +1582,14 @@ export default function Dashboard() {
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">Prediction</h4>
+                <h4 className="pt-2 font-bold">Prediction</h4>
                 <p>
                   A forecast of the potential future price movement based on the
                   combined analysis.
                 </p>
               </div>
               <div>
-                <h4 className="font-bold">Confidence Score</h4>
+                <h4 className="pt-2 font-bold">Confidence Score</h4>
                 <p>
                   A percentage indicating how confident the AI is in its
                   analysis and prediction. Higher scores suggest stronger
@@ -1604,7 +1606,7 @@ export default function Dashboard() {
           >
             <div className="space-y-4">
               <div>
-                <h4 className="font-bold">Stock Updates</h4>
+                <h4 className="pt-2 font-bold">Stock Updates</h4>
                 <p>
                   The stock of the day is garanteed to be updated at 00:00 EST
                   every day

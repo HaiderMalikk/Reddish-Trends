@@ -52,7 +52,7 @@ export default function Profile() {
   if (!user) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
-        <h1 className="text-white">
+        <h1 className="text-customColor2">
           Please log in to view this page. Redirecting you to the login page...
         </h1>
       </div>
@@ -72,7 +72,7 @@ export default function Profile() {
           <div></div>
           <div></div>
         </div>
-        <h1 className="text-white">Loading...</h1>
+        <h1 className="text-customColor2">Loading...</h1>
       </div>
     );
   }
@@ -84,7 +84,7 @@ export default function Profile() {
         {/* Error message Error, then error then recommendation */}
         <h1 className="text-4xl font-semibold text-red-600">Error</h1>
         {/* error message */}
-        <p className="mt-4 text-lg text-white">{userData.message}</p>
+        <p className="mt-4 text-lg text-customColor2">{userData.message}</p>
         {/* recommendation */}
         <p className="mt-4 text-lg text-gray-300">
           Please try refreshing the page or trying again later. If the problem
@@ -134,7 +134,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="relative min-h-screen bg-customColor4 p-6">
+    <div className="relative min-h-screen bg-reddish p-6">
       {/* Toast notification */}
       {toast.show && (
         <Toast message={toast.message} type={toast.type} onClose={closeToast} />
@@ -157,17 +157,17 @@ export default function Profile() {
             alt="Profile"
             className="mx-auto h-32 w-32 rounded-full border-4 border-customColor6"
           />
-          <p className="mt-4 text-lg text-gray-700">
+          <p className="mt-4 text-lg text-black">
             <strong>First Name:</strong> {userData.firstName}
           </p>
-          <p className="mb-6 text-lg text-gray-700">
+          <p className="mb-6 text-lg text-black">
             <strong>Last Name:</strong> {userData.lastName}
           </p>
-          <p className="flex flex-col items-center text-lg text-gray-700">
+          <p className="flex flex-col items-center text-lg text-black">
             <strong>Email:</strong> {userData.email}
           </p>
           {userData.createdAt && (
-            <p className="flex flex-col items-center text-lg text-gray-700">
+            <p className="flex flex-col items-center text-lg text-black">
               <strong>Account Created At:</strong> {userData.createdAt}
             </p>
           )}
@@ -183,7 +183,7 @@ export default function Profile() {
         {localFavorites && localFavorites.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="min-w-full overflow-hidden rounded-lg bg-white">
-              <thead className="bg-customColor6 text-white">
+              <thead className="bg-customColor6 text-customColor2">
                 <tr>
                   <th className="px-4 py-3 text-left">Symbol</th>
                   <th className="px-4 py-3 text-left">Company Name</th>
@@ -200,7 +200,7 @@ export default function Profile() {
                     <td className="px-4 py-3 text-center">
                       <button
                         onClick={() => handleRemoveFavorite(fav.symbol)}
-                        className="rounded bg-red-500 px-3 py-1 text-white transition-colors hover:bg-red-600"
+                        className="rounded bg-red-500 px-3 py-1 text-customColor2 transition-colors hover:bg-red-600"
                         aria-label={`Remove ${fav.symbol} from favorites`}
                       >
                         Remove

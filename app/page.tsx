@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import logotext from "../public/logo-w-text.svg";
+import logotext from "../public/logo-w-text-alt.svg";
 import logocursor from "../public/logo-alt.svg";
 import image1 from "../public/feature1.png";
 import image2 from "../public/feature2.png";
@@ -36,7 +36,7 @@ export default function HomePage() {
             scrollTrigger: {
               trigger: section,
               start:
-                window.innerWidth < 768 ? `top ${90 + index * 10}%` : "top 90%", // Adjust for mobile as the index inc i.e as we traverse down the page the top% should increase
+                window.innerWidth < 768 ? `top ${90 + index * 8}%` : "top 90%", // Adjust for mobile as the index inc i.e as we traverse down the page the top% should increase
               end: "bottom 20%",
               toggleActions: "play none none reverse",
             },
@@ -96,7 +96,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-customColor2">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-reddish ">
       {/* Custom mouse effect */}
       <div className="flair">
         <Image src={logocursor} alt="Logo" width={30} height={30} />
@@ -132,7 +132,7 @@ export default function HomePage() {
         <p className="mx-4 mb-10 text-4xl text-customColor4 sm:mx-20 md:mx-40 lg:mx-60">
           Welcome to Reddish Trends - A Reddit Powered Market Analyzer.
         </p>
-        <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
+        <p className="mx-4 text-2xl text-customColor2 sm:mx-20 md:mx-40 lg:mx-60">
           Reddish Trends combines social sentiment and financial data to help you
           make smarter trading decisions. it takes advantage of the power of the
           Reddit community to provide insights into the market. It uses AI to make
@@ -141,70 +141,12 @@ export default function HomePage() {
           with a comprehensive market overview, including price changes, highs/lows,
           and more.
         </p>
-        {/* Powered by Altharion */}
-        <div
-          ref={(el) => {
-            if (el) sectionRefs.current[3] = el;
-          }}
-          className="mt-20"
-        >
-          <p className="mx-4 text-2xl text-customColor6 sm:mx-20 md:mx-40 lg:mx-60">
-            Powered by Altharion, a cutting-edge AI Market Analyst.
-          </p>
-          <div className="flex flex-row items-center justify-center">
-            <Image
-              src={altharionlogo}
-              alt="Altharion Logo"
-              width={400}
-              height={400}
-              className="alth-logo"
-              // link to repo
-              onClick={() => {
-                window.open(
-                  "https://github.com/HaiderMalikk/Altharion",
-                  "_blank",
-                );
-              }}
-            ></Image>
-            <Image
-              src={linklogo}
-              alt="link"
-              width={20}
-              height={20}
-              className="link-logo"
-              // link to repo
-              onClick={() => {
-                window.open(
-                  "https://github.com/HaiderMalikk/Altharion",
-                  "_blank",
-                );
-              }}
-            ></Image>
-          </div>
-          <div className="mt-6 text-customColor6">
-            <a className="text-xl">Whats New ?</a>
-            <div className="mt-4 text-customColor6">
-              <a className="text-xl text-customColor4">
-                Altharion Model √A Version 1.0
-              </a>
-              <p className="text-md mx-4 mt-2 sm:mx-20 md:mx-40 lg:mx-60">
-                Altharion Model √A can analyze any financial subreddit and make
-                sense of what the market situation is based on the Redditors and
-                conversations in those communities. It can then recommend best,
-                worst and upcoming stocks from the subreddit. It also uses Yahoo
-                Finance API to get information on the stocks mentioned in the
-                subreddits to see there current situation and predict the future
-                of the stock.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
       <div className="mt-20 flex w-full flex-wrap justify-around p-6 text-center">
         <div
           className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3 sm:px-4"
           ref={(el) => {
-            if (el) sectionRefs.current[4] = el;
+            if (el) sectionRefs.current[3] = el;
           }}
         >
           <Image
@@ -214,7 +156,7 @@ export default function HomePage() {
             height={400}
             className="rounded-lg shadow-2xl"
           />
-          <p className="mt-4 max-w-[350px] px-4 text-customColor6 sm:px-0">
+          <p className="mt-4 max-w-[350px] px-4 text-customColor2 sm:px-0">
             <strong>Social Sentiment Analysis</strong> – We use social media
             like Reddit to gauge the sentiment of the market. we use posts and
             comments from popular subreddits to analyze the sentiment of the
@@ -224,7 +166,7 @@ export default function HomePage() {
         <div
           className="mb-8 flex w-full flex-col items-center sm:mb-0 sm:w-1/3 sm:px-4"
           ref={(el) => {
-            if (el) sectionRefs.current[5] = el;
+            if (el) sectionRefs.current[4] = el;
           }}
         >
           <Image
@@ -234,7 +176,7 @@ export default function HomePage() {
             height={400}
             className="rounded-lg shadow-2xl"
           />
-          <p className="mt-4 max-w-[350px] px-4 text-customColor6 sm:px-0">
+          <p className="mt-4 max-w-[350px] px-4 text-customColor2 sm:px-0">
             <strong>Financial Analysis</strong> – We use the social media data
             and combine it with financial data to provide you with a
             comprehensive market overview. things like price changes, high/lows,
@@ -244,7 +186,7 @@ export default function HomePage() {
         <div
           className="flex w-full flex-col items-center sm:w-1/3 sm:px-4"
           ref={(el) => {
-            if (el) sectionRefs.current[6] = el;
+            if (el) sectionRefs.current[5] = el;
           }}
         >
           <Image
@@ -254,7 +196,7 @@ export default function HomePage() {
             height={400}
             className="rounded-lg shadow-2xl"
           />
-          <p className="mt-4 max-w-[350px] px-4 text-customColor6 sm:px-0">
+          <p className="mt-4 max-w-[350px] px-4 text-customColor2 sm:px-0">
             <strong>AI-Driven Predictions</strong> – We combine all the data
             together and use AI models to make predictions on the future of the
             stock. we provide you with the best, worst, and upcoming stocks
@@ -264,7 +206,7 @@ export default function HomePage() {
       </div>
       <div
         ref={(el) => {
-          if (el) sectionRefs.current[7] = el;
+          if (el) sectionRefs.current[6] = el;
         }}
         className="mt-20 px-4 text-center"
       >
@@ -272,7 +214,7 @@ export default function HomePage() {
           ref={(el) => {
             if (el) underlinedItemsRef.current[0] = el;
           }}
-          className="underline-text relative inline-block font-bold text-customColor6"
+          className="underline-text relative inline-block font-bold text-customColor2"
         >
           Level Up Your Trading
           <div className="underline-animation"></div>
@@ -280,7 +222,7 @@ export default function HomePage() {
         <div
           className="pricing-card-container mt-6 flex justify-center gap-8"
           ref={(el) => {
-            if (el) sectionRefs.current[8] = el;
+            if (el) sectionRefs.current[7] = el;
           }}
         >
           <div className="pricing-card">
@@ -302,7 +244,7 @@ export default function HomePage() {
                   paddinginput="buttonpadding2"
                   Buttoncolor="#f5efe7"
                 >
-                  <h2 className="text-xl font-semibold text-customColor4">
+                  <h2 className="text-xl font-semibold text-customColor6">
                     Get Started for Free
                   </h2>
                 </AnimatedButton>
@@ -342,7 +284,7 @@ export default function HomePage() {
                   paddinginput="buttonpadding2"
                   Buttoncolor="#f5efe7"
                 >
-                  <h2 className="text-xl font-semibold text-customColor4">
+                  <h2 className="text-xl font-semibold text-customColor6">
                     Get Started
                   </h2>
                 </AnimatedButton>
@@ -353,18 +295,18 @@ export default function HomePage() {
       </div>
       <div
         ref={(el) => {
-          if (el) sectionRefs.current[9] = el;
+          if (el) sectionRefs.current[8] = el;
         }}
         className="mt-24 text-center"
       >
         <Link href="/login" className="custombutton">
           <AnimatedButton paddinginput="buttonpadding" Buttoncolor="">
-            <h2 className="text-3xl font-semibold text-customColor2">
+            <h2 className="text-3xl font-semibold text-customColor6">
               Get Started for Free
             </h2>
           </AnimatedButton>
         </Link>
-        <p className="twoxlpadded mt-4 text-2xl text-customColor6">
+        <p className="twoxlpadded mt-4 text-2xl text-customColor2">
           Sign up now and take your trading to the next level.
         </p>
       </div>

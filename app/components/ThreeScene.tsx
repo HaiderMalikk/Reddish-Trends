@@ -64,18 +64,35 @@ const ThreeScene = () => {
       factor = window.innerHeight / map.image.height;
     }
 
-    // Set the background image to cover the whole screen, map is our background texture
-    map.repeat.set(
-      window.innerWidth / (map.image.width * factor),
-      window.innerHeight / (map.image.height * factor),
-    );
-    map.offset.set(
-      0.5 - window.innerWidth / (map.image.width * factor) / 2,
-      0.5 - window.innerHeight / (map.image.height * factor) / 2,
-    );
-    map.wrapS = THREE.RepeatWrapping;
-    map.wrapT = THREE.RepeatWrapping;
-    scene.background = map;
+    // ...existing code...
+
+// Set the background image to cover the whole screen, map is our background texture
+const isMobile = window.innerWidth < 768; // Common breakpoint for mobile devices
+
+if (isMobile) {
+  // Mobile-specific settings
+  map.repeat.set(
+    window.innerWidth / (map.image.width * factor),
+    window.innerHeight / (map.image.height * factor),
+  );
+  map.offset.set(
+    0.5 - window.innerWidth / (map.image.width * factor) / 2,
+    0.5 - window.innerHeight / (map.image.height * factor) / 2,
+  );
+  map.wrapS = THREE.RepeatWrapping;
+  map.wrapT = THREE.RepeatWrapping;
+} else {
+  // pc-specific settings
+  map.repeat.set(
+    window.innerWidth / (map.image.width * factor),
+    window.innerHeight / (map.image.height * factor),
+  );
+  map.offset.set(
+    0.5 - window.innerWidth / (map.image.width * factor + 100) / 2,
+    0.5 - window.innerHeight / (map.image.height * factor) / 2,
+  )
+}
+scene.background = map;
 
     // Handle window resize
     const handleResize = () => {
@@ -397,7 +414,7 @@ const ThreeScene = () => {
             <div></div>
             <div></div>
           </div>
-          <h1 className="text-white">Loading...</h1>
+          <h1 className="text-customColor2">Loading...</h1>
         </div>
       ) : (
         <>

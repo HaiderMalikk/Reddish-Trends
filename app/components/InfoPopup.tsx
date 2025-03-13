@@ -86,7 +86,7 @@ const InfoPopup = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Completely redesigned header with fixed positioning for the title and button */}
-        <div className="sticky top-0 z-10 mb-6 bg-customColor2 pb-4 pt-16">
+        <div className="sticky top-0 z-10 mb-6 bg-customColor2 pb-2 pt-16">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-customColor4/20">

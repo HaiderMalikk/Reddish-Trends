@@ -44,7 +44,20 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   // Loader until the user data is loaded
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-screen items-center justify-center bg-black">
+        {/* Spinner */}
+        <div className="spinner m-8">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <h1 className="text-customColor2">Loading...</h1>
+      </div>
+    );
   }
 
   // Show loading screen during logout process
@@ -60,7 +73,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div></div>
           <div></div>
         </div>
-        <h1 className="text-white">Logging out...</h1>
+        <h1 className="text-customColor2">Logging out...</h1>
       </div>
     );
   }
