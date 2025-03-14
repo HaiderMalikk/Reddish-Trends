@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 const ThreeScene = () => {
   const mountRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const text = "TTrade With Confidence, Trade With Sense.";
+  const text = "WWelcome To Reddish Trends!";
   const [displayedText, setDisplayedText] = useState<string>("");
   const [doneAnimation, setDoneAnimation] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -66,33 +66,26 @@ const ThreeScene = () => {
 
     // ...existing code...
 
-// Set the background image to cover the whole screen, map is our background texture
-const isMobile = window.innerWidth < 768; // Common breakpoint for mobile devices
+    // Set the background image to cover the whole screen, map is our background texture
+    const isMobile = window.innerWidth < 768; // Common breakpoint for mobile devices
 
-if (isMobile) {
-  // Mobile-specific settings
-  map.repeat.set(
-    window.innerWidth / (map.image.width * factor),
-    window.innerHeight / (map.image.height * factor),
-  );
-  map.offset.set(
-    0.5 - window.innerWidth / (map.image.width * factor) / 2,
-    0.5 - window.innerHeight / (map.image.height * factor) / 2,
-  );
-  map.wrapS = THREE.RepeatWrapping;
-  map.wrapT = THREE.RepeatWrapping;
-} else {
-  // pc-specific settings
-  map.repeat.set(
-    window.innerWidth / (map.image.width * factor),
-    window.innerHeight / (map.image.height * factor),
-  );
-  map.offset.set(
-    0.5 - window.innerWidth / (map.image.width * factor + 100) / 2,
-    0.5 - window.innerHeight / (map.image.height * factor) / 2,
-  )
-}
-scene.background = map;
+    if (isMobile) {
+      // Mobile-specific settings
+      map.offset.set(
+        0.5 - window.innerWidth / (map.image.width * factor) / 2,
+        0.5 - window.innerHeight / (map.image.height * factor) / 2,
+      );
+      map.wrapS = THREE.RepeatWrapping;
+      map.wrapT = THREE.RepeatWrapping;
+    } else {
+      // pc-specific settings
+
+      map.offset.set(
+        0.5 - window.innerWidth / (map.image.width * factor) / 2,
+        0.5 - window.innerHeight / (map.image.height * factor) / 2,
+      );
+    }
+    scene.background = map;
 
     // Handle window resize
     const handleResize = () => {
@@ -147,6 +140,22 @@ scene.background = map;
     });
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
+
+    // Add hover animation as a function to be called after entrance animation completes
+    const startHoverAnimation = () => {
+      // Clear any existing animations on cube.position.y
+      gsap.killTweensOf(cube.position, "y");
+
+      // Start the hover animation
+      gsap.to(cube.position, {
+        y: "+=0.1",
+        duration: 1.5,
+        ease: "power1.inOut",
+        yoyo: true,
+        repeat: -1,
+        repeatDelay: 0.1,
+      });
+    };
 
     // Add lighting for better quality
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
@@ -299,49 +308,34 @@ scene.background = map;
         // When we reach the end of the text
         if (index === text.length - 1) {
           clearInterval(typingInterval);
-
-          // Start deleting "Sense" letter by letter
-
-          let deleteIndex = 6; // "Sense" has 5 letters plus the period
-          const deleteInterval = setInterval(() => {
-            setDisplayedText((prev) => prev.slice(0, -1)); // Remove last letter
-            deleteIndex--;
-
-            if (deleteIndex === 0) {
-              clearInterval(deleteInterval);
-
-              // Start typing "US"
-              let usIndex = 0;
-              const usLetters = "UUs."; // frist letter is ignoreed and i cant figure out why but it works so we dont touch it O_o
-              const addUSInterval = setInterval(() => {
-                setDisplayedText((prev) => prev + usLetters[usIndex]);
-                usIndex++;
-
-                if (usIndex === usLetters.length - 1) {
-                  clearInterval(addUSInterval);
-                }
-              }, 250); // timing for the "US" animation
-            }
-          }, 150); // timing for the delete animation
         }
       }, 55); // Typing speed overall
     };
 
-    // Animation loop
+    // Animation loop - Modified to create a hover effect instead of constant rotation
     const animate = () => {
       requestAnimationFrame(animate);
-      cube.rotation.y += 0.01; // Rotate around Y-axis
-      cube.rotation.x += 0.00000001; // Slowly rotate around X-axis to show top and bottom
+      // No longer applying continuous rotation
       renderer.render(scene, camera);
     };
     animate();
 
-    // Animation for cube to come into frame from top right
+    // Animation for cube to come into frame from top right with smooth deceleration
     gsap.fromTo(
       cube.position,
       { x: 5, y: 5 },
-      { x: 0, y: 0, duration: 2, ease: "power2.inOut" },
+      {
+        x: 0,
+        y: 0,
+        duration: 2,
+        ease: "power3.out",
+        onComplete: function () {
+          // Now start the hover animation after the entrance is complete
+          startHoverAnimation();
+        },
+      },
     );
+
     gsap.fromTo(
       cube.rotation,
       { x: Math.PI * 2, y: Math.PI * 2 },
@@ -349,7 +343,7 @@ scene.background = map;
         x: 0,
         y: 0,
         duration: 2,
-        ease: "power2.inOut",
+        ease: "power3.out",
         onComplete: () => {
           setDoneAnimation(true);
           animateBanner();
@@ -358,37 +352,37 @@ scene.background = map;
       },
     );
 
-    // Randomly spin cube on x-axis really fast
-    const randomSpin = () => {
-      gsap.to(cube.rotation, {
-        x: "+=" + Math.PI * 2,
-        duration: 0.5,
-        ease: "power2.inOut",
-      });
-      setTimeout(randomSpin, Math.random() * 5000 + 2000); // Random spin every 2-7 sec
-    };
-    randomSpin();
-
     // ScrollTrigger to spin and move cube when scrolling off + onenter to spin on entering the page section and on leave back to spin as the cube comes back into view
     ScrollTrigger.create({
       trigger: mountRef.current,
       start: "top top",
       end: "bottom top",
       onEnter: () => {
+        gsap.killTweensOf(cube.position, "y"); // Kill hover animation
         gsap.to(cube.rotation, {
           x: "+=" + Math.PI * 2,
           duration: 0.5,
           ease: "power2.inOut",
         });
-        gsap.to(cube.position, { y: -5, duration: 1, ease: "power2.inOut" });
+        gsap.to(cube.position, {
+          y: -5,
+          duration: 1,
+          ease: "power2.inOut",
+        });
       },
       onLeaveBack: () => {
+        gsap.killTweensOf(cube.position, "y"); // Kill any existing animations
         gsap.to(cube.rotation, {
           x: "+=" + Math.PI * 2,
           duration: 1,
           ease: "power2.inOut",
         });
-        gsap.to(cube.position, { y: 0, duration: 1, ease: "power2.inOut" });
+        gsap.to(cube.position, {
+          y: 0,
+          duration: 1,
+          ease: "power2.inOut",
+          onComplete: startHoverAnimation, // Restart hover after returning
+        });
       },
     });
 
