@@ -13,7 +13,7 @@ import { useRouter, usePathname } from "next/navigation"; // router for navigati
 import { useUser, useClerk } from "@clerk/nextjs"; // Import both useUser and useClerk
 import Link from "next/link"; // link for navigation between pages
 import logo from "../../public/logo.svg"; // Import the logo
-import logoAlt from "../../public/logo-w-text-alt.svg"; // Import the logo
+import logoAlt from "../../public/logo-w-text.svg"; // Import the logo
 import Image from "next/image"; // Import the Image component
 import "./styles/layout-styles.css";
 
