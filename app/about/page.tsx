@@ -20,19 +20,15 @@ export default function About() {
           to provide a platform for users to access the{" "}
           <a
             className="text-customWhite underline hover:text-customColor3"
-            href="https://github.com/HaiderMalikk/Altharion"
+            href="https://github.com/HaiderMalikk/Reddish-Trends-Engine"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Altharion AI Model
+            Reddish Trends Engine
           </a>{" "}
           and its predictions. This website was ment to have a user friendly
           interface and to provide a platform for users to get trading insights
-          that are holistic and easy to understand. The unique thing about this
-          webiste is that it uses a social media platform to provide users with 
-          a platform to get trading insights which are easy to understand. 
-          This webiste was inspired by wallstreetbets.
-          page.
+          using reddit while having financial data and AI predictions. to go along with it.
         </p>
       </div>
     </div>

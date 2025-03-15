@@ -78,11 +78,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <title>Reddish Trends - AI-Powered Stock Predictions</title>
           <meta
             name="description"
-            content="Reddish Trends combines social sentiment analysis and financial data to provide accurate stock predictions and recommendations."
+            content="Reddish Trends combines social sentiment analysis using Reddit and subreddit posts and financial data to provide unique insights into stock market movements."
           />
           <meta
             name="keywords"
-            content="stock predictions, AI trading, machine learning, finance, sentiment analysis, stock market, investment, trading bot"
+            content="stock predictions, AI trading, finance, sentiment analysis, stock market, investment, trading bot, reddit, social sentiment, financial data, reddish trends"
           />
           <meta name="author" content="Haider Malik" />
 
@@ -93,12 +93,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
           />
           <meta
             property="og:description"
-            content="A hybrid stock prediction system that combines financial data and social sentiment analysis for smarter trading insights."
+            content="A hybrid stock prediction system that combines social sentiment analysis using Reddit and subreddit posts and financial data to provide unique insights into stock market movements leveraging the power of AI for better investment decisions."
           />
           <meta property="og:image" content="../public/logo-bg.svg" />
           <meta
             property="og:url"
-            content="https://trade-sense-ai-sigma.vercel.app/"
+            content="https://reddishtrends.com"
           />
           <meta property="og:type" content="website" />
 
@@ -110,9 +110,38 @@ export default function RootLayout({ children }: RootLayoutProps) {
           />
           <meta
             name="twitter:description"
-            content="A stock market AI tool that analyzes financial data & social sentiment to predict stock movements."
+            content="A hybrid stock prediction system that combines social sentiment analysis using Reddit and subreddit posts and financial data to provide unique insights into stock market movements leveraging the power of AI for better investment decisions."
           />
           <meta name="twitter:image" content="../public/logo-bg.svg" />
+
+          {/* Canonical Link */}
+          <link rel="canonical" href="https://reddishtrends.com" />
+
+          {/* Robots Meta Tag */}
+          <meta name="robots" content="index, follow" />
+
+          {/* Viewport Meta Tag */}
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+
+          {/* Reddish Trends Meta Tag */}
+          <meta
+            name="Reddish Trends"
+            content="Reddish Trends - AI-Powered Stock Predictions"
+          />
+
+          {/* Reddit Meta Tag */}
+          <meta
+            name="reddit:title"
+            content="Reddish Trends - AI-Powered Stock Predictions"
+          />
+          <meta
+            name="reddit:description"
+            content="A hybrid stock prediction system that combines social sentiment analysis using Reddit and subreddit posts and financial data to provide unique insights into stock market movements leveraging the power of AI for better investment decisions."
+          />
+          <meta name="reddit:image" content="../public/logo-bg.svg" />
 
           {/* Favicon */}
           <link rel="icon" href="./favicon.ico" />
@@ -219,7 +248,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <li>
                       <a
                         className="underline hover:text-gray-300"
-                        href="https://github.com/HaiderMalikk/Trade-Sense-AI"
+                        href="https://github.com/HaiderMalikk/Reddish-Trends"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -229,11 +258,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <li>
                       <a
                         className="underline hover:text-gray-300"
-                        href="https://github.com/HaiderMalikk/Altharion"
+                        href="https://github.com/HaiderMalikk/Reddish-Trends-Engine"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Altharion AI Model
+                        Reddish Trends Engine
                       </a>
                     </li>
                   </ul>

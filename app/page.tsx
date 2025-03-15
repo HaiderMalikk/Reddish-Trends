@@ -8,8 +8,6 @@ import logocursor from "../public/logo-alt.svg";
 import image1 from "../public/feature1.png";
 import image2 from "../public/feature2.png";
 import image3 from "../public/feature3.png";
-import altharionlogo from "../public/altharion-logo.svg";
-import linklogo from "../public/link-black.svg";
 import AnimatedButton from "./components/AnimatedButton";
 import ThreeScene from "./components/ThreeScene";
 import Link from "next/link";
