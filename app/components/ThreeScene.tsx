@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { randFloat } from "three/src/math/MathUtils";
 import backgroundImage from "../../public/bgimage.webp";
-import backgroundImageLoading from "../../public/bgimageloading.jpeg";
+import backgroundImagephone from "../../public/bgimagephone.webp";
 import "./styles/three-js-styles.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -19,12 +19,14 @@ const ThreeScene = () => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [map, setMap] = useState(new THREE.Texture()); // Initialize with an empty texture to hold the background image
 
-  // Load background image asynchronously from the next useeffect below this way we can use a usestate to track if the image is loaded
-  // loadAsync is a promis its better to use insted of loader.load as you can have usestates and etc inside of it
+  // Load background image asynchronously based on device type
   useEffect(() => {
     const loader = new THREE.TextureLoader();
+    const isMobile = window.innerWidth < 768; // Common breakpoint for mobile devices
+    const imageSrc = isMobile ? backgroundImagephone.src : backgroundImage.src;
+
     loader
-      .loadAsync(backgroundImage.src)
+      .loadAsync(imageSrc)
       .then((texture) => {
         setMap(texture); // Assign new texture only after it's loaded
         setLoaded(true);
@@ -63,8 +65,6 @@ const ThreeScene = () => {
     } else {
       factor = window.innerHeight / map.image.height;
     }
-
-    // ...existing code...
 
     // Set the background image to cover the whole screen, map is our background texture
     const isMobile = window.innerWidth < 768; // Common breakpoint for mobile devices

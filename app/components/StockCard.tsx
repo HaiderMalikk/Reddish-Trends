@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import RedditLink from './RedditLink';
+import React, { useState } from "react";
+import RedditLink from "./RedditLink";
 
 interface StockCardProps {
   stock: {
@@ -32,17 +32,19 @@ const StockCard: React.FC<StockCardProps> = ({ stock }) => {
     const truncateText = (text: string, maxWords: number = 50) => {
       if (!text) return "";
       const words = text.split(" ");
-      return words.length <= maxWords ? text : words.slice(0, maxWords).join(" ") + "...";
+      return words.length <= maxWords
+        ? text
+        : words.slice(0, maxWords).join(" ") + "...";
     };
 
     return (
       <div className="overflow-hidden break-words text-black">
         <h5 className="mb-2 font-bold">{stock.post.title}</h5>
-        
+
         {isExpanded ? (
           <>
             <p className="mb-4 italic">{stock.post.text}</p>
-            
+
             {stock.post.comments && stock.post.comments.length > 0 && (
               <div className="mt-4 border-t border-gray-200 pt-3">
                 <h6 className="mb-2 font-bold">Top Comments:</h6>
@@ -144,37 +146,45 @@ const StockCard: React.FC<StockCardProps> = ({ stock }) => {
           <div className="rsi-box items-center text-xl font-semibold text-black">
             {stock.rsi}
             {Number(stock.rsi) > 70 && (
-              <div className="rsi-tip ml-1 text-sm text-red-500">(Overbought)</div>
+              <div className="rsi-tip ml-1 text-sm text-red-500">
+                (Overbought)
+              </div>
             )}
             {Number(stock.rsi) < 30 && (
-              <div className="rsi-tip ml-1 text-sm text-green-500">(Oversold)</div>
+              <div className="rsi-tip ml-1 text-sm text-green-500">
+                (Oversold)
+              </div>
             )}
           </div>
         </div>
       </div>
 
       <div className="mt-6 rounded-lg border border-gray-300 p-4">
-        <h4 className="mb-2 text-lg font-semibold text-black">Sentiment Analysis</h4>
+        <h4 className="mb-2 text-lg font-semibold text-black">
+          Sentiment Analysis
+        </h4>
         <div
           className={`inline-block rounded-full px-4 py-1 text-lg font-medium ${
             stock.sentiment > 3
               ? "bg-green-100 text-green-800"
               : stock.sentiment >= 0
-              ? "bg-yellow-100 text-yellow-800"
-              : "bg-red-100 text-red-800"
+                ? "bg-yellow-100 text-yellow-800"
+                : "bg-red-100 text-red-800"
           }`}
         >
           {stock.sentiment > 3
             ? "Positive"
             : stock.sentiment >= 0
-            ? "Neutral"
-            : "Negative"}
+              ? "Neutral"
+              : "Negative"}
           ({stock.sentiment * 10}%)
         </div>
       </div>
 
       <div className="mt-6">
-        <h4 className="mb-2 text-lg font-semibold text-black">Post from Reddit:</h4>
+        <h4 className="mb-2 text-lg font-semibold text-black">
+          Post from Reddit:
+        </h4>
         <div className="rounded-lg bg-white bg-opacity-20 p-4">
           {renderPostContent()}
         </div>

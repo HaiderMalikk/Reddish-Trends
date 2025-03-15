@@ -3,8 +3,8 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import logotext from "../public/logo-w-text-alt.svg";
-import logocursor from "../public/logo-alt.svg";
+import logotext from "../public/logo-w-text.svg";
+import logocursor from "../public/logo.svg";
 import image1 from "../public/feature1.png";
 import image2 from "../public/feature2.png";
 import image3 from "../public/feature3.png";
@@ -94,7 +94,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-reddish ">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-reddish">
       {/* Custom mouse effect */}
       <div className="flair">
         <Image src={logocursor} alt="Logo" width={30} height={30} />
@@ -128,16 +128,18 @@ export default function HomePage() {
       >
         {/* catchy line to intoduce */}
         <p className="mx-4 mb-10 text-4xl text-customColor4 sm:mx-20 md:mx-40 lg:mx-60">
-          Welcome to Reddish Trends - A Reddit Powered Market Analyzer.
+          Welcome to Reddish Trends - A Reddit Powered Market Analysis Platform.
         </p>
         <p className="mx-4 text-2xl text-customColor2 sm:mx-20 md:mx-40 lg:mx-60">
-          Reddish Trends combines social sentiment and financial data to help you
-          make smarter trading decisions. it takes advantage of the power of the
-          Reddit community to provide insights into the market. It uses AI to make
-          predictions on the future of the stock and provides you with the best,
-          worst, and upcoming stocks based on our analysis. It also provides you
-          with a comprehensive market overview, including price changes, highs/lows,
-          and more.
+          Reddish Trends combines social sentiment and financial data to help
+          you make smarter trading decisions. it takes advantage of the power of
+          the Reddit community to provide insights into the market. It uses AI
+          to make predictions on the future of the stock and provides you with
+          the best, worst, and upcoming stocks based on our analysis. It also
+          provides you with a comprehensive market overview, including price
+          changes, highs/lows, and more. It also includes a playground for you
+          to analyze any subreddit for any stock with highly customizable
+          settings.
         </p>
       </div>
       <div className="mt-20 flex w-full flex-wrap justify-around p-6 text-center">
@@ -235,7 +237,8 @@ export default function HomePage() {
             <div className="back">
               <p className="mb-8 text-gray-600">
                 Get a host of features for free, including our social sentiment
-                and stock market analysis.
+                and stock market analysis along with AI predictions + the
+                playground to analyze any subreddit for any stock.
               </p>
               <Link href="/login">
                 <AnimatedButton
@@ -260,13 +263,13 @@ export default function HomePage() {
             </div>
             <div className="back">
               <p className="mb-8 text-gray-600" style={{ textAlign: "left" }}>
-                - Social Sentiment Analysis
+                - Reddit Social Sentiment Analysis
                 <br />
                 - Stock Market Analysis
                 <br />
-                - Hybrid Market Analysis
+                - Financial Data Analysis
                 <br />
-                - Comprehensive Market Overview
+                - Sentiment Overview
                 <br />
                 - LLM-Driven Predictions
                 <br />
@@ -274,7 +277,9 @@ export default function HomePage() {
                 <br />
                 - Real-time Updates
                 <br />
-                - User Profiles
+                - User Profiles and Favorites
+                <br />
+                - Playground with unlimited creativity and possibilities
                 <br />- And Much More!
               </p>
               <Link href="/login">

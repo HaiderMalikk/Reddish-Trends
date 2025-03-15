@@ -28,7 +28,8 @@ export default function About() {
           </a>{" "}
           and its predictions. This website was ment to have a user friendly
           interface and to provide a platform for users to get trading insights
-          using reddit while having financial data and AI predictions. to go along with it.
+          using reddit while having financial data and AI predictions. to go
+          along with it.
         </p>
       </div>
     </div>

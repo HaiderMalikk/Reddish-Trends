@@ -93,7 +93,7 @@ const InfoPopup = ({
                 <svg
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 text-customColor4 pointer-events-none"
+                  className="pointer-events-none h-4 w-4 text-customColor4"
                 >
                   <path
                     clipRule="evenodd"
@@ -104,7 +104,7 @@ const InfoPopup = ({
               </div>
               <p className="text-3xl text-black">{title}</p>
             </div>
-            
+
             {/* Simplified close button with explicit z-index */}
             <button
               onClick={handleClose}
@@ -116,7 +116,7 @@ const InfoPopup = ({
             </button>
           </div>
         </div>
-        
+
         <div className="text-customColor6">{children}</div>
       </div>
     </div>

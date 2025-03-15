@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation"; // Import the usePathname hook for highlighting the active link
 import "./styles/globals.css"; // Import global styles
 import logo from "../public/logo.svg"; // Import the logo
-import logoAlt from "../public/logo-w-text-alt.svg"; // Import the logo
+import logoAlt from "../public/logo-w-text.svg"; // Import the logo
 import Image from "next/image"; // Import the Image component
 import Link from "next/link"; // Import the Link component to navigate between pages while in loggout state
 import { gsap } from "gsap";
@@ -96,10 +96,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             content="A hybrid stock prediction system that combines social sentiment analysis using Reddit and subreddit posts and financial data to provide unique insights into stock market movements leveraging the power of AI for better investment decisions."
           />
           <meta property="og:image" content="../public/logo-bg.svg" />
-          <meta
-            property="og:url"
-            content="https://reddishtrends.com"
-          />
+          <meta property="og:url" content="https://reddishtrends.com" />
           <meta property="og:type" content="website" />
 
           {/* Twitter Card Meta Tags */}

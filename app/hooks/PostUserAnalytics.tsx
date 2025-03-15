@@ -44,7 +44,11 @@ export const useAnalyticsTracking = () => {
     {},
   );
 
-  const trackAnalysis = async (userEmail: string, type: string, parameters?: object) => {
+  const trackAnalysis = async (
+    userEmail: string,
+    type: string,
+    parameters?: object,
+  ) => {
     if (!userEmail || isTracking) return null;
 
     // Add debouncing to prevent multiple quick submissions
@@ -77,9 +81,12 @@ export const useAnalyticsTracking = () => {
   const trackRedoGeneralAnalysis = async (userEmail: string) => {
     return trackAnalysis(userEmail, "redo_general_analysis");
   };
-  
+
   // Add playground analysis tracking
-  const trackPlaygroundAnalysis = async (userEmail: string, parameters: object) => {
+  const trackPlaygroundAnalysis = async (
+    userEmail: string,
+    parameters: object,
+  ) => {
     return trackAnalysis(userEmail, "playground_analysis", parameters);
   };
 

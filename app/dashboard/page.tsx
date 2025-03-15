@@ -420,7 +420,7 @@ export default function Dashboard() {
         <p className="mt-4 text-lg text-customColor2">{apiError}</p>
         <button
           onClick={() => handel_flask_call({ type: "getgeneralanalysis" })}
-          className="mt-6 rounded-lg bg-customColor5 px-6 py-2 text-black transition hover:bg-opacity-90"
+          className="mt-6 rounded-lg bg-customColor2 px-6 py-2 text-black transition hover:bg-opacity-90"
         >
           Try Again
         </button>

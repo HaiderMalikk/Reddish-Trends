@@ -87,7 +87,7 @@ body {
   /* less bt padding for footer on phones */
   .custom-footer {
     padding-bottom: 0rem;
-    background-color:#000;
+    background-color: #000;
   }
 
   /* no desktop logo on phones */

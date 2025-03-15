@@ -16,7 +16,8 @@ export default function TermsOfService() {
 
         <h2 className="mt-6 text-2xl font-semibold">2. Use of the Service</h2>
         <p>
-          You agree to use Reddish Trends for lawful purposes only. You must not:
+          You agree to use Reddish Trends for lawful purposes only. You must
+          not:
         </p>
         <ul className="list-inside list-disc">
           <li>Violate any applicable laws or regulations</li>
