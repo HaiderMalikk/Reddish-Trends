@@ -420,7 +420,7 @@ export default function PlaygroundPage() {
 
   return (
     <div className="playground-wrapper">
-      <div className="playground-content p-4">
+      <div className="playground-content">
         <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-white bg-black p-12 text-center text-black shadow-md">
           <h1 className="text-6xl font-semibold text-white">Playground</h1>
           <p className="welcome-msg mt-4 text-xl text-gray-300">

@@ -1,5 +1,5 @@
 <a href="https://reddishtrends.com">
-<img src="./public/logo-w-text-alt.svg" alt="logo" width="400"/>
+<img src="./public/logo-w-text.svg" alt="logo" width="400"/>
 &nbsp&nbsp&nbsp<img src="./public/linkgrey.png" alt="Home" width="60"/>
 </a>
 
