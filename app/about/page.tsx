@@ -1,15 +1,15 @@
 export default function About() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-customColor2 p-8">
-      <h1 className="mb-4 text-4xl font-bold text-customColor6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-reddish p-8">
+      <h1 className="mb-4 text-4xl font-bold text-customColor2">
         About Reddish Trends
       </h1>
-      <div className="mb-10 max-w-4xl text-lg text-customColor6">
+      <div className="mb-10 max-w-4xl text-lg text-customColor2">
         <h2 className="mt-6 text-2xl font-semibold">Who we are</h2>
         <p>
           Welcome to Reddish Trends this Website is owned and operated by{" "}
           <a
-            className="text-customWhite underline hover:text-customColor3"
+            className="text-customWhite underline hover:text-white"
             href="https://haidermalikk.github.io/HaiderMaliksWebsite/"
             target="_blank"
             rel="noopener noreferrer"
@@ -19,7 +19,7 @@ export default function About() {
           a student at the York University of Canada. This Website was created
           to provide a platform for users to access the{" "}
           <a
-            className="text-customWhite underline hover:text-customColor3"
+            className="text-customWhite underline hover:text-white"
             href="https://github.com/HaiderMalikk/Reddish-Trends-Engine"
             target="_blank"
             rel="noopener noreferrer"

@@ -1,10 +1,10 @@
 export default function PrivacyPolicy() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-customColor2 p-8">
-      <h1 className="mb-4 text-4xl font-bold text-customColor6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-reddish p-8">
+      <h1 className="mb-4 text-4xl font-bold text-customColor2">
         Privacy Policy
       </h1>
-      <div className="mb-10 max-w-4xl text-lg text-customColor6">
+      <div className="mb-10 max-w-4xl text-lg text-customColor2">
         <p>Last Updated: January 22, 2025</p>
 
         <h2 className="mt-6 text-2xl font-semibold">1. Introduction</h2>
