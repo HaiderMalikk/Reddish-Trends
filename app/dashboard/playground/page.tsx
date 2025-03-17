@@ -365,8 +365,8 @@ export default function PlaygroundPage() {
           <div></div>
           <div></div>
         </div>
-        <h1 className="text-white">Loading market data...</h1>
-        <h1 className="text-white">Please stay on this page.</h1>
+        <h1 className="text-customColor2">Loading market data...</h1>
+        <h1 className="text-customColor2">Please stay on this page.</h1>
         <div className="mt-4 h-1 min-w-[300px] bg-gray-200">
           <div
             className="h-full bg-customColor3 transition-all duration-500"
@@ -419,15 +419,18 @@ export default function PlaygroundPage() {
   }
 
   return (
-    <div className="playground-wrapper">
-      <div className="playground-content">
-        <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-white bg-black p-12 text-center text-black shadow-md">
-          <h1 className="text-6xl font-semibold text-white">Playground</h1>
-          <p className="welcome-msg mt-4 text-xl text-gray-300">
+    <div className="playground-wrapper ">
+      <div className="playground-content p-6">
+        <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-customColor4 p-12 text-center text-black shadow-md">
+        <h1 className="text-6xl font-semibold">Profile</h1>
+        <p className="mt-4 text-gray-600" style={{ fontSize: "1.2rem" }}>
+          Welcome, {userData.firstName} {userData.lastName}!
+        </p>
+        <p className="welcome-msg mt-4 text-xl text-gray-600">
             Customize your stock analysis parameters and explore real-time
             market insights
           </p>
-        </div>
+      </div>
 
         <div className="flex flex-col space-y-6">
           {/* Form Section */}

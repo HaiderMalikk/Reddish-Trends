@@ -7,8 +7,6 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   overflow-x: hidden;
 }
@@ -17,13 +15,11 @@
   width: 100vw;
   flex: 1;
   /*  background pattern  start */
-  background-color: #d8c4b6;
+  background-color: #c44240;
   background-image: radial-gradient(#f5efe7 2px, transparent 0);
   /* background pattern end */
   background-size: 30px 30px;
   background-position: -5px -5px;
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -35,12 +31,10 @@
   flex: 1;
   min-height: calc(var(--vh) - 64px); /* Adjust only for header height */
   background-attachment: fixed; /* Fix background to prevent it from moving during scroll */
-  background-color: #d8c4b6;
+  background-color: #c44240;
   background-image: radial-gradient(#f5efe7 2px, transparent 0);
   background-size: 30px 30px;
   background-position: -5px -5px;
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -81,7 +75,7 @@
   height: 100%;
   position: absolute;
   width: 100%;
-  border: 2px solid #f5f5f5;
+  border: 2px solid #F5EFE7;
 }
 
 .spinner div:nth-of-type(1) {
