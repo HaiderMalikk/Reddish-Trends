@@ -476,7 +476,7 @@ export default function Dashboard() {
       </div>
 
       {response && (
-        <div className="mb-10 mt-8 w-full max-w-5xl">
+        <div className="mb-10 mt-8 w-full max-w-6xl">
           <h2 className="mb-6 text-center text-7xl font-bold text-customColor2">
             Reddit's Stock's of the Day
           </h2>
@@ -1460,7 +1460,7 @@ export default function Dashboard() {
             onClose={() => setStockInfoOpen(false)}
             title="Stock Information"
           >
-            <div className="">
+            <div>
               <div>
                 <h4 className="pt-2 font-bold">Price</h4>
                 <p>The current trading price of the stock.</p>

@@ -76,20 +76,20 @@ const InfoPopup = ({
   return (
     <div
       ref={backdropRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-50 pt-14 flex items-center justify-center bg-black bg-opacity-50"
       onClick={onClose}
       style={{ display: "none" }}
     >
       <div
         ref={popupRef}
-        className="relative max-h-[80vh] w-[90%] max-w-md overflow-y-auto rounded-lg bg-customColor2 p-5 shadow-xl"
+        className="relative max-h-[80vh] w-[90%] max-w-md rounded-lg bg-customColor2 shadow-xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Completely redesigned header with fixed positioning for the title and button */}
-        <div className="sticky top-0 z-10 mb-6 bg-customColor2 pb-2 pt-16">
+        {/* Fixed header at the top */}
+        <div className="sticky top-0 z-10  bg-customColor2 p-5 pb-2 border-b border-black border-dashed">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-customColor4/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-customColor4/30">
                 <svg
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -105,7 +105,7 @@ const InfoPopup = ({
               <p className="text-3xl text-black">{title}</p>
             </div>
 
-            {/* Simplified close button with explicit z-index */}
+            {/* close button  */}
             <button
               onClick={handleClose}
               className="z-20 h-12 w-12 cursor-pointer rounded-full bg-customColor2 text-customColor6 transition-colors hover:bg-gray-200 focus:outline-none"
@@ -117,7 +117,10 @@ const InfoPopup = ({
           </div>
         </div>
 
-        <div className="text-customColor6">{children}</div>
+        {/* Scrollable content area */}
+        <div className="flex-grow overflow-y-auto p-5 pt-3 text-customColor6">
+          {children}
+        </div>
       </div>
     </div>
   );

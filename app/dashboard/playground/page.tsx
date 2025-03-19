@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useAnalyticsTracking } from "../../hooks/PostUserAnalytics";
 import InfoPopup from "../../components/InfoPopup"; // Import InfoPopup component
 import StockCard from "../../components/StockCard"; // Import InfoPopup component
+import { FaInfoCircle } from "react-icons/fa"; // Import FaInfoCircle icon
+
 // Define interfaces for our request data
 interface RequestParameters {
   subreddits: string[];
@@ -25,6 +27,23 @@ interface RequestData {
   };
 }
 
+// Define interface for history items
+interface HistoryItem {
+  id: string;
+  email: string;
+  timestamp: string;
+  action: string;
+  details: {
+    analysisType: string;
+    subreddits: string;
+    limit: number;
+    commentLimit: number;
+    sort: string;
+    period: string;
+    stocks?: string;
+  };
+}
+
 export default function PlaygroundPage() {
   // Get user data and authentication state
   const { userData, loading: userDataLoading } = useUserData();
@@ -39,6 +58,7 @@ export default function PlaygroundPage() {
   const [subreddits, setSubreddits] = useState<string>(
     "wallstreetbets,stocks,stockmarket",
   );
+  // default states for input 
   const [stocks, setStocks] = useState<string>("$AAPL,$TSLA");
   const [limit, setLimit] = useState<number>(10);
   const [commentLimit, setCommentLimit] = useState<number>(10);
@@ -55,6 +75,12 @@ export default function PlaygroundPage() {
   const [lastRequest, setLastRequest] = useState<RequestData | null>(null);
   const [totalProcessingTime, setTotalProcessingTime] = useState<number>(0);
 
+  // History state
+  const [historyOpen, setHistoryOpen] = useState<boolean>(false);
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+  const [historyLoading, setHistoryLoading] = useState<boolean>(false);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+
   // stopck info state
   const [stockInfoOpen, setStockInfoOpen] = useState(false);
 
@@ -62,6 +88,70 @@ export default function PlaygroundPage() {
   const [expandedPosts, setExpandedPosts] = useState<{
     [key: string]: boolean;
   }>({});
+
+  // Add state for parameter info popups
+  const [paramInfoOpen, setParamInfoOpen] = useState(false);
+  const [currentParamInfo, setCurrentParamInfo] = useState({ title: "", description: "" });
+
+  // Function to show parameter info popup
+  const showParamInfo = (title: string, description: string) => {
+    setCurrentParamInfo({ title, description });
+    setParamInfoOpen(true);
+  };
+
+  // Function to fetch user's analytics history
+  const fetchAnalyticsHistory = useCallback(async () => {
+    if (!user || !userData) return;
+    
+    setHistoryLoading(true);
+    setHistoryError(null);
+    
+    try {
+      const response = await axios.get('/api/get-playground-history', {
+        params: {
+          email: userData.email
+        }
+      });
+      
+      setHistoryItems(response.data.history || []);
+    } catch (err: any) {
+      console.error("Error fetching analytics history:", err);
+      setHistoryError(err.message || "Failed to load history");
+    } finally {
+      setHistoryLoading(false);
+    }
+  }, [user, userData]);
+
+  // Fetch history when history modal is opened
+  useEffect(() => {
+    if (historyOpen) {
+      fetchAnalyticsHistory();
+    }
+  }, [historyOpen, fetchAnalyticsHistory]);
+
+  // Apply selected history item to form
+  const applyHistoryItem = (item: HistoryItem) => {
+    const { details } = item;
+    
+    setAnalysisType(details.analysisType);
+    setSubreddits(details.subreddits);
+    setLimit(details.limit);
+    setCommentLimit(details.commentLimit);
+    setSort(details.sort);
+    setPeriod(details.period);
+    
+    if (details.stocks) {
+      setStocks(details.stocks);
+    }
+    
+    setHistoryOpen(false);
+  };
+
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+  };
 
   // Function to toggle expanded state of posts
   const togglePostExpand = (stockId: string) => {
@@ -419,132 +509,207 @@ export default function PlaygroundPage() {
   }
 
   return (
-    <div className="playground-wrapper ">
+    <div className="playground-wrapper">
       <div className="playground-content p-6">
+        <div className="fixed right-4 top-20 z-20">
+            <button 
+              onClick={() => setHistoryOpen(true)}
+              type="button"
+              className="rounded-lg bg-customColor4 px-4 py-2 text-black transition hover:bg-opacity-80 flex items-center shadow-md"
+              >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              History
+            </button>
+          </div>
         <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-customColor4 p-12 text-center text-black shadow-md">
-        <h1 className="text-6xl font-semibold">Profile</h1>
-        <p className="mt-4 text-gray-600" style={{ fontSize: "1.2rem" }}>
-          Welcome, {userData.firstName} {userData.lastName}!
-        </p>
-        <p className="welcome-msg mt-4 text-xl text-gray-600">
+          <div className="flex flex-col items-center justify-center">
+              <h1 className="text-6xl font-semibold">Playground</h1>
+            <p className="mt-4 text-gray-600" style={{ fontSize: "1.2rem" }}>
+              Welcome, {userData.firstName} {userData.lastName}!
+            </p>
+          </div>
+          <p className="welcome-msg mt-4 text-xl text-gray-600">
             Customize your stock analysis parameters and explore real-time
             market insights
           </p>
-      </div>
+        </div>
 
-        <div className="flex flex-col space-y-6">
-          {/* Form Section */}
-          <div className="mx-auto w-full max-w-4xl rounded-lg border-2 border-white bg-black bg-opacity-70 p-4">
-            <h2 className="mb-4 text-xl text-white">Analysis Parameters</h2>
+        {/* Form Section - Wider to accommodate content */}
+        <div className="mx-auto w-full max-w-6xl rounded-lg border-2 border-customColor2 bg-black bg-opacity-70 p-6 mb-14">
+          <h2 className="mb-4 text-xl text-customColor2 text-center">Analysis Parameters</h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex justify-between items-center">
+              <label className="block text-customColor2">Analysis Type</label>
+              <button 
+                type="button"
+                className="text-customColor2 hover:text-gray-400 transition-colors"
+                onClick={() => showParamInfo("Analysis Type", "Choose between general analysis (finds top/worst/rising stocks across selected subreddits) or specific stock analysis (analyzes specific stocks mentioned in selected subreddits).")}
+              >
+                <FaInfoCircle size={16} />
+              </button>
+            </div>
+            <select
+              value={analysisType}
+              onChange={(e) => setAnalysisType(e.target.value)}
+              className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-customColor2"
+            >
+              <option value="getplaygroundgeneralanalysis">
+                General Analysis
+              </option>
+              <option value="getplaygroundspecificanalysis">
+                Specific Stock Analysis
+              </option>
+            </select>
+
+            <div className="flex justify-between items-center">
+              <label className="block text-customColor2">
+                Subreddits (comma-separated)
+              </label>
+              <button 
+                type="button"
+                className="text-customColor2 hover:text-gray-400 transition-colors"
+                onClick={() => showParamInfo("Subreddits", "Enter the names of subreddits you want to analyze, separated by commas (e.g., 'wallstreetbets,stocks,stockmarket'). The analysis will search for stock mentions in these communities.")}
+              >
+                <FaInfoCircle size={16} />
+              </button>
+            </div>
+            <input
+              type="text"
+              value={subreddits}
+              onChange={(e) => setSubreddits(e.target.value)}
+              className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-customColor2"
+            />
+
+            {analysisType === "getplaygroundspecificanalysis" && (
               <div>
-                <label className="mb-1 block text-white">Analysis Type</label>
+                <div className="flex justify-between items-center">
+                  <label className="block text-customColor2">
+                    Stocks (comma-separated with a '$' at the beginning)
+                  </label>
+                  <button 
+                    type="button"
+                    className="text-customColor2 hover:text-gray-400 transition-colors"
+                    onClick={() => showParamInfo("Stocks", "Enter the stock symbols you want to analyze, separated by commas (e.g., '$AAPL,$TSLA'). The analysis will focus on mentions of these specific stocks in the selected subreddits.")}
+                  >
+                    <FaInfoCircle size={16} />
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  value={stocks}
+                  onChange={(e) => setStocks(e.target.value)}
+                  className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-customColor2"
+                />
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="flex justify-between items-center">
+                  <label className="block text-customColor2">Post Limit</label>
+                  <button 
+                    type="button"
+                    className="text-customColor2 hover:text-gray-400 transition-colors"
+                    onClick={() => showParamInfo("Post Limit", "The maximum number of posts to analyze from each subreddit. Higher limits provide more data but increase processing time.")}
+                  >
+                    <FaInfoCircle size={16} />
+                  </button>
+                </div>
+                <input
+                  type="number"
+                  value={limit}
+                  onChange={(e) => setLimit(parseInt(e.target.value))}
+                  className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-customColor2"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center">
+                  <label className="block text-customColor2">Comment Limit</label>
+                  <button 
+                    type="button"
+                    className="text-customColor2 hover:text-gray-400 transition-colors"
+                    onClick={() => showParamInfo("Comment Limit", "The maximum number of comments to analyze for each post. Higher limits provide more data but increase processing time.")}
+                  >
+                    <FaInfoCircle size={16} />
+                  </button>
+                </div>
+                <input
+                  type="number"
+                  value={commentLimit}
+                  onChange={(e) => setCommentLimit(parseInt(e.target.value))}
+                  className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-customColor2"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 pb-2">
+              <div>
+                <div className="flex justify-between items-center">
+                  <label className="block text-customColor2">Sort</label>
+                  <button 
+                    type="button"
+                    className="text-customColor2 hover:text-gray-400 transition-colors"
+                    onClick={() => showParamInfo("Sort", "The sorting method for posts: 'Hot' shows currently trending posts, 'New' shows the most recent posts, and 'Top' shows the most popular posts in the selected time period.")}
+                  >
+                    <FaInfoCircle size={16} />
+                  </button>
+                </div>
                 <select
-                  value={analysisType}
-                  onChange={(e) => setAnalysisType(e.target.value)}
-                  className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-white"
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                  className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-customColor2"
                 >
-                  <option value="getplaygroundgeneralanalysis">
-                    General Analysis
-                  </option>
-                  <option value="getplaygroundspecificanalysis">
-                    Specific Stock Analysis
-                  </option>
+                  <option value="hot">Hot</option>
+                  <option value="new">New</option>
+                  <option value="top">Top</option>
                 </select>
               </div>
 
               <div>
-                <label className="mb-1 block text-white">
-                  Subreddits (comma-separated)
-                </label>
-                <input
-                  type="text"
-                  value={subreddits}
-                  onChange={(e) => setSubreddits(e.target.value)}
-                  className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-white"
-                />
-              </div>
-
-              {analysisType === "getplaygroundspecificanalysis" && (
-                <div>
-                  <label className="mb-1 block text-white">
-                    Stocks (comma-separated)
-                  </label>
-                  <input
-                    type="text"
-                    value={stocks}
-                    onChange={(e) => setStocks(e.target.value)}
-                    className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-white"
-                  />
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-white">Post Limit</label>
-                  <input
-                    type="number"
-                    value={limit}
-                    onChange={(e) => setLimit(parseInt(e.target.value))}
-                    className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-white">Comment Limit</label>
-                  <input
-                    type="number"
-                    value={commentLimit}
-                    onChange={(e) => setCommentLimit(parseInt(e.target.value))}
-                    className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-white"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-white">Sort</label>
-                  <select
-                    value={sort}
-                    onChange={(e) => setSort(e.target.value)}
-                    className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-white"
+                <div className="flex justify-between items-center">
+                  <label className="block text-customColor2">Period</label>
+                  <button 
+                    type="button"
+                    className="text-customColor2 hover:text-gray-400 transition-colors"
+                    onClick={() => showParamInfo("Period", "The time period to analyze. This determines how far back in time the analysis will consider posts. For 'Top' sorting, this is especially important.")}
                   >
-                    <option value="hot">Hot</option>
-                    <option value="new">New</option>
-                    <option value="top">Top</option>
-                  </select>
+                    <FaInfoCircle size={16} />
+                  </button>
                 </div>
-
-                <div>
-                  <label className="mb-1 block text-white">Period</label>
-                  <select
-                    value={period}
-                    onChange={(e) => setPeriod(e.target.value)}
-                    className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-white"
-                  >
-                    <option value="1d">1 Day</option>
-                    <option value="1wk">1 Week</option>
-                    <option value="1mo">1 Month</option>
-                    <option value="3mo">3 Months</option>
-                    <option value="1y">1 Year</option>
-                  </select>
-                </div>
+                <select
+                  value={period}
+                  onChange={(e) => setPeriod(e.target.value)}
+                  className="w-full rounded border border-gray-700 bg-gray-800 p-2 text-customColor2"
+                >
+                  <option value="1d">1 Day</option>
+                  <option value="1wk">1 Week</option>
+                  <option value="1mo">1 Month</option>
+                  <option value="3mo">3 Months</option>
+                  <option value="1y">1 Year</option>
+                </select>
               </div>
+            </div>
 
-              <button
-                type="submit"
-                disabled={formLoading || isTracking}
-                className="w-full rounded bg-blue-600 p-3 text-white transition duration-200 hover:bg-blue-700"
-              >
-                {formLoading || isTracking ? "Processing..." : "Run Analysis"}
-              </button>
-            </form>
-          </div>
+            <button
+              type="submit"
+              disabled={formLoading || isTracking}
+              className="w-full rounded bg-customColor4 p-3 text-black transition duration-200 hover:bg-opacity-80"
+            >
+              {formLoading || isTracking ? "Processing..." : "Run Analysis"}
+            </button>
+          </form>
+        </div>
 
-          {/* Results Section */}
-          <div className="mx-auto w-full max-w-4xl rounded-lg border-2 border-white bg-black bg-opacity-70 p-4">
-            <h2 className="mb-4 text-xl text-white">Analysis Results</h2>
+        {/* Results Section - Only show when we have results */}
+        {(results || error) && (
+          <div className="mx-auto mb-10 mt-8 w-full max-w-6xl">
+            <h2 className="mb-6 text-center text-5xl font-bold text-customColor2">
+              Analysis Results
+            </h2>
 
             {formLoading && (
               <div className="py-8 text-center">
@@ -572,7 +737,7 @@ export default function PlaygroundPage() {
                         return (
                           <div
                             key={index}
-                            className="rounded-lg bg-customColor2 p-6"
+                            className="rounded-lg bg-customColor2 p-6 shadow-lg"
                           >
                             <h3 className="mb-4 border-b border-black pb-2 text-2xl font-bold text-black">
                               r/{subredditName}
@@ -586,7 +751,7 @@ export default function PlaygroundPage() {
                               {categories.top_stocks.length > 0 ? (
                                 categories.top_stocks.map(
                                   (stock: any, stockIndex: number) => (
-                                    <div key={stockIndex}>
+                                    <div key={stockIndex} className="mb-4">
                                       <StockCard stock={stock} />
                                       {renderStockDescription(
                                         stock,
@@ -610,7 +775,7 @@ export default function PlaygroundPage() {
                               {categories.worst_stocks.length > 0 ? (
                                 categories.worst_stocks.map(
                                   (stock: any, stockIndex: number) => (
-                                    <div key={stockIndex}>
+                                    <div key={stockIndex} className="mb-4">
                                       <StockCard stock={stock} />
                                       {renderStockDescription(
                                         stock,
@@ -634,7 +799,7 @@ export default function PlaygroundPage() {
                               {categories.rising_stocks.length > 0 ? (
                                 categories.rising_stocks.map(
                                   (stock: any, stockIndex: number) => (
-                                    <div key={stockIndex}>
+                                    <div key={stockIndex} className="mb-4">
                                       <StockCard stock={stock} />
                                       {renderStockDescription(
                                         stock,
@@ -663,7 +828,7 @@ export default function PlaygroundPage() {
                         return (
                           <div
                             key={index}
-                            className="rounded-lg bg-customColor2 p-6"
+                            className="rounded-lg bg-customColor2 p-6 shadow-lg"
                           >
                             <h3 className="mb-4 border-b border-black pb-2 text-2xl font-bold text-black">
                               r/{subredditName}
@@ -673,7 +838,7 @@ export default function PlaygroundPage() {
                               <div className="space-y-4">
                                 {stocks.map(
                                   (stock: any, stockIndex: number) => (
-                                    <div key={stockIndex}>
+                                    <div key={stockIndex} className="mb-4">
                                       <StockCard stock={stock} />
                                       {renderStockDescription(
                                         stock,
@@ -694,17 +859,8 @@ export default function PlaygroundPage() {
                     )}
               </div>
             )}
-
-            {!formLoading && !error && !results && (
-              <div className="py-8 text-center text-gray-400">
-                <p>
-                  No analysis results yet. Configure your parameters and run the
-                  analysis.
-                </p>
-              </div>
-            )}
           </div>
-        </div>
+        )}
       </div>
 
       {/* Stock Info Popup */}
@@ -760,6 +916,72 @@ export default function PlaygroundPage() {
               comments.
             </p>
           </div>
+        </div>
+      </InfoPopup>
+
+      {/* Parameter Info Popup */}
+      <InfoPopup
+        isOpen={paramInfoOpen}
+        onClose={() => setParamInfoOpen(false)}
+        title={currentParamInfo.title}
+      >
+        <p>{currentParamInfo.description}</p>
+      </InfoPopup>
+
+      {/* History Popup */}
+      <InfoPopup
+        isOpen={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        title="Analysis History"
+      >
+        <div className="max-h-[70vh] overflow-y-auto">
+          {historyLoading ? (
+            <div className="flex justify-center py-8">
+              {/* Replace with the same spinner used elsewhere */}
+              <div className="spinner-dark">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          ) : historyError ? (
+            <div className="rounded border border-red-700 bg-red-900 bg-opacity-50 p-4 text-white">
+              <p>{historyError}</p>
+            </div>
+          ) : historyItems.length === 0 ? (
+            <p className="py-4 text-center text-gray-600">No history found. Run some analyses to see them here.</p>
+          ) : (
+            <div className="space-y-4">
+              {historyItems.map((item, index) => (
+                <div 
+                  key={item.id || index} 
+                  className="rounded-lg border border-black bg-customColor4 p-4"
+                  onClick={() => applyHistoryItem(item)}
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">{formatDate(item.timestamp)}</span>
+                    <span className="px-2 py-1 bg-customColor2 rounded-full text-xs text-black">
+                      {item.details.analysisType === 'getplaygroundgeneralanalysis' ? 'General' : 'Specific'}
+                    </span>
+                  </div>
+                  <div className="mt-2 space-y-1">
+                    <p><span className="font-semibold">Subreddits:</span> {item.details.subreddits}</p>
+                    {item.details.stocks && (
+                      <p><span className="font-semibold">Stocks:</span> {item.details.stocks}</p>
+                    )}
+                    <p><span className="font-semibold">Posts:</span> {item.details.limit} / <span className="font-semibold">Comments:</span> {item.details.commentLimit}</p>
+                    <p><span className="font-semibold">Sort:</span> {item.details.sort} / <span className="font-semibold">Period:</span> {item.details.period}</p>
+                  </div>
+                  <div className="mt-3 flex justify-end">
+                    <button className="text-sm text-black hover:text-gray-600">Apply Parameters</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </InfoPopup>
     </div>

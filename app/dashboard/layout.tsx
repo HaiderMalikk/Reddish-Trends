@@ -53,7 +53,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div></div>
           <div></div>
           <div></div>
-          <div></div>
         </div>
         <h1 className="text-customColor2">Loading...</h1>
       </div>
@@ -71,7 +70,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div></div>
           <div></div>
           <div></div>
-          <div></div>
         </div>
         <h1 className="text-customColor2">Logging out...</h1>
       </div>
@@ -83,19 +81,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <header className="main-tool-bar p-4 text-customColor2">
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center">
-            {/* logo on header */}
-            <a href="/">
+            {/* logo on header with explicit styling to ensure visibility */}
+            <Link href="/" className="flex items-center">
               <Image
                 src={logoAlt}
                 alt="Logo"
-                className="header-logo desktop-logo"
+                className="header-logo desktop-logo visible h-auto w-auto"
+                width={180}
+                height={40}
               />
               <Image
                 src={logo}
                 alt="Logo"
-                className="header-logo mobile-logo"
+                className="header-logo mobile-logo visible h-auto w-auto"
+                width={40}
+                height={40}
               />
-            </a>
+            </Link>
           </div>
           {/* Desktop navigation */}
           <nav className="hidden items-center space-x-4 md:flex">
@@ -123,7 +125,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               Profile
             </Link>
-            <button onClick={handleLogout} className="hover:text-gray-300">
+            <button 
+              onClick={handleLogout} 
+              className="hover:text-gray-300"
+              type="button"
+            >
               Logout
             </button>
           </nav>
