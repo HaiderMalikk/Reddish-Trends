@@ -29,7 +29,6 @@
 .playground-content {
   width: 100%;
   flex: 1;
-  min-height: calc(var(--vh) - 64px); /* Adjust only for header height */
   background-attachment: fixed; /* Fix background to prevent it from moving during scroll */
   background-color: #c44240;
   background-image: radial-gradient(#f5efe7 2px, transparent 0);
@@ -75,7 +74,7 @@
   height: 100%;
   position: absolute;
   width: 100%;
-  border: 2px solid #F5EFE7;
+  border: 2px solid #f5efe7;
 }
 
 .spinner div:nth-of-type(1) {
@@ -164,7 +163,6 @@
   }
 }
 
-
 /* Add scroll margin for stock description sections */
 [id^="stock-"] {
   scroll-margin-top: 100px; /* Increased margin to ensure proper scroll positioning */
@@ -181,6 +179,5 @@
 /* Make sure the entire document uses smooth scrolling */
 html,
 body {
-  scroll-behavior: smooth;
   overflow-x: hidden;
 }

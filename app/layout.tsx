@@ -67,8 +67,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
         layout: {
           logoImageUrl: "logo-bg.svg",
 
-          privacyPageUrl: "/policy",
-          termsPageUrl: "/licence",
+          privacyPageUrl: "/privacy_policy",
+          termsPageUrl: "/terms_of_service",
         },
       }}
     >
@@ -270,7 +270,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   <ul className="mt-2 space-y-2">
                     <li>
                       <Link
-                        href="/policy"
+                        href="/privacy_policy"
                         className="underline hover:text-gray-300"
                       >
                         Privacy Policy
@@ -278,7 +278,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     </li>
                     <li>
                       <Link
-                        href="/terms"
+                        href="/terms_of_service"
                         className="underline hover:text-gray-300"
                       >
                         Terms of Service

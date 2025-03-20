@@ -43,7 +43,7 @@ const Toast = ({
           setIsFading(true);
           setTimeout(onClose, 300);
         }}
-        className="ml-4 text-xl font-bold hover:text-gray-200"
+        className="ml-4 text-xl font-bold hover:text-gray-300"
       >
         ×
       </button>

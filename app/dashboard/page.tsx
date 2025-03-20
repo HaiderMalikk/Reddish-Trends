@@ -62,6 +62,7 @@ export default function Dashboard() {
   const [isApiLoading, setIsApiLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0); // Add state for progress
   const [countdown, setCountdown] = useState<string>(""); // Add state for countdown
+  const [remainingTime, setRemainingTime] = useState<number>(0); // Add state for processing time remaining
   const { trackGeneralAnalysis, trackRedoGeneralAnalysis } =
     useAnalyticsTracking(); // Analytics tracking hooks
   const {
@@ -119,6 +120,12 @@ export default function Dashboard() {
         // if at 90 pause it so it dose reach 100
         return 95;
       }
+
+      // Update remaining time based on progress
+      if (remainingTime > 0) {
+        setRemainingTime((prevTime) => Math.max(prevTime - 1, 0));
+      }
+
       return prevProgress + 1;
     });
   };
@@ -199,6 +206,13 @@ export default function Dashboard() {
     return () => clearInterval(timer);
   }, []);
 
+  // Calculate estimated processing time for API call
+  const calculateProcessingTime = () => {
+    // Estimate 20 seconds for a standard analysis
+    // This is a simple implementation - could be more sophisticated based on request type
+    return 60;
+  };
+
   // Handle refresh button click
   const handleRefresh = () => {
     handel_flask_call({ type: "redogeneralanalysis" });
@@ -209,6 +223,11 @@ export default function Dashboard() {
     setIsApiLoading(true);
     setApiError(null);
     setProgress(10); // Set initial progress
+
+    // Calculate and set the initial remaining time
+    const estimatedTime = calculateProcessingTime();
+    setRemainingTime(estimatedTime);
+
     const interval = setInterval(incrementProgress, 3000); // Increment progress every 3000ms
 
     try {
@@ -294,7 +313,7 @@ export default function Dashboard() {
             <p className="mb-4 italic">{post.text}</p>
 
             {post.comments && post.comments.length > 0 && (
-              <div className="mt-4 border-t border-gray-200 pt-3">
+              <div className="mt-4 border-t border-gray-300 pt-3">
                 <h6 className="mb-2 font-bold">Top Comments:</h6>
                 <ul className="space-y-3">
                   {post.comments.map((comment, index) => (
@@ -383,12 +402,17 @@ export default function Dashboard() {
         </div>
         <h1 className="text-customColor2">Loading market data...</h1>
         <h1 className="text-customColor2">Please stay on this page.</h1>
-        <div className="mt-4 h-1 min-w-[300px] bg-gray-200">
+        <div className="mt-4 h-1 min-w-[300px] bg-customColor5">
           <div
-            className="h-full bg-customColor3 transition-all duration-500"
+            className="h-full bg-customColor4 transition-all duration-500"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
+        {remainingTime > 0 && (
+          <p className="mt-2 text-sm text-gray-300">
+            Estimated time: {remainingTime} seconds remaining
+          </p>
+        )}
       </div>
     );
   }
@@ -509,20 +533,20 @@ export default function Dashboard() {
             <div className="time-tracker flex items-center rounded-lg bg-customColor2 px-6 py-3">
               <button
                 onClick={() => setStockUpdateInfoOpen(true)}
-                className="time-info-button mr-3 text-customColor6 hover:text-gray-500"
+                className="time-info-button mr-3 text-customColor6 hover:text-gray-300"
               >
                 <FaInfoCircle size={18} />
               </button>
-              <div className="mr-4 font-medium text-gray-800">
+              <div className="mr-4 font-medium text-black">
                 Stocks update in:
               </div>
-              <div className="font-mono font-bold text-red-600">
+              <div className="font-mono font-bold text-reddish">
                 {countdown}
               </div>
-              <div className="ml-4 mr-4 font-medium text-gray-800">
+              <div className="ml-4 mr-4 font-medium text-black">
                 Time Since Last Update:
               </div>
-              <div className="font-mono font-bold text-red-600">
+              <div className="font-mono font-bold text-reddish">
                 {elapsedTime}
               </div>
             </div>
@@ -540,7 +564,7 @@ export default function Dashboard() {
               <h3 className="text-3xl font-bold text-black">
                 Top Stock Not Found!
               </h3>
-              <p className="mt-3 text-lg text-gray-700">
+              <p className="mt-3 text-lg text-gray-600">
                 No data available for this category.
               </p>
             </div>
@@ -723,7 +747,7 @@ export default function Dashboard() {
               {/* GPT Analysis Section */}
               <div className="relative rounded-b-lg bg-customColor6 p-8 text-customColor2 shadow-lg">
                 <button
-                  className="absolute right-2 top-2 text-customColor2 transition-colors hover:text-white"
+                  className="absolute right-2 top-2 text-customColor2 transition-colors hover:text-gray-300"
                   onClick={() => setGptInfoOpen(true)}
                 >
                   <FaInfoCircle size={18} />
@@ -844,7 +868,7 @@ export default function Dashboard() {
               <h3 className="text-3xl font-bold text-black">
                 Worst Stock Not Found!
               </h3>
-              <p className="mt-3 text-lg text-gray-700">
+              <p className="mt-3 text-lg text-gray-600">
                 No data available for this category.
               </p>
             </div>
@@ -1031,7 +1055,7 @@ export default function Dashboard() {
               {/* GPT Analysis Section */}
               <div className="relative rounded-b-lg bg-customColor6 p-8 text-customColor2 shadow-lg">
                 <button
-                  className="absolute right-2 top-2 text-customColor2 transition-colors hover:text-white"
+                  className="absolute right-2 top-2 text-customColor2 transition-colors hover:text-gray-300"
                   onClick={() => setGptInfoOpen(true)}
                 >
                   <FaInfoCircle size={18} />
@@ -1152,7 +1176,7 @@ export default function Dashboard() {
               <h3 className="text-3xl font-bold text-black">
                 Rising Stock Not Found!
               </h3>
-              <p className="mt-3 text-lg text-gray-700">
+              <p className="mt-3 text-lg text-gray-600">
                 No data available for this category.
               </p>
             </div>
@@ -1343,7 +1367,7 @@ export default function Dashboard() {
               {/* GPT Analysis Section */}
               <div className="relative rounded-b-lg bg-customColor6 p-8 text-customColor2 shadow-lg">
                 <button
-                  className="absolute right-2 top-2 text-customColor2 transition-colors hover:text-white"
+                  className="absolute right-2 top-2 text-customColor2 transition-colors hover:text-gray-300"
                   onClick={() => setGptInfoOpen(true)}
                 >
                   <FaInfoCircle size={18} />

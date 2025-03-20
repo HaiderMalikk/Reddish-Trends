@@ -81,7 +81,7 @@ export default function AnimatedButton({
     <button
       ref={buttonRef}
       onClick={onClick}
-      className={`relative ${paddinginput} rounded-lg bg-transparent font-bold text-white transition-all`}
+      className={`relative ${paddinginput} rounded-lg bg-transparent font-bold transition-all`}
       style={{
         position: "relative",
         overflow: "visible",

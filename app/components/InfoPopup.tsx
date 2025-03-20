@@ -76,17 +76,17 @@ const InfoPopup = ({
   return (
     <div
       ref={backdropRef}
-      className="fixed inset-0 z-50 pt-14 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 pt-14"
       onClick={onClose}
       style={{ display: "none" }}
     >
       <div
         ref={popupRef}
-        className="relative max-h-[80vh] w-[90%] max-w-md rounded-lg bg-customColor2 shadow-xl flex flex-col"
+        className="relative flex max-h-[80vh] w-[90%] max-w-md flex-col rounded-lg bg-customColor2 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Fixed header at the top */}
-        <div className="sticky top-0 z-10  bg-customColor2 p-5 pb-2 border-b border-black border-dashed">
+        <div className="sticky top-0 z-10 border-b border-dashed border-black bg-customColor2 p-5 pb-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-customColor4/30">

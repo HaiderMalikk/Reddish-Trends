@@ -148,7 +148,7 @@ export default function Profile() {
         </p>
       </div>
 
-      <div className="mx-auto max-w-4xl rounded-lg bg-customColor2 p-8 shadow-lg">
+      <div className="mx-auto max-w-6xl rounded-lg bg-customColor2 p-8 shadow-lg">
         <div className="flex flex-col items-center">
           <Image
             src={userData.profileImageUrl ?? defaultPP}
@@ -175,13 +175,13 @@ export default function Profile() {
       </div>
 
       {/* Favorites Section */}
-      <div className="mx-auto mb-8 mt-8 max-w-4xl rounded-lg bg-customColor2 p-8 shadow-lg">
+      <div className="mx-auto mb-8 mt-8 max-w-6xl rounded-lg bg-customColor2 p-8 shadow-lg">
         <h2 className="mb-6 text-center text-2xl font-semibold text-black">
           Your Favorite Stocks
         </h2>
 
         {localFavorites && localFavorites.length > 0 ? (
-          <div className="overflow-x-auto">
+          <div>
             <table className="min-w-full overflow-hidden rounded-lg bg-white">
               <thead className="bg-customColor6 text-customColor2">
                 <tr>

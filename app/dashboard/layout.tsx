@@ -53,6 +53,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div></div>
           <div></div>
           <div></div>
+          <div></div>
         </div>
         <h1 className="text-customColor2">Loading...</h1>
       </div>
@@ -65,6 +66,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="flex h-screen items-center justify-center bg-black">
         {/* Spinner */}
         <div className="spinner m-8">
+          <div></div>
           <div></div>
           <div></div>
           <div></div>
@@ -125,8 +127,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               Profile
             </Link>
-            <button 
-              onClick={handleLogout} 
+            <button
+              onClick={handleLogout}
               className="hover:text-gray-300"
               type="button"
             >

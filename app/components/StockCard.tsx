@@ -46,7 +46,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock }) => {
             <p className="mb-4 italic">{stock.post.text}</p>
 
             {stock.post.comments && stock.post.comments.length > 0 && (
-              <div className="mt-4 border-t border-gray-200 pt-3">
+              <div className="mt-4 border-t border-gray-600 pt-3">
                 <h6 className="mb-2 font-bold">Top Comments:</h6>
                 <ul className="space-y-3">
                   {stock.post.comments.map((comment, index) => (

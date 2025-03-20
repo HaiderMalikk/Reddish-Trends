@@ -1,7 +1,7 @@
 export default function TermsOfService() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-reddish p-8">
-      <h1 className="mb-4 text-4xl font-bold text-customColor2">
+      <h1 className="mb-8 text-4xl font-bold text-customColor2">
         Terms of Service
       </h1>
       <div className="mb-10 max-w-4xl text-lg text-customColor2">
