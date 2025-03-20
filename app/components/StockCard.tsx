@@ -144,16 +144,22 @@ const StockCard: React.FC<StockCardProps> = ({ stock }) => {
         <div className="rounded-lg bg-white bg-opacity-30 p-3">
           <p className="text-sm text-gray-600">RSI</p>
           <div className="rsi-box items-center text-xl font-semibold text-black">
-            {stock.rsi}
-            {Number(stock.rsi) > 70 && (
-              <div className="rsi-tip ml-1 text-sm text-red-500">
-                (Overbought)
-              </div>
-            )}
-            {Number(stock.rsi) < 30 && (
-              <div className="rsi-tip ml-1 text-sm text-green-500">
-                (Oversold)
-              </div>
+            {Number(stock.rsi) === 0 ? (
+              <span className="text-gray-500">Not Available</span>
+            ) : (
+              <>
+                {stock.rsi}
+                {Number(stock.rsi) > 70 && (
+                  <div className="rsi-tip ml-1 text-sm text-red-500">
+                    (Overbought)
+                  </div>
+                )}
+                {Number(stock.rsi) < 30 && (
+                  <div className="rsi-tip ml-1 text-sm text-green-500">
+                    (Oversold)
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

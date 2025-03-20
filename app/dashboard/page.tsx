@@ -754,7 +754,7 @@ export default function Dashboard() {
                 </button>
 
                 <div className="mb-4 flex items-center border-b border-customColor2 pt-2">
-                  <div className="mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
+                  <div className="mb-2 mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6 text-customColor6"
@@ -770,7 +770,7 @@ export default function Dashboard() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold">AI Analysis</h3>
+                  <h3 className="mb-2 text-2xl font-bold">AI Analysis</h3>
                 </div>
 
                 <div className="space-y-4 text-customColor2">
@@ -1062,7 +1062,7 @@ export default function Dashboard() {
                 </button>
 
                 <div className="mb-4 flex items-center border-b border-customColor2 pt-2">
-                  <div className="mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
+                  <div className="mb-2 mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6 text-customColor6"
@@ -1078,7 +1078,7 @@ export default function Dashboard() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold">AI Analysis</h3>
+                  <h3 className="mb-2 text-2xl font-bold">AI Analysis</h3>
                 </div>
 
                 <div className="space-y-4 text-customColor2">
@@ -1374,7 +1374,7 @@ export default function Dashboard() {
                 </button>
 
                 <div className="mb-4 flex items-center border-b border-customColor2 pt-2">
-                  <div className="mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
+                  <div className="mb-2 mr-3 flex items-center justify-center rounded-full bg-customColor2 p-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6 text-customColor6"
@@ -1390,7 +1390,7 @@ export default function Dashboard() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold">AI Analysis</h3>
+                  <h3 className="mb-2 text-2xl font-bold">AI Analysis</h3>
                 </div>
 
                 <div className="space-y-4 text-customColor2">

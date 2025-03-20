@@ -11,6 +11,7 @@ import StockCard from "../../components/StockCard"; // Import InfoPopup componen
 import { FaInfoCircle, FaStar, FaRegStar } from "react-icons/fa"; // Import icons
 import { useUserFavorites } from "../../hooks/UserFavs"; // Import favorites hook
 import Toast from "../../components/Toast"; // Import the toast component
+import RunButton from "../../components/RunButton";
 
 // Define interfaces for our request data
 interface RequestParameters {
@@ -19,6 +20,7 @@ interface RequestParameters {
   comment_limit: number;
   sort: string;
   period: string;
+  time: string; // Add time parameter
   stocks?: string[]; // Make stocks optional
 }
 
@@ -42,6 +44,7 @@ interface HistoryItem {
     commentLimit: number;
     sort: string;
     period: string;
+    time: string; // Add time parameter to history details
     stocks?: string;
   };
 }
@@ -73,6 +76,7 @@ export default function PlaygroundPage() {
   const [commentLimit, setCommentLimit] = useState<number>(10);
   const [sort, setSort] = useState<string>("hot");
   const [period, setPeriod] = useState<string>("1mo");
+  const [time, setTime] = useState<string>("none"); // Add state for post time
 
   // State for API response and loading state
   const [results, setResults] = useState<any>(null);
@@ -152,6 +156,7 @@ export default function PlaygroundPage() {
         },
       });
 
+      console.log("History items received:", response.data.history); // Debug log
       setHistoryItems(response.data.history || []);
     } catch (err: any) {
       console.error("Error fetching analytics history:", err);
@@ -178,6 +183,7 @@ export default function PlaygroundPage() {
     setCommentLimit(details.commentLimit);
     setSort(details.sort);
     setPeriod(details.period);
+    setTime(details.time || "none"); // Add time to apply from history
 
     if (details.stocks) {
       setStocks(details.stocks);
@@ -348,6 +354,7 @@ export default function PlaygroundPage() {
             limit: limit,
             comment_limit: commentLimit,
             sort: sort,
+            time: time, // Add time parameter to request
             period: period,
           },
         },
@@ -391,6 +398,7 @@ export default function PlaygroundPage() {
           commentLimit: commentLimit,
           sort: sort,
           period: period,
+          time: time, // Add time parameter to tracking
           stocks:
             analysisType === "getplaygroundspecificanalysis"
               ? stocks
@@ -452,6 +460,7 @@ export default function PlaygroundPage() {
           commentLimit: parameters.comment_limit,
           sort: parameters.sort,
           period: parameters.period,
+          time: parameters.time, // Add time parameter to retry tracking
           stocks: parameters.stocks ? parameters.stocks.join(",") : undefined,
           isRetry: true, // Mark this as a retry attempt
         };
@@ -503,7 +512,23 @@ export default function PlaygroundPage() {
   // Effect to clear results when analysis type changes
   useEffect(() => {
     setResults(null);
-  }, [analysisType, subreddits, limit, commentLimit, sort, period, stocks]);
+  }, [
+    analysisType,
+    subreddits,
+    limit,
+    commentLimit,
+    sort,
+    period,
+    time,
+    stocks,
+  ]);
+
+  // Effect to reset time when sort is not 'top' or 'controversial'
+  useEffect(() => {
+    if (sort !== "top" && sort !== "controversial") {
+      setTime("none");
+    }
+  }, [sort]);
 
   // If user is not logged in, show a message and redirect
   if (!user) {
@@ -651,11 +676,11 @@ export default function PlaygroundPage() {
 
         {/* Form Section - Wider to accommodate content */}
         <div className="mx-auto mb-14 w-full max-w-6xl rounded-lg border-2 border-customColor2 bg-black bg-opacity-70 p-6">
-          <h2 className="mb-4 text-center text-xl text-customColor2">
+          <h2 className="mb-6 text-center text-xl text-customColor2">
             Analysis Parameters
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="block text-customColor2">Analysis Type</label>
               <button
@@ -685,7 +710,7 @@ export default function PlaygroundPage() {
             </select>
 
             <div className="flex items-center justify-between">
-              <label className="block text-customColor2">
+              <label className="mt-4 block text-customColor2">
                 Subreddits (comma-separated)
               </label>
               <button
@@ -711,7 +736,7 @@ export default function PlaygroundPage() {
             {analysisType === "getplaygroundspecificanalysis" && (
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="block text-customColor2">
+                  <label className="mt-4 block text-customColor2">
                     Stocks (comma-separated with a '$' at the beginning)
                   </label>
                   <button
@@ -739,7 +764,9 @@ export default function PlaygroundPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="block text-customColor2">Post Limit</label>
+                  <label className="mb-2 mt-4 block text-customColor2">
+                    Post Limit
+                  </label>
                   <button
                     type="button"
                     className="text-customColor2 transition-colors hover:text-gray-300"
@@ -763,7 +790,7 @@ export default function PlaygroundPage() {
 
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="block text-customColor2">
+                  <label className="mb-2 mt-4 block text-customColor2">
                     Comment Limit
                   </label>
                   <button
@@ -791,14 +818,16 @@ export default function PlaygroundPage() {
             <div className="grid grid-cols-2 gap-4 pb-2">
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="block text-customColor2">Sort</label>
+                  <label className="mb-2 mt-4 block text-customColor2">
+                    Sort
+                  </label>
                   <button
                     type="button"
                     className="text-customColor2 transition-colors hover:text-gray-300"
                     onClick={() =>
                       showParamInfo(
                         "Sort",
-                        "The sorting method for posts: 'Hot' shows currently trending posts, 'New' shows the most recent posts, and 'Top' shows the most popular posts in the selected time period.",
+                        "The sorting method for posts: 'Hot' shows currently trending posts, 'New' shows the most recent posts, and 'Top' shows the most popular posts in the selected time period. 'Controversial' shows posts with the most upvotes and downvotes, 'Rising' shows posts that are gaining popularity",
                       )
                     }
                   >
@@ -813,19 +842,23 @@ export default function PlaygroundPage() {
                   <option value="hot">Hot</option>
                   <option value="new">New</option>
                   <option value="top">Top</option>
+                  <option value="controversial">Controversial</option>
+                  <option value="rising">Rising</option>
                 </select>
               </div>
 
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="block text-customColor2">Period</label>
+                  <label className="mb-2 mt-4 block text-customColor2">
+                    Stock Period
+                  </label>
                   <button
                     type="button"
                     className="text-customColor2 transition-colors hover:text-gray-300"
                     onClick={() =>
                       showParamInfo(
                         "Period",
-                        "The time period to analyze. This determines how far back in time the analysis will consider posts. For 'Top' sorting, this is especially important.",
+                        "The stock time period to analyze. This determines the range of the stock data for example 5d will show the stock data from the last 5 days. for a good rsi choose 1mo and above",
                       )
                     }
                   >
@@ -837,22 +870,65 @@ export default function PlaygroundPage() {
                   onChange={(e) => setPeriod(e.target.value)}
                   className="w-full rounded border border-gray-600 bg-gray-800 p-2 text-customColor2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-customColor4"
                 >
+                  {/* valid option: 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max */}
                   <option value="1d">1 Day</option>
-                  <option value="1wk">1 Week</option>
+                  <option value="5d">5 Days</option>
                   <option value="1mo">1 Month</option>
                   <option value="3mo">3 Months</option>
+                  <option value="6mo">6 Months</option>
                   <option value="1y">1 Year</option>
+                  <option value="2y">2 Years</option>
+                  <option value="5y">5 Years</option>
+                  <option value="10y">10 Years</option>
+                  <option value="ytd">Year to Date</option>
+                  <option value="max">Max</option>
                 </select>
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={formLoading || isTracking}
-              className="w-full rounded bg-customColor4 p-3 text-black transition duration-200 hover:bg-opacity-80"
-            >
-              {formLoading || isTracking ? "Processing..." : "Run Analysis"}
-            </button>
+            {/* Add Post Time option - only show for top or controversial sort */}
+            {(sort === "top" || sort === "controversial") && (
+              <div className="pb-2">
+                <div className="flex items-center justify-between">
+                  <label className="mb-2 mt-2 block text-customColor2">
+                    Post Time
+                  </label>
+                  <button
+                    type="button"
+                    className="text-customColor2 transition-colors hover:text-gray-300"
+                    onClick={() =>
+                      showParamInfo(
+                        "Post Time",
+                        "Filter posts by time period. Only applies when 'Sort' is set to 'Top' or 'Controversial'. Defaults to 'None' for no time filtering.",
+                      )
+                    }
+                  >
+                    <FaInfoCircle size={16} />
+                  </button>
+                </div>
+                <select
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  className="w-full rounded border border-gray-600 bg-gray-800 p-2 text-customColor2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-customColor4"
+                >
+                  <option value="none">None</option>
+                  <option value="hour">Past Hour</option>
+                  <option value="day">Past 24 Hours</option>
+                  <option value="week">Past Week</option>
+                  <option value="month">Past Month</option>
+                  <option value="year">Past Year</option>
+                  <option value="all">All Time</option>
+                </select>
+              </div>
+            )}
+            <div className="w-full py-2">
+              <RunButton
+                text="Run Analysis"
+                isLoading={formLoading || isTracking}
+                disabled={formLoading || isTracking}
+                onClick={handleSubmit}
+              />
+            </div>
           </form>
         </div>
 
@@ -1042,7 +1118,7 @@ export default function PlaygroundPage() {
             <h4 className="font-bold">RSI (Relative Strength Index)</h4>
             <p>
               A momentum indicator that measures the magnitude of recent price.
-              Not available fro periods less than 1 month changes:
+              for periods less than 1 month rsi is not reliable.
               <ul className="ml-5 mt-1 list-disc">
                 <li>Above 70: Potentially overbought</li>
                 <li>Below 30: Potentially oversold</li>
@@ -1137,6 +1213,10 @@ export default function PlaygroundPage() {
                       {item.details.sort} /{" "}
                       <span className="font-semibold">Period:</span>{" "}
                       {item.details.period}
+                    </p>
+                    <p>
+                      <span className="font-semibold">Post Time:</span>{" "}
+                      {item.details.time || "None"}
                     </p>
                   </div>
                   <div className="mt-3 flex justify-end">

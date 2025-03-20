@@ -70,6 +70,7 @@ export default async function handler(req, res) {
             commentLimit: item.parameters.commentLimit || 10,
             sort: item.parameters.sort || "hot",
             period: item.parameters.period || "1mo",
+            time: item.parameters.time || "none", // Add the time parameter here
             stocks: item.parameters.stocks || undefined,
           },
         };
