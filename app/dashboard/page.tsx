@@ -92,6 +92,7 @@ export default function Dashboard() {
   const [stockInfoOpen, setStockInfoOpen] = useState(false);
   const [gptInfoOpen, setGptInfoOpen] = useState(false);
   const [stockUpdateInfoOpen, setStockUpdateInfoOpen] = useState(false);
+  const [redditanalysisInfoOpen, setRedditAnalysisInfoOpen] = useState(false);
 
   // Add state to track which posts are expanded
   const [expandedPosts, setExpandedPosts] = useState<{
@@ -208,9 +209,8 @@ export default function Dashboard() {
 
   // Calculate estimated processing time for API call
   const calculateProcessingTime = () => {
-    // Estimate 20 seconds for a standard analysis
-    // This is a simple implementation - could be more sophisticated based on request type
-    return 60;
+    // est time fro 100 posts
+    return 100;
   };
 
   // Handle refresh button click
@@ -501,8 +501,14 @@ export default function Dashboard() {
 
       {response && (
         <div className="mb-10 mt-8 w-full max-w-6xl">
-          <h2 className="mb-6 text-center text-7xl font-bold text-customColor2">
+          <h2 className="mb-6 text-center text-7xl font-bold text-customColor2 relative">
             Reddit's Stock's of the Day
+            <button
+                onClick={() => setRedditAnalysisInfoOpen(true)}
+                className="absolute -top-2 right-[calc(6%)] text-customColor2 hover:text-gray-300"
+              >
+                <FaInfoCircle size={18} />
+            </button>
           </h2>
 
           {/* Quick Navigation Buttons */}
@@ -1632,7 +1638,7 @@ export default function Dashboard() {
               <div>
                 <h4 className="pt-2 font-bold">Stock Updates</h4>
                 <p>
-                  The stock of the day is garanteed to be updated at 00:00 EST
+                  The stock of the day is garanteed to be updated at 12:00 EST
                   every day
                 </p>
                 <p>
@@ -1642,9 +1648,27 @@ export default function Dashboard() {
                 </p>
                 <p>
                   If any user logs on and the result is outdated or the time has
-                  passed 00:00 EST the analysis will run again but the old
+                  passed 12:00 EST the analysis will run again but the old
                   result will be shown immediately refresh the page after a
                   minute to get the new result
+                </p>
+              </div>
+            </div>
+          </InfoPopup>
+          {/* info fro reddit analysi s */}
+          <InfoPopup
+            isOpen={redditanalysisInfoOpen}
+            onClose={() => setRedditAnalysisInfoOpen(false)}
+            title="Reddit Analysis Information"
+          >
+            <div className="space-y-4">
+              <div>
+                <h4 className="pt-2 font-bold">Overview</h4>
+                <p>
+                  The Reddit analysis is based on the sentiment of the Reddit
+                  post and the top comments from the Reddit community. 
+                  The posts are divide into 3 categories: top, worst, and rising.
+                  which are all based on there sentiment score.
                 </p>
               </div>
             </div>

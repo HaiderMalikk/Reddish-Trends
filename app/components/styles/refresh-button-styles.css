@@ -1,4 +1,4 @@
-.button {
+.refresh-button {
   position: relative;
   width: 15rem;
   height: 3rem;
@@ -11,19 +11,20 @@
   border-radius: 0.5rem;
 }
 
-.button,
-.button__icon,
-.button__text {
+.refresh-button,
+.refresh-button__icon,
+.refresh-button__text {
   transition: all 0.3s;
 }
 
-.button .button__text {
-  transform: translateX(135%);
+.refresh-button .refresh-button__text {
+  transform: translateX(80%) !important;
   color: #000;
   font-weight: 600;
+  font-size: 1.25rem;
 }
 
-.button .button__icon {
+.refresh-button .refresh-button__icon {
   position: absolute;
   transform: translateX(190px);
   height: 100%;
@@ -34,50 +35,50 @@
   justify-content: center;
 }
 
-.button .svg {
+.refresh-button .svg {
   width: 20px;
   fill: #f5efe7;
 }
 
-.button:hover {
+.refresh-button:hover {
   background: #d8c4b6;
 }
 
-.button:hover .button__text {
+.refresh-button:hover .refresh-button__text {
   color: transparent;
 }
 
-.button:hover .button__icon {
+.refresh-button:hover .refresh-button__icon {
   width: 148px;
   transform: translateX(30%);
 }
 
-.button:active .button__icon {
+.refresh-button:active .refresh-button__icon {
   background-color: #f5efe7;
 }
 
-.button:active {
+.refresh-button:active {
   border: 1px solid #f5efe7;
 }
 
 /* Media query for mobile devices */
 @media screen and (max-width: 768px) {
-  .button {
-    width: 18.8rem; /* Increased width for mobile */
-    height: 3.5rem; /* Slightly taller for better touch target */
+  .refresh-button {
+    width: 18.8rem;
+    height: 3.5rem;
   }
 
-  .button .button__text {
-    transform: translateX(150%); /* Adjusted text position for wider button */
-    font-size: 1.1rem; /* Slightly larger text */
+  .refresh-button .refresh-button__text {
+    transform: translateX(150%) !important;
+    font-size: 1.1rem;
   }
 
-  .button .button__icon {
-    transform: translateX(250px); /* Adjusted initial position for icon */
+  .refresh-button .refresh-button__icon {
+    transform: translateX(250px);
   }
 
-  .button:hover .button__icon {
-    width: 200px; /* Wider icon area on hover for mobile */
-    transform: translateX(25%); /* Adjusted position for hover state */
+  .refresh-button:hover .refresh-button__icon {
+    width: 200px;
+    transform: translateX(25%);
   }
 }

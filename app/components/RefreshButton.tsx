@@ -43,9 +43,9 @@ export default function RefreshButton({
 
   return (
     <div>
-      <button className="button" type="button" onClick={handleClick}>
-        <span className="button__text">Refresh</span>
-        <span className="button__icon">
+      <button className="refresh-button" type="button" onClick={handleClick}>
+        <span className="refresh-button__text">Refresh</span>
+        <span className="refresh-button__icon">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="48"

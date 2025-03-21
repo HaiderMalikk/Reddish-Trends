@@ -4,8 +4,6 @@ import * as THREE from "three";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { randFloat } from "three/src/math/MathUtils";
-import backgroundImage from "../../public/bgimage.webp";
-import backgroundImagephone from "../../public/bgimagephone.webp";
 import "./styles/three-js-styles.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -17,24 +15,10 @@ const ThreeScene = () => {
   const [displayedText, setDisplayedText] = useState<string>("");
   const [doneAnimation, setDoneAnimation] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [map, setMap] = useState(new THREE.Texture()); // Initialize with an empty texture to hold the background image
 
-  // Load background image asynchronously based on device type
+  // Set loaded state after component mounts
   useEffect(() => {
-    const loader = new THREE.TextureLoader();
-    const isMobile = window.innerWidth < 768; // Common breakpoint for mobile devices
-    const imageSrc = isMobile ? backgroundImagephone.src : backgroundImage.src;
-
-    loader
-      .loadAsync(imageSrc)
-      .then((texture) => {
-        setMap(texture); // Assign new texture only after it's loaded
-        setLoaded(true);
-      })
-      .catch((error) => {
-        console.error("An error occurred loading the texture:", error);
-        setLoaded(true); // Ensure we set loaded to true even if there's an error
-      });
+    setLoaded(true);
   }, []);
 
   useEffect(() => {
@@ -50,42 +34,11 @@ const ThreeScene = () => {
     );
     camera.position.z = 3;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight, true);
     renderer.setPixelRatio(window.devicePixelRatio); // Set pixel ratio for higher resolution
+    renderer.setClearColor(0x000000, 0); // Transparent background
     mountRef.current.appendChild(renderer.domElement);
-
-    // Set background texture, the texture is already loaded from the prevoius useeffect on mount so we can use it here without a loader
-    const aspect = map.image.width / map.image.height;
-    const imageAspect = window.innerWidth / window.innerHeight;
-    let factor;
-
-    if (aspect > imageAspect) {
-      factor = window.innerWidth / map.image.width;
-    } else {
-      factor = window.innerHeight / map.image.height;
-    }
-
-    // Set the background image to cover the whole screen, map is our background texture
-    const isMobile = window.innerWidth < 768; // Common breakpoint for mobile devices
-
-    if (isMobile) {
-      // Mobile-specific settings
-      map.offset.set(
-        0.5 - window.innerWidth / (map.image.width * factor) / 2,
-        0.5 - window.innerHeight / (map.image.height * factor) / 2,
-      );
-      map.wrapS = THREE.RepeatWrapping;
-      map.wrapT = THREE.RepeatWrapping;
-    } else {
-      // pc-specific settings
-
-      map.offset.set(
-        0.5 - window.innerWidth / (map.image.width * factor) / 2,
-        0.5 - window.innerHeight / (map.image.height * factor) / 2,
-      );
-    }
-    scene.background = map;
 
     // Handle window resize
     const handleResize = () => {
@@ -369,6 +322,16 @@ const ThreeScene = () => {
           duration: 1,
           ease: "power2.inOut",
         });
+        
+        // Animate text back to the right side of the screen
+        if (textRef.current) {
+          gsap.to(textRef.current, {
+            left: "100%",
+            transform: "translateX(0)",
+            duration: 1,
+            ease: "power2.inOut"
+          });
+        }
       },
       onLeaveBack: () => {
         gsap.killTweensOf(cube.position, "y"); // Kill any existing animations
@@ -383,6 +346,16 @@ const ThreeScene = () => {
           ease: "power2.inOut",
           onComplete: startHoverAnimation, // Restart hover after returning
         });
+        
+        // Bring text back to center without retyping
+        if (textRef.current) {
+          gsap.to(textRef.current, {
+            left: "50%",
+            transform: "translateX(-50%)",
+            duration: 1,
+            ease: "power2.inOut"
+          });
+        }
       },
     });
 
@@ -394,7 +367,7 @@ const ThreeScene = () => {
     };
   }, [loaded]);
 
-  // conditional rendering for loading, until three.js's loader loads the image show a loading screen
+  // conditional rendering for loading, until component is loaded show a loading screen
   return (
     <>
       {!loaded ? (
@@ -412,14 +385,16 @@ const ThreeScene = () => {
         </div>
       ) : (
         <>
-          <div ref={mountRef} />
+        <div className="scene-container">
+          <div ref={mountRef} className="three-scene"/>
           <div
             ref={textRef}
-            className="animated-text"
+            className="animated-text text-4xl"
             style={{ opacity: doneAnimation ? 1 : 0 }} // Hide text until animation is done
           >
             {doneAnimation && displayedText}
           </div>
+        </div>
         </>
       )}
     </>

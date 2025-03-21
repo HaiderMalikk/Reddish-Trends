@@ -613,11 +613,11 @@ export default function PlaygroundPage() {
   if (apiError) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-black">
-        <h1 className="text-6xl font-semibold text-red-600">API Error</h1>
+        <h1 className="text-4xl font-semibold text-red-600">API Error</h1>
         <p className="mt-4 text-lg text-customColor2">{apiError}</p>
         <button
           onClick={handleRetry}
-          className="mt-6 rounded-lg bg-customColor2 px-10 py-4 text-xl text-black transition hover:bg-opacity-90"
+          className="mt-6 rounded-lg bg-customColor2 px-6 py-2 text-black transition hover:bg-opacity-90"
         >
           Try Again
         </button>
@@ -921,12 +921,11 @@ export default function PlaygroundPage() {
                 </select>
               </div>
             )}
-            <div className="w-full py-2">
+            <div className="w-full">
               <RunButton
                 text="Run Analysis"
-                isLoading={formLoading || isTracking}
-                disabled={formLoading || isTracking}
                 onClick={handleSubmit}
+                className="mt-6"
               />
             </div>
           </form>
