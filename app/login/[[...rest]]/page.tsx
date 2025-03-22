@@ -39,9 +39,9 @@ export default function LoginPage() {
         </div>
       ) : (
         <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-reddish">
-          <h1 className="mb-4 text-4xl font-bold text-customColor6 text-center">
-            Website Down Till Sunday 23th 7:00 PM EST For Feture Updates.
-            Please Check Back Then For a New Update.
+          <h1 className="mb-4 text-center text-4xl font-bold text-customColor6">
+            Website Down Till Sunday 23th 7:00 PM EST For Feture Updates. Please
+            Check Back Then For a New Update.
           </h1>
           <div className="rounded-lg bg-customColor4 p-12 shadow-lg">
             {/* Use Clerk to handle sign-in */}

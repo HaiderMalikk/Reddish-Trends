@@ -501,13 +501,13 @@ export default function Dashboard() {
 
       {response && (
         <div className="mb-10 mt-8 w-full max-w-6xl">
-          <h2 className="mb-6 text-center text-7xl font-bold text-customColor2 relative">
+          <h2 className="relative mb-6 text-center text-7xl font-bold text-customColor2">
             Reddit's Stock's of the Day
             <button
-                onClick={() => setRedditAnalysisInfoOpen(true)}
-                className="absolute -top-2 right-[calc(6%)] text-customColor2 hover:text-gray-300"
-              >
-                <FaInfoCircle size={18} />
+              onClick={() => setRedditAnalysisInfoOpen(true)}
+              className="absolute -top-2 right-[calc(6%)] text-customColor2 hover:text-gray-300"
+            >
+              <FaInfoCircle size={18} />
             </button>
           </h2>
 
@@ -1666,9 +1666,9 @@ export default function Dashboard() {
                 <h4 className="pt-2 font-bold">Overview</h4>
                 <p>
                   The Reddit analysis is based on the sentiment of the Reddit
-                  post and the top comments from the Reddit community. 
-                  The posts are divide into 3 categories: top, worst, and rising.
-                  which are all based on there sentiment score.
+                  post and the top comments from the Reddit community. The posts
+                  are divide into 3 categories: top, worst, and rising. which
+                  are all based on there sentiment score.
                 </p>
               </div>
             </div>

@@ -1,0 +1,45 @@
+/* From Uiverse.io by TCdesign-dev */
+.button {
+  display: inline-block;
+  border-radius: 7px;
+  border: none;
+  font-family: inherit;
+  text-align: center;
+  width: auto;
+  min-width: 10em;
+  transition: all 0.4s;
+  cursor: pointer;
+  /* Remove fixed padding from here to allow customization */
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.4s;
+  font-size: inherit; /* Inherit font size from parent */
+}
+
+.button span:after {
+  content: "for free";
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.7s;
+  font-size: inherit; /* Inherit font size from parent */
+}
+
+.button:hover span {
+  padding-right: 3.8em;
+}
+
+.button:hover span:after {
+  opacity: 4;
+  right: 0;
+}
+
+/* Default padding class for backward compatibility */
+.buttonpadding2 {
+  padding: 0.8em 1.2em;
+}

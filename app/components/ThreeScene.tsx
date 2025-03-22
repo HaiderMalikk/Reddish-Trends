@@ -322,14 +322,14 @@ const ThreeScene = () => {
           duration: 1,
           ease: "power2.inOut",
         });
-        
+
         // Animate text back to the right side of the screen
         if (textRef.current) {
           gsap.to(textRef.current, {
             left: "100%",
             transform: "translateX(0)",
             duration: 1,
-            ease: "power2.inOut"
+            ease: "power2.inOut",
           });
         }
       },
@@ -346,14 +346,14 @@ const ThreeScene = () => {
           ease: "power2.inOut",
           onComplete: startHoverAnimation, // Restart hover after returning
         });
-        
+
         // Bring text back to center without retyping
         if (textRef.current) {
           gsap.to(textRef.current, {
             left: "50%",
             transform: "translateX(-50%)",
             duration: 1,
-            ease: "power2.inOut"
+            ease: "power2.inOut",
           });
         }
       },
@@ -385,16 +385,16 @@ const ThreeScene = () => {
         </div>
       ) : (
         <>
-        <div className="scene-container">
-          <div ref={mountRef} className="three-scene"/>
-          <div
-            ref={textRef}
-            className="animated-text text-4xl"
-            style={{ opacity: doneAnimation ? 1 : 0 }} // Hide text until animation is done
-          >
-            {doneAnimation && displayedText}
+          <div className="scene-container">
+            <div ref={mountRef} className="three-scene" />
+            <div
+              ref={textRef}
+              className="animated-text text-4xl"
+              style={{ opacity: doneAnimation ? 1 : 0 }} // Hide text until animation is done
+            >
+              {doneAnimation && displayedText}
+            </div>
           </div>
-        </div>
         </>
       )}
     </>

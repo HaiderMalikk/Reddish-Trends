@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import "../styles/playground-styles.css";
 import axios from "axios";
 import useUserData from "../../hooks/GetUserData";
@@ -121,6 +121,10 @@ export default function PlaygroundPage() {
   });
 
   const [historyButtonTop, setHistoryButtonTop] = useState<number>(5);
+
+  // Reference for scrolling to results
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   // Effect to adjust history button position when toast is shown/hidden
   useEffect(() => {
@@ -297,7 +301,7 @@ export default function PlaygroundPage() {
     const commentTime = Math.ceil(comments / 15) * 1;
 
     // Calculate total time 5 is for subreddits, plus 5 fro err
-    const totalTime = 3 * (postTime + commentTime) + 5;
+    const totalTime = 5 * (postTime + commentTime) + 5;
 
     console.log(`Estimated processing time: ${totalTime} seconds`);
     return totalTime;
@@ -344,6 +348,9 @@ export default function PlaygroundPage() {
     setIsApiLoading(true);
     setProgress(5); // Start at 5%
 
+    // Scroll to the top of the page to see the loading screen
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     try {
       // Build request object with proper typing
       const requestData: RequestData = {
@@ -388,6 +395,11 @@ export default function PlaygroundPage() {
       setProgress(100);
       clearInterval(progressInterval);
 
+      // Scroll to results section after a small delay to ensure rendering
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+
       // Only track analytics after successful API response
       if (user && userData) {
         // Create parameters object to log with the analytics
@@ -429,6 +441,9 @@ export default function PlaygroundPage() {
     setApiError(null);
     setProgress(5);
 
+    // Scroll to the top of the page to see the loading screen
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     try {
       console.log("Retrying request:", lastRequest);
 
@@ -447,6 +462,11 @@ export default function PlaygroundPage() {
       setResults(response.data);
       setProgress(100);
       clearInterval(progressInterval);
+
+      // Scroll to results section after a small delay to ensure rendering
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
 
       // Only track analytics for retry after successful API response
       if (user && userData && lastRequest) {
@@ -512,16 +532,14 @@ export default function PlaygroundPage() {
   // Effect to clear results when analysis type changes
   useEffect(() => {
     setResults(null);
-  }, [
-    analysisType,
-    subreddits,
-    limit,
-    commentLimit,
-    sort,
-    period,
-    time,
-    stocks,
-  ]);
+  }, [analysisType]);
+
+  // Effect to reset results when any parameter changes
+  useEffect(() => {
+    if (results) {
+      setResults(null);
+    }
+  }, [subreddits, limit, commentLimit, sort, period, time, stocks]);
 
   // Effect to reset time when sort is not 'top' or 'controversial'
   useEffect(() => {
@@ -675,7 +693,10 @@ export default function PlaygroundPage() {
         </div>
 
         {/* Form Section - Wider to accommodate content */}
-        <div className="mx-auto mb-14 w-full max-w-6xl rounded-lg border-2 border-customColor2 bg-black bg-opacity-70 p-6">
+        <div
+          ref={formRef}
+          className="mx-auto mb-14 w-full max-w-6xl rounded-lg border-2 border-customColor2 bg-black bg-opacity-70 p-6"
+        >
           <h2 className="mb-6 text-center text-xl text-customColor2">
             Analysis Parameters
           </h2>
@@ -921,7 +942,7 @@ export default function PlaygroundPage() {
                 </select>
               </div>
             )}
-            <div className="w-full">
+            <div ref={resultsRef} className="w-full">
               <RunButton
                 text="Run Analysis"
                 onClick={handleSubmit}
@@ -943,10 +964,9 @@ export default function PlaygroundPage() {
                 <p>{error}</p>
               </div>
             )}
-            ;
             {!formLoading && !error && results && (
               <div className="space-y-8">
-                {analysisType === "getplaygroundgeneralanalysis"
+                {analysisType === "getplaygroundgeneralanalysis" && results.analysis_results
                   ? // Display general analysis results
                     results.analysis_results.map(
                       (subredditData: any, index: number) => {
@@ -967,7 +987,7 @@ export default function PlaygroundPage() {
                               <h4 className="mb-3 text-xl font-semibold text-black">
                                 Top Stocks
                               </h4>
-                              {categories.top_stocks.length > 0 ? (
+                              {categories.top_stocks && categories.top_stocks.length > 0 ? (
                                 categories.top_stocks.map(
                                   (stock: any, stockIndex: number) => (
                                     <div key={stockIndex} className="mb-4">
@@ -991,7 +1011,7 @@ export default function PlaygroundPage() {
                               <h4 className="mb-3 text-xl font-semibold text-black">
                                 Worst Stocks
                               </h4>
-                              {categories.worst_stocks.length > 0 ? (
+                              {categories.worst_stocks && categories.worst_stocks.length > 0 ? (
                                 categories.worst_stocks.map(
                                   (stock: any, stockIndex: number) => (
                                     <div key={stockIndex} className="mb-4">
@@ -1015,7 +1035,7 @@ export default function PlaygroundPage() {
                               <h4 className="mb-3 text-xl font-semibold text-black">
                                 Rising Stocks
                               </h4>
-                              {categories.rising_stocks.length > 0 ? (
+                              {categories.rising_stocks && categories.rising_stocks.length > 0 ? (
                                 categories.rising_stocks.map(
                                   (stock: any, stockIndex: number) => (
                                     <div key={stockIndex} className="mb-4">
@@ -1037,7 +1057,8 @@ export default function PlaygroundPage() {
                         );
                       },
                     )
-                  : // Display specific stock analysis results
+                  : analysisType === "getplaygroundspecificanalysis" && results.analysis_results
+                  ? // Display specific stock analysis results
                     results.analysis_results.map(
                       (subredditData: any, index: number) => {
                         const subredditName = Object.keys(subredditData)[0];
@@ -1075,7 +1096,10 @@ export default function PlaygroundPage() {
                           </div>
                         );
                       },
-                    )}
+                    )
+                  : (
+                    <p className="text-center text-customColor2">No results to display</p>
+                  )}
               </div>
             )}
           </div>

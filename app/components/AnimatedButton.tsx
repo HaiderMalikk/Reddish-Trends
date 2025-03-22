@@ -1,12 +1,12 @@
-import { useRef, useEffect, ReactNode } from "react";
-import { gsap } from "gsap";
-import "../styles/button-styles.css";
+import { ReactNode } from "react";
+import "./styles/animated-button-styles.css";
 
 interface AnimatedButtonProps {
-  children: ReactNode;
-  onClick?: () => void;
+  children?: ReactNode;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => any;
   paddinginput?: string;
   Buttoncolor?: string;
+  fontSize?: string;
 }
 
 export default function AnimatedButton({
@@ -14,116 +14,22 @@ export default function AnimatedButton({
   onClick,
   paddinginput,
   Buttoncolor,
+  fontSize,
 }: AnimatedButtonProps) {
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const polylineRef = useRef<SVGPolylineElement | null>(null);
-
-  useEffect(() => {
-    if (!buttonRef.current || !svgRef.current || !polylineRef.current) return;
-
-    const svg = svgRef.current;
-    const wibble = polylineRef.current;
-    const width = 100;
-    const pointz = 30;
-    const spacing = width / pointz;
-
-    let pointzArray = [];
-    for (let i = 0; i < pointz; i++) {
-      const point = wibble.points.appendItem(svg.createSVGPoint());
-      point.x = i * spacing;
-      point.y = 25;
-      pointzArray.push(point);
-    }
-
-    let isAnimating = false;
-
-    const handleMouseEnter = () => {
-      if (isAnimating) return;
-
-      isAnimating = true;
-
-      pointzArray.forEach((point, index) => {
-        const mapper = gsap.utils.mapRange(0, pointz, 0, 0.4);
-
-        gsap
-          .to(point, {
-            keyframes: [
-              { y: "+=6", ease: "Sine.easeInOut" },
-              { y: "-=12", ease: "Sine.easeInOut" },
-              { y: "+=6", ease: "Sine.easeInOut" },
-            ],
-            yoyo: true,
-            duration: 0.6,
-            onComplete: () => {
-              isAnimating = false;
-            },
-          })
-          .progress(mapper(index));
-      });
-    };
-
-    const handleMouseLeave = () => {
-      // Reset any animations when mouse leaves (if needed)
-    };
-
-    const button = buttonRef.current;
-    button.addEventListener("mouseenter", handleMouseEnter);
-    button.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      button.removeEventListener("mouseenter", handleMouseEnter);
-      button.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
-
   return (
     <button
-      ref={buttonRef}
-      onClick={onClick}
-      className={`relative ${paddinginput} rounded-lg bg-transparent font-bold transition-all`}
+      className="button"
       style={{
-        position: "relative",
-        overflow: "visible",
-        border: "none",
-        backgroundColor: "transparent", // Ensure no background
-        boxShadow: "none", // No shadow
+        verticalAlign: "middle",
+        backgroundColor: Buttoncolor || undefined,
+        padding: paddinginput ? undefined : "", // Allow CSS classes or direct style override
+        fontSize: fontSize || undefined,
       }}
+      onClick={onClick}
     >
-      <span
-        style={{
-          position: "absolute",
-          zIndex: 2,
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)", // Center the text on top of the button
-        }}
-      >
-        {children}
-      </span>
-      <svg
-        ref={svgRef}
-        viewBox="0 0 100 50"
-        preserveAspectRatio="none"
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "15%",
-          width: "75%",
-          transform: "translateY(-50%)",
-          zIndex: 1,
-          overflow: "visible",
-        }}
-      >
-        <polyline
-          ref={polylineRef}
-          stroke={Buttoncolor ? Buttoncolor : "#d8c4b6"}
-          fill="none"
-          strokeWidth="45"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <div className={paddinginput || ""}>
+        {children || <span>Download</span>}
+      </div>
     </button>
   );
 }

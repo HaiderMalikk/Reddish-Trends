@@ -19,7 +19,7 @@
 
 .button .button__text {
   transform: translateX(25%) !important;
-  color: #000; 
+  color: #000;
   font-weight: 600;
   font-size: 1.25rem;
 }

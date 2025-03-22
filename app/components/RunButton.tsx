@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import './styles/run-button-styles.css'
+import React, { useEffect, useState } from "react";
+import "./styles/run-button-styles.css";
 
 interface RunButtonProps {
   text?: string;
@@ -7,10 +7,10 @@ interface RunButtonProps {
   className?: string;
 }
 
-const RunButton: React.FC<RunButtonProps> = ({ 
-  text = "Send", 
+const RunButton: React.FC<RunButtonProps> = ({
+  text = "Send",
   onClick,
-  className = "" 
+  className = "",
 }) => {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -46,8 +46,12 @@ const RunButton: React.FC<RunButtonProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-      <button className={`button ${className}`} type="button" onClick={handleClick}>
+    <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+      <button
+        className={`button ${className}`}
+        type="button"
+        onClick={handleClick}
+      >
         <span className="button__text">{text}</span>
         <span className="button__icon">
           <svg

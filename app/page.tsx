@@ -58,7 +58,7 @@ export default function HomePage() {
             ease: "expo.out",
             scrollTrigger: {
               trigger: item,
-              start: window.innerWidth < 768 ? "top 250%"  : "top 100%", // Adjust for mobile as the index here is 0 and we are quite far down i must inc it manually
+              start: window.innerWidth < 768 ? "top 250%" : "top 100%", // Adjust for mobile as the index here is 0 and we are quite far down i must inc it manually
               end: "bottom 20%",
               toggleActions: "play none none reverse",
             },
@@ -244,12 +244,11 @@ export default function HomePage() {
               </p>
               <Link href="/login">
                 <AnimatedButton
-                  paddinginput="buttonpadding2"
+                  paddinginput="p-4 px-8"
                   Buttoncolor="#f5efe7"
+                  fontSize="1.2rem"
                 >
-                  <h2 className="text-xl font-semibold text-customColor6">
-                    Get Started for Free
-                  </h2>
+                  <span className="text-black">Sign Up</span>
                 </AnimatedButton>
               </Link>
             </div>
@@ -286,12 +285,11 @@ export default function HomePage() {
               </p>
               <Link href="/login">
                 <AnimatedButton
-                  paddinginput="buttonpadding2"
+                  paddinginput="p-4 px-8"
                   Buttoncolor="#f5efe7"
+                  fontSize="1.2rem"
                 >
-                  <h2 className="text-xl font-semibold text-customColor6">
-                    Get Started
-                  </h2>
+                  <span className="text-black">Sign Up</span>
                 </AnimatedButton>
               </Link>
             </div>
@@ -300,15 +298,17 @@ export default function HomePage() {
       </div>
       <div
         ref={(el) => {
-          if (el) sectionRefs.current[8] = el;
+          if (el) sectionRefs.current[8] = el;{{}}
         }}
         className="mt-24 text-center"
       >
         <Link href="/login" className="custombutton">
-          <AnimatedButton paddinginput="buttonpadding" Buttoncolor="">
-            <h2 className="text-3xl font-semibold text-customColor6">
-              Get Started for Free
-            </h2>
+          <AnimatedButton
+            paddinginput="p-6 px-20"
+            Buttoncolor="#f5efe7"
+            fontSize="2rem"
+          >
+            <span className="text-black">Sign Up</span>
           </AnimatedButton>
         </Link>
         <p className="twoxlpadded mt-4 text-2xl text-customColor2">
