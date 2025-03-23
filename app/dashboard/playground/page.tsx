@@ -4,6 +4,7 @@ import "../styles/playground-styles.css";
 import axios from "axios";
 import useUserData from "../../hooks/GetUserData";
 import { useUser } from "@clerk/nextjs";
+import { useCommonUser } from "../../hooks/UserContext";
 import { useRouter } from "next/navigation";
 import { useAnalyticsTracking } from "../../hooks/PostUserAnalytics";
 import InfoPopup from "../../components/InfoPopup"; // Import InfoPopup component
@@ -52,7 +53,8 @@ interface HistoryItem {
 export default function PlaygroundPage() {
   // Get user data and authentication state
   const { userData, loading: userDataLoading } = useUserData();
-  const { user } = useUser();
+  const { user: clerkUser } = useUser();
+  const { commonUser, loading: contextLoading, isUserLoggedIn } = useCommonUser();
   const router = useRouter();
   const { trackPlaygroundAnalysis, isTracking } = useAnalyticsTracking();
   const {
@@ -148,7 +150,7 @@ export default function PlaygroundPage() {
 
   // Function to fetch user's analytics history
   const fetchAnalyticsHistory = useCallback(async () => {
-    if (!user || !userData) return;
+    if (!isUserLoggedIn || !userData) return;
 
     setHistoryLoading(true);
     setHistoryError(null);
@@ -168,7 +170,7 @@ export default function PlaygroundPage() {
     } finally {
       setHistoryLoading(false);
     }
-  }, [user, userData]);
+  }, [isUserLoggedIn, userData]);
 
   // Fetch history when history modal is opened
   useEffect(() => {
@@ -333,13 +335,13 @@ export default function PlaygroundPage() {
 
   // Check if user is logged in
   useEffect(() => {
-    if (!user) {
+    if (!isUserLoggedIn && !contextLoading && !userDataLoading) {
       const timer = setTimeout(() => {
         router.push("/login");
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [user, router]);
+  }, [isUserLoggedIn, contextLoading, userDataLoading, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -401,8 +403,8 @@ export default function PlaygroundPage() {
       }, 300);
 
       // Only track analytics after successful API response
-      if (user && userData) {
-        // Create parameters object to log with the analytics
+      if (isUserLoggedIn && userData) {
+        // Create parameters object to log with the analytics - match the old format exactly
         const trackingParams = {
           analysisType: analysisType,
           subreddits: subreddits,
@@ -410,7 +412,7 @@ export default function PlaygroundPage() {
           commentLimit: commentLimit,
           sort: sort,
           period: period,
-          time: time, // Add time parameter to tracking
+          time: time, // Include the time parameter
           stocks:
             analysisType === "getplaygroundspecificanalysis"
               ? stocks
@@ -469,7 +471,7 @@ export default function PlaygroundPage() {
       }, 300);
 
       // Only track analytics for retry after successful API response
-      if (user && userData && lastRequest) {
+      if (isUserLoggedIn && userData && lastRequest) {
         const { type, parameters } = lastRequest.request;
 
         // Create parameters object for tracking
@@ -497,8 +499,22 @@ export default function PlaygroundPage() {
     }
   };
 
+  // Add a function to check if user is a guest
+  const isGuestUser = useCallback(() => {
+    return userData?.email?.endsWith('.temp') || false;
+  }, [userData]);
+
   // Handle favorite toggle for a stock - Matching dashboard implementation exactly
   const handleFavoriteToggle = async (stock: any) => {
+    if (isGuestUser()) {
+      setToast({
+        show: true,
+        message: "Please login to add favorites",
+        type: "error",
+      });
+      return;
+    }
+
     try {
       if (isFavorite(stock.symbol)) {
         await removeFavorite(stock.symbol);
@@ -548,8 +564,24 @@ export default function PlaygroundPage() {
     }
   }, [sort]);
 
+  // Handle opening the history modal
+  const handleOpenHistory = () => {
+    if (isGuestUser()) {
+      // Show toast message for guest users
+      setToast({
+        show: true,
+        message: "Please create an account to track your search history",
+        type: "error",
+      });
+      return;
+    }
+    
+    // Only open history for logged-in users
+    setHistoryOpen(true);
+  };
+
   // If user is not logged in, show a message and redirect
-  if (!user) {
+  if (!isUserLoggedIn && !contextLoading && !userDataLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
         <h1 className="text-customColor5">
@@ -659,7 +691,7 @@ export default function PlaygroundPage() {
           }}
         >
           <button
-            onClick={() => setHistoryOpen(true)}
+            onClick={handleOpenHistory}
             type="button"
             className="flex items-center rounded-lg bg-customColor4 px-4 py-2 text-black shadow-md transition hover:bg-opacity-80"
           >

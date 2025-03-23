@@ -11,11 +11,13 @@ on logout we use clerks signout method to sign the user out and then redirect to
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation"; // router for navigation between logged in/out website sections, pathname for highlighting the current page in header
 import { useUser, useClerk } from "@clerk/nextjs"; // Import both useUser and useClerk
+import { useCommonUser } from "../hooks/UserContext";
 import Link from "next/link"; // link for navigation between pages
 import logo from "../../public/logo.svg"; // Import the logo
 import logoAlt from "../../public/logo-w-text.svg"; // Import the logo
 import Image from "next/image"; // Import the Image component
 import "./styles/layout-styles.css";
+import { deleteCookie } from "cookies-next";
 
 // Define the props type for DashboardLayout to include children
 interface DashboardLayoutProps {
@@ -23,18 +25,26 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const { user, isLoaded } = useUser(); // Use Clerk hook for user management (logout)
+  const { user, isLoaded: clerkLoaded } = useUser(); // Use Clerk hook for user management (logout)
+  const { commonUser, loading: contextLoading } = useCommonUser();
   const { signOut } = useClerk(); // Access signOut from useClerk to handle logout
   const router = useRouter(); // Access the router for navigation
   const pathname = usePathname(); // Access the current pathname for routing
   const [loggingOut, setLoggingOut] = useState(false); // State to manage logout process
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // State for mobile menu
 
-  // Function to handle logout
+  // Function to handle logout for both types of users
   const handleLogout = async () => {
     setLoggingOut(true); // Set logging out state to true
     try {
-      await signOut(); // Sign the user out using Clerk's method
+      if (user) {
+        // If it's a Clerk user, use Clerk's sign out
+        await signOut();
+      } else if (commonUser?.isGuest) {
+        // If it's a guest user, clear the cookies
+        deleteCookie('guestUser');
+        deleteCookie('userEmail');
+      }
       router.replace("/login"); // Redirect to login page after signing out
     } catch (error) {
       console.error("Logout error:", error); // Handle logout errors
@@ -42,8 +52,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
   };
 
-  // Loader until the user data is loaded
-  if (!isLoaded) {
+  // Show loader if either user context is still loading
+  if ((!clerkLoaded && !user) || (contextLoading && !commonUser)) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
         {/* Spinner */}

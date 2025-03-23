@@ -312,7 +312,7 @@ export default function HomePage() {
           </AnimatedButton>
         </Link>
         <p className="twoxlpadded mt-4 text-2xl text-customColor2">
-          Sign up now and take your trading to the next level.
+          Sign up now or continue as a guest
         </p>
       </div>
       {/* Add more spacing from the last section to the footer */}

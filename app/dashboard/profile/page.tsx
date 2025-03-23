@@ -3,17 +3,23 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import useUserData from "../../hooks/GetUserData"; // user data hook
 import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user management
+import { useCommonUser } from "../../hooks/UserContext";
 import { useRouter } from "next/navigation"; // Correct import for useRouter
 import "../styles/home-page-styles.css";
 import defaultPP from "../../../public/defaultprofilepic.svg";
 import { useUserFavorites } from "../../hooks/UserFavs"; // Import the favorites hook
 import Toast from "../../components/Toast"; // Import the Toast component
 
-export default function Profile() {
+export default function ProfilePage() {
+  const { user } = useUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
   const { userData, loading } = useUserData(); // get user data
-  const { user } = useUser(); // Use Clerk hook for user management (logout)
+  const { user: clerkUser } = useUser();
+  const { commonUser, loading: contextLoading, isUserLoggedIn } = useCommonUser();
   const router = useRouter(); // Access the router for navigation
-  const email = user?.primaryEmailAddress?.emailAddress;
+  
+  // Use email from either source
+  const email = userData?.email;
   const { removeFavorite, refreshFavorites } = useUserFavorites(email); // Get removeFavorite function
 
   // Local state for favorites to enable immediate UI updates
@@ -41,15 +47,15 @@ export default function Profile() {
 
   // If user is not logged in, show a message and redirect after 1 second
   useEffect(() => {
-    if (!user) {
+    if (!isUserLoggedIn && !contextLoading && !loading) {
       const timer = setTimeout(() => {
         router.push("/login");
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [user, router]);
+  }, [isUserLoggedIn, contextLoading, loading, router]);
 
-  if (!user) {
+  if (!isUserLoggedIn && !contextLoading && !loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
         <h1 className="text-customColor2">
@@ -132,6 +138,24 @@ export default function Profile() {
   const closeToast = () => {
     setToast({ ...toast, show: false });
   };
+
+  // Check if user is a guest
+  const isGuestUser = () => {
+    return userData.email.endsWith('.temp') || false;
+  };
+  
+  // Return different content for guest users
+  if (isGuestUser()) {
+    return (
+      <div className="profile-container">
+        <div className="guest-profile-message">
+          <h1>Guest Account</h1>
+          <p>Please login to create a profile and access your favorites.</p>
+          <p>With a registered account, you can save your favorite subreddits and access them easily.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen bg-reddish p-6">

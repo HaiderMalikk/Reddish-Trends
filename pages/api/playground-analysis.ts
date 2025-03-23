@@ -11,6 +11,13 @@ export default async function handler(
   try {
     // Get the request body
     const requestData = req.body;
+    const userEmail = requestData.email;
+    
+    // Check if user is a guest and update the email if needed
+    if (userEmail?.endsWith('.temp')) {
+      requestData.email = "reddishtrendscommunity@gmail.com";
+    }
+    
     console.log("Playground request received:", requestData);
 
     // Make a POST request to the Flask backend
@@ -34,6 +41,6 @@ export default async function handler(
     console.error("Error calling Flask playground API:", error);
     return res
       .status(500)
-      .json({ error: error.message || "Internal Server Error" });
+      .json({ message: "Error processing request", error: error.message });
   }
 }

@@ -11,9 +11,15 @@ export const useUserFavorites = (userEmail: string | undefined) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch user favorites from Firebase
+  // Skip Firebase for guest or undefined users
+  const isGuest = !userEmail || userEmail.endsWith('.temp');
+
+  // Fetch user favorites from Firebase only for non-guest users
   const getUserFavorites = async () => {
-    if (!userEmail) return;
+    if (isGuest) {
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -44,9 +50,12 @@ export const useUserFavorites = (userEmail: string | undefined) => {
     }
   };
 
-  // Add a stock to favorites
+  // Add a stock to favorites - for guests, just show toast
   const addFavorite = async (symbol: string, companyName: string) => {
-    if (!userEmail) return;
+    if (isGuest) {
+      // Return a rejected promise with a descriptive error
+      return Promise.reject(new Error("Guest users cannot add favorites"));
+    }
 
     try {
       const response = await fetch("/api/query-user-favs", {
@@ -75,9 +84,12 @@ export const useUserFavorites = (userEmail: string | undefined) => {
     }
   };
 
-  // Remove a stock from favorites
+  // Remove a stock from favorites - for guests, just show toast
   const removeFavorite = async (symbol: string) => {
-    if (!userEmail) return;
+    if (isGuest) {
+      // Return a rejected promise with a descriptive error
+      return Promise.reject(new Error("Guest users cannot remove favorites"));
+    }
 
     try {
       const response = await fetch("/api/query-user-favs", {
@@ -113,10 +125,13 @@ export const useUserFavorites = (userEmail: string | undefined) => {
 
   // Load favorites on component mount or when email changes
   useEffect(() => {
-    if (userEmail) {
+    // Skip for guest users
+    if (!isGuest) {
       getUserFavorites();
+    } else {
+      setLoading(false);
     }
-  }, [userEmail]);
+  }, [userEmail, isGuest]);
 
   return {
     favorites,

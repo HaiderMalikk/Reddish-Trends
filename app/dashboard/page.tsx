@@ -12,6 +12,7 @@ import Toast from "../components/Toast"; // Import the toast component
 import axios, { AxiosResponse } from "axios"; // Import axios for API requests
 import RefreshButton from "../components/RefreshButton";
 import RedditLink from "../components/RedditLink";
+import { useCommonUser } from "../hooks/UserContext"; // Import useCommonUser hook
 
 // Define types for the response
 interface GPTAnalysis {
@@ -56,6 +57,7 @@ interface FlaskResponse {
 export default function Dashboard() {
   const { userData, loading } = useUserData(); // get user data
   const { user } = useUser(); // Use Clerk hook for user management
+  const { commonUser, loading: contextLoading, isUserLoggedIn } = useCommonUser();
   const router = useRouter(); // Access the router for navigation
   const [response, setResponse] = useState<FlaskResponse | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -241,7 +243,7 @@ export default function Dashboard() {
       setProgress(100); // Set progress to 100 when data is fetched
 
       // Only track analytics if request is successful
-      if (user && userData) {
+      if (isUserLoggedIn && userData) {
         if (request.type === "getgeneralanalysis") {
           console.log("Tracking general analysis");
           await trackGeneralAnalysis(userData.email);
@@ -345,22 +347,22 @@ export default function Dashboard() {
 
   // once user make the call
   useEffect(() => {
-    if (user) {
+    if (isUserLoggedIn) {
       handel_flask_call({ type: "getgeneralanalysis" });
     }
-  }, [user, userData]); // Added user dependency to ensure it's available before making the call
+  }, [isUserLoggedIn, userData]); // Added user dependency to ensure it's available before making the call
 
   // If user is not logged in, show a message and redirect after 1 second
   useEffect(() => {
-    if (!user) {
+    if (!isUserLoggedIn && !contextLoading && !loading) {
       const timer = setTimeout(() => {
         router.push("/login");
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [user, router]);
+  }, [isUserLoggedIn, contextLoading, loading, router]);
 
-  if (!user) {
+  if (!isUserLoggedIn && !contextLoading && !loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
         <h1 className="text-customColor2">
@@ -499,7 +501,24 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {response && (
+      {!response ? (
+        <div className="flex min-h-[300px] w-full max-w-6xl flex-col items-center justify-center rounded-lg bg-black bg-opacity-70 p-8">
+          <h2 className="mb-6 text-center text-3xl font-bold text-customColor2">
+            Loading Stock Data...
+          </h2>
+          <p className="text-center text-lg text-customColor5">
+            Please wait while we fetch the latest stock information from Reddit.
+          </p>
+          <div className="spinner mt-8">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      ) : (
         <div className="mb-10 mt-8 w-full max-w-6xl">
           <h2 className="relative mb-6 text-center text-7xl font-bold text-customColor2">
             Reddit's Stock's of the Day
@@ -1093,6 +1112,7 @@ export default function Dashboard() {
                     <p className="mt-1">
                       {response.response["Worst_Stock"].GPT_Analysis.overview}
                     </p>
+                    
                   </div>
 
                   <div>
@@ -1566,7 +1586,7 @@ export default function Dashboard() {
                     unavailable or the post was neutral.
                   </li>
                   <li>
-                    if the stock data liek price is empty that no info on that
+                    if the stock data like price is empty that no info on that
                     stock was found in the API.
                   </li>
                 </p>

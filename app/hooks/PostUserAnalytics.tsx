@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+
+// Common email for guest analytics
+const COMMON_EMAIL = "reddishtrendscommunity@gmail.com";
 
 export const incrementAnalysisRequest = async (
   email: string,
@@ -68,7 +71,9 @@ export const useAnalyticsTracking = () => {
     setRecentRequests((prev) => ({ ...prev, [cacheKey]: currentTime }));
 
     try {
-      return await incrementAnalysisRequest(userEmail, type, parameters);
+      // Use community email for guest users
+      const email = userEmail?.endsWith('.temp') ? COMMON_EMAIL : userEmail;
+      return await incrementAnalysisRequest(email, type, parameters);
     } finally {
       setIsTracking(false);
     }
@@ -82,7 +87,7 @@ export const useAnalyticsTracking = () => {
     return trackAnalysis(userEmail, "redo_general_analysis");
   };
 
-  // Add playground analysis tracking
+  // Add playground analysis tracking - ensure we pass parameters exactly as before
   const trackPlaygroundAnalysis = async (
     userEmail: string,
     parameters: object,

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useUserFavorites } from "./UserFavs";
+import { useCommonUser } from "./UserContext";
 
 // Define types for the user data
 interface UserData {
@@ -17,35 +18,58 @@ interface UserData {
 }
 
 export default function GetUserData() {
-  const { user, isLoaded } = useUser();
+  const { user, isLoaded: clerkLoaded } = useUser();
+  const { commonUser, loading: contextLoading } = useCommonUser();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Get email for favorites
-  const email = user?.primaryEmailAddress?.emailAddress;
+  // Get email for favorites - use the appropriate user object
+  const email = commonUser?.email || user?.primaryEmailAddress?.emailAddress;
 
-  // Use the favorites hook
-  const { favorites, loading: favsLoading } = useUserFavorites(email);
+  // For guest users, we'll use an empty array for favorites
+  // Only use the favorites hook for non-guest users
+  const isGuest = email?.endsWith('.temp') || false;
+  const { favorites, loading: favsLoading } = useUserFavorites(isGuest ? undefined : email);
 
   useEffect(() => {
-    if (isLoaded && user) {
+    // If either common user or clerk user is available (and loaded), proceed
+    if ((clerkLoaded && user) || (!contextLoading && commonUser)) {
       setLoading(true);
+      
+      // Handle guest users completely separate from Firebase
+      if (commonUser?.email?.endsWith('.temp')) {
+        // For guest users, just create a local user data object with no Firebase interaction
+        setUserData({
+          firstName: commonUser?.firstName || "Guest",
+          lastName: commonUser?.lastName || "User",
+          email: commonUser?.email || "",
+          profileImageUrl: commonUser?.imageUrl || null,
+          message: "Welcome, guest user! Create an account to save your preferences and history.",
+          createdAt: null,
+          favorites: [], // Empty favorites for guest users
+        });
+        setLoading(false);
+        return;
+      }
+
+      // For normal users, continue with existing Firebase logic
       const checkOrCreateUser = async () => {
         try {
           const response = await fetch("/api/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              email: user.primaryEmailAddress?.emailAddress,
+              email: commonUser?.email || user?.primaryEmailAddress?.emailAddress,
             }),
           });
 
           const data = await response.json();
           if (response.ok) {
-            const firstName = user?.firstName ?? "User";
-            const lastName = user?.lastName ?? "";
-            const email = user.primaryEmailAddress?.emailAddress ?? "";
-            const profileImageUrl = user.imageUrl || null;
+            // Use commonUser if available, otherwise fall back to clerk user
+            const firstName = commonUser?.firstName || user?.firstName || "User";
+            const lastName = commonUser?.lastName || user?.lastName || "";
+            const userEmail = commonUser?.email || user?.primaryEmailAddress?.emailAddress || "";
+            const profileImageUrl = commonUser?.imageUrl || user?.imageUrl || null;
             const message = data.userExists
               ? `User found. Welcome back, ${firstName} ${lastName}!`
               : `New user profile created. Welcome, ${firstName} ${lastName}!`;
@@ -58,7 +82,7 @@ export default function GetUserData() {
             setUserData({
               firstName,
               lastName,
-              email,
+              email: userEmail,
               profileImageUrl,
               message,
               createdAt,
@@ -94,7 +118,7 @@ export default function GetUserData() {
 
       checkOrCreateUser();
     }
-  }, [isLoaded, user, favorites]);
+  }, [clerkLoaded, user, contextLoading, commonUser, favorites, isGuest]);
 
-  return { userData, loading: loading || favsLoading };
+  return { userData, loading: isGuest ? loading : (loading || favsLoading) };
 }
