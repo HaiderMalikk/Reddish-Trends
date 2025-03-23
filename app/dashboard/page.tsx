@@ -1,7 +1,7 @@
 "use client";
 import useUserData from "../hooks/GetUserData"; // user data hook
 import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user management
-import "./styles/home-page-styles.css";
+import "./styles/dashboard-page-styles.css";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Correct import for useRouter
 import InfoPopup from "../components/InfoPopup"; // Import InfoPopup component
@@ -57,7 +57,12 @@ interface FlaskResponse {
 export default function Dashboard() {
   const { userData, loading } = useUserData(); // get user data
   const { user, isLoaded: clerkLoaded } = useUser(); // Use Clerk hook for user management
-  const { commonUser, loading: contextLoading, isUserLoggedIn, setCommonUser } = useCommonUser();
+  const {
+    commonUser,
+    loading: contextLoading,
+    isUserLoggedIn,
+    setCommonUser,
+  } = useCommonUser();
   const router = useRouter(); // Access the router for navigation
   const [response, setResponse] = useState<FlaskResponse | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -211,12 +216,21 @@ export default function Dashboard() {
 
   // Calculate estimated processing time for API call
   const calculateProcessingTime = () => {
-    // est time fro 100 posts
-    return 100;
+    return 180;
   };
 
   // Handle refresh button click
   const handleRefresh = () => {
+    // no log in no refresh :(
+    if (!isUserLoggedIn || (commonUser && commonUser.isGuest)) {
+      // Show toast notification for login requirement
+      setToast({
+        show: true,
+        message: "Please log in to refresh stock data",
+        type: "error",
+      });
+      return;
+    }
     handel_flask_call({ type: "redogeneralanalysis" });
   };
 
@@ -369,25 +383,25 @@ export default function Dashboard() {
       const handleGuestLogin = async () => {
         try {
           // Call the API endpoint for guest login
-          const response = await fetch('/api/guest-login', {
-            method: 'POST',
+          const response = await fetch("/api/guest-login", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           });
 
           const data = await response.json();
-          
+
           if (response.ok) {
             // Set the common user context
             setCommonUser({
-              firstName: 'Guest',
-              lastName: 'User',
+              firstName: "Guest",
+              lastName: "User",
               email: data.email,
               isGuest: true,
-              imageUrl: null
+              imageUrl: null,
             });
-            
+
             // Show toast notification for guest login
             setToast({
               show: true,
@@ -396,7 +410,7 @@ export default function Dashboard() {
             });
           }
         } catch (error) {
-          console.error('Error during automatic guest login:', error);
+          console.error("Error during automatic guest login:", error);
         }
       };
 
@@ -405,7 +419,7 @@ export default function Dashboard() {
       // Show toast when user is logged in with Clerk account
       setToast({
         show: true,
-        message: `Logged in as ${user.firstName || ''} ${user.lastName || ''}`,
+        message: `Logged in as ${user.firstName || ""} ${user.lastName || ""}`,
         type: "success",
       });
     }
@@ -506,6 +520,17 @@ export default function Dashboard() {
   // Handle favorite toggle for a stock
   const handleFavoriteToggle = async (stock: StockData) => {
     try {
+      // no login no fav :(
+      if (!isUserLoggedIn || (commonUser && commonUser.isGuest)) {
+        // Show toast suggesting user to log in
+        setToast({
+          show: true,
+          message: `Please log in to add favorites`,
+          type: "error",
+        });
+
+        return;
+      }
       if (isFavorite(stock.symbol)) {
         await removeFavorite(stock.symbol);
         // Show success toast for removing favorite
@@ -543,8 +568,8 @@ export default function Dashboard() {
       )}
 
       {/* welcome message to my 2 person userbase */}
-      <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-customColor4 p-12 text-center text-black shadow-md">
-        <h1 className="text-6xl font-semibold">Dashboard</h1>
+      <div className="dashcont mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-customColor4 p-12 text-center text-black shadow-md">
+        <h1 className="dashtext text-6xl font-semibold">Dashboard</h1>
         <p className="welcome-msg mt-4 text-xl text-gray-600">
           Welcome, {userData.firstName} {userData.lastName}!
         </p>
@@ -580,7 +605,7 @@ export default function Dashboard() {
           </h2>
 
           {/* Quick Navigation Buttons */}
-          <div className="mb-10 flex justify-center space-x-4">
+          <div className="mb-6 flex justify-center space-x-4">
             <button
               onClick={() => scrollToSection("top-stock")}
               className="rounded-lg bg-customColor2 px-8 py-2 font-bold text-black shadow-md transition hover:bg-opacity-80"
@@ -603,7 +628,12 @@ export default function Dashboard() {
 
           {/* Refresh and Countdown Section */}
           <div className="mb-10 flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
-            <RefreshButton onClick={handleRefresh}></RefreshButton>
+            <div className="mb-7 flex flex-col items-center">
+              <span className="mt-2 text-sm font-bold text-black">
+                EST Time 3 Min
+              </span>
+              <RefreshButton onClick={handleRefresh}></RefreshButton>
+            </div>
             <div className="time-tracker flex items-center rounded-lg bg-customColor2 px-6 py-3">
               <button
                 onClick={() => setStockUpdateInfoOpen(true)}
@@ -629,7 +659,7 @@ export default function Dashboard() {
           {/* Stock Info Section */}
           <p
             id="top-stock"
-            className="mb-6 mt-20 text-center text-5xl font-bold text-customColor2"
+            className="mb-6 mt-16 text-center text-5xl font-bold text-customColor2"
           >
             Top Stock
           </p>
@@ -765,16 +795,22 @@ export default function Dashboard() {
                   <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
                     <p className="text-sm text-gray-600">RSI</p>
                     <div className="rsi-box items-center text-xl font-semibold text-black">
-                      {response.response["Top_Stock"].rsi}
-                      {Number(response.response["Top_Stock"].rsi) > 70 && (
-                        <div className="rsi-tip ml-1 text-sm text-red-500">
-                          (Overbought)
-                        </div>
-                      )}
-                      {Number(response.response["Top_Stock"].rsi) < 30 && (
-                        <div className="rsi-tip ml-1 text-sm text-green-500">
-                          (Oversold)
-                        </div>
+                      {Number(response.response["Top_Stock"].rsi) === 0 ? (
+                        <span className="text-gray-400">Not Available</span>
+                      ) : (
+                        <>
+                          {response.response["Top_Stock"].rsi}
+                          {Number(response.response["Top_Stock"].rsi) > 70 && (
+                            <div className="rsi-tip ml-1 text-sm text-red-500">
+                              (Overbought)
+                            </div>
+                          )}
+                          {Number(response.response["Top_Stock"].rsi) < 30 && (
+                            <div className="rsi-tip ml-1 text-sm text-green-500">
+                              (Oversold)
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -1073,16 +1109,24 @@ export default function Dashboard() {
                   <div className="rounded-lg bg-customColor4 bg-opacity-30 p-3">
                     <p className="text-sm text-gray-600">RSI</p>
                     <div className="rsi-box items-center text-xl font-semibold text-black">
-                      {response.response["Worst_Stock"].rsi}
-                      {Number(response.response["Worst_Stock"].rsi) > 70 && (
-                        <div className="rsi-tip ml-1 text-sm text-red-500">
-                          (Overbought)
-                        </div>
-                      )}
-                      {Number(response.response["Worst_Stock"].rsi) < 30 && (
-                        <div className="rsi-tip ml-1 text-sm text-green-500">
-                          (Oversold)
-                        </div>
+                      {Number(response.response["Worst_Stock"].rsi) === 0 ? (
+                        <span className="text-gray-400">Not Available</span>
+                      ) : (
+                        <>
+                          {response.response["Worst_Stock"].rsi}
+                          {Number(response.response["Worst_Stock"].rsi) >
+                            70 && (
+                            <div className="rsi-tip ml-1 text-sm text-red-500">
+                              (Overbought)
+                            </div>
+                          )}
+                          {Number(response.response["Worst_Stock"].rsi) <
+                            30 && (
+                            <div className="rsi-tip ml-1 text-sm text-green-500">
+                              (Oversold)
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -1161,7 +1205,6 @@ export default function Dashboard() {
                     <p className="mt-1">
                       {response.response["Worst_Stock"].GPT_Analysis.overview}
                     </p>
-                    
                   </div>
 
                   <div>
@@ -1386,16 +1429,24 @@ export default function Dashboard() {
                   <div className="flex flex-col items-center rounded-lg bg-customColor4 bg-opacity-30 p-3">
                     <p className="text-sm text-gray-600">RSI</p>
                     <div className="rsi-box items-center text-xl font-semibold text-black">
-                      {response.response["Rising_Stock"].rsi}
-                      {Number(response.response["Rising_Stock"].rsi) > 70 && (
-                        <div className="rsi-tip ml-1 text-sm text-red-500">
-                          (Overbought)
-                        </div>
-                      )}
-                      {Number(response.response["Rising_Stock"].rsi) < 30 && (
-                        <div className="rsi-tip ml-1 text-sm text-green-500">
-                          (Oversold)
-                        </div>
+                      {Number(response.response["Rising_Stock"].rsi) === 0 ? (
+                        <span className="text-gray-400">Not Available</span>
+                      ) : (
+                        <>
+                          {response.response["Rising_Stock"].rsi}
+                          {Number(response.response["Rising_Stock"].rsi) >
+                            70 && (
+                            <div className="rsi-tip ml-1 text-sm text-red-500">
+                              (Overbought)
+                            </div>
+                          )}
+                          {Number(response.response["Rising_Stock"].rsi) <
+                            30 && (
+                            <div className="rsi-tip ml-1 text-sm text-green-500">
+                              (Oversold)
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>

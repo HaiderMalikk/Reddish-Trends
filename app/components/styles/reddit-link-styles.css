@@ -62,11 +62,36 @@
     margin: 0 auto; /* Center the button horizontally */
     display: block; /* Make it a block element to allow margin auto to work */
     width: fit-content; /* Size to content */
+    /* Default to hover state on mobile */
+    background-color: #ff4500;
   }
 
   .reddit-link-button svg {
     right: 0.6em; /* Adjust icon position */
     height: 0.9em; /* Smaller icon */
     width: 1.1em; /* Smaller icon width */
+    /* Show the SVG by default on mobile (like hover state) */
+    opacity: 1;
+  }
+
+  .reddit-link-button p {
+    /* Default to hover state text color on mobile */
+    color: #f5f5f5;
+    /* Default to hover state position on mobile */
+    transform: translateX(-0.3em);
+  }
+
+  /* Disable hover animations on mobile */
+  .reddit-link-button:hover p {
+    transform: none;
+    color: #f5f5f5;
+  }
+
+  .reddit-link-button:hover svg {
+    opacity: 1;
+  }
+
+  .reddit-link-button:hover {
+    background-color: #ff4500;
   }
 }

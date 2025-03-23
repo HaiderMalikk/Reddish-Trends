@@ -71,6 +71,13 @@
   .shadow-lg {
     box-shadow: none;
   }
+  .page {
+    margin-top: -3rem;
+  }
+  .my-2 {
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+  }
 
   .text-4xl {
     font-size: 1.5rem;

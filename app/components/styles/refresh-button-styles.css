@@ -81,4 +81,18 @@
     width: 200px;
     transform: translateX(25%);
   }
+
+  /* Disable hover animations on mobile */
+  .refresh-button:hover {
+    background: #f5efe7;
+  }
+
+  .refresh-button:hover .refresh-button__text {
+    color: #000;
+  }
+
+  .refresh-button:hover .refresh-button__icon {
+    width: 50px;
+    transform: translateX(250px);
+  }
 }

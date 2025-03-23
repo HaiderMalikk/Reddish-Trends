@@ -12,12 +12,12 @@ export default async function handler(
     // Get the request body
     const requestData = req.body;
     const userEmail = requestData.email;
-    
+
     // Check if user is a guest and update the email if needed
-    if (userEmail?.endsWith('.temp')) {
+    if (userEmail?.endsWith(".temp")) {
       requestData.email = "reddishtrendscommunity@gmail.com";
     }
-    
+
     console.log("Playground request received:", requestData);
 
     // Make a POST request to the Flask backend

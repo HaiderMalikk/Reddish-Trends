@@ -43,3 +43,15 @@
 .buttonpadding2 {
   padding: 0.8em 1.2em;
 }
+
+/* Disable hover animations on mobile */
+@media screen and (max-width: 768px) {
+  .animated-button:hover span {
+    padding-right: 0;
+  }
+
+  .animated-button:hover span:after {
+    opacity: 0;
+    right: -20px;
+  }
+}

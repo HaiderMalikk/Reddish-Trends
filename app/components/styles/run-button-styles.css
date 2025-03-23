@@ -70,16 +70,11 @@
   }
 
   .run-button .run-button__text {
-    transform: translateX(150%); /* Adjusted text position for wider button */
+    transform: translateX(60%) !important;
     font-size: 1.1rem; /* Slightly larger text */
   }
 
   .run-button .run-button__icon {
-    transform: translateX(250px); /* Adjusted initial position for icon */
-  }
-
-  .run-button:hover .run-button__icon {
-    width: 200px; /* Wider icon area on hover for mobile */
-    transform: translateX(25%); /* Adjusted position for hover state */
+    transform: translateX(240px); /* Adjusted initial position for icon */
   }
 }

@@ -1,0 +1,15 @@
+/* meadea */
+
+@media screen and (max-width: 768px) {
+  .stock-txt {
+    margin-top: 1rem;
+  }
+  .text-xl {
+    font-size: 1rem;
+  }
+  .rsi-tip {
+    font-size: 0.5rem;
+    /* center */
+    margin-left: -0.5rem;
+  }
+}

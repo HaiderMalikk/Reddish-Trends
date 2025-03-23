@@ -35,15 +35,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   // Function to handle logout for both types of users
   const handleLogout = async () => {
+    // If user is guest, just redirect to login
+    if (commonUser?.isGuest) {
+      router.replace("/login");
+      return;
+    }
+
     setLoggingOut(true); // Set logging out state to true
     try {
       if (user) {
         // If it's a Clerk user, use Clerk's sign out
         await signOut();
-      } else if (commonUser?.isGuest) {
-        // If it's a guest user, clear the cookies
-        deleteCookie('guestUser');
-        deleteCookie('userEmail');
+      } else if (commonUser) {
+        // If it's a common user, clear the cookies
+        deleteCookie("guestUser");
+        deleteCookie("userEmail");
       }
       router.replace("/login"); // Redirect to login page after signing out
     } catch (error) {
@@ -102,13 +108,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 width={180}
                 height={40}
               />
-              <Image
-                src={logo}
-                alt="Logo"
-                className="header-logo mobile-logo visible h-auto w-auto"
-                width={40}
-                height={40}
-              />
+              <Image src={logo} alt="Logo" className="mobile-logo" />
             </Link>
           </div>
           {/* Desktop navigation */}
@@ -142,7 +142,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               className="hover:text-gray-300"
               type="button"
             >
-              Logout
+              {commonUser?.isGuest ? "Login" : "Logout"}
             </button>
           </nav>
 
@@ -206,7 +206,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 }}
                 className="mobile-menu-item text-left"
               >
-                Logout
+                {commonUser?.isGuest ? "Login" : "Logout"}
               </button>
             </nav>
           </div>

@@ -19,7 +19,7 @@
     flex-direction: column;
   }
   .rsi-tip {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
   }
   .welcome-msg {
     font-size: 1.2rem;
@@ -36,6 +36,22 @@
     position: absolute;
     margin-left: 16.5rem; /* Adjust margin as needed */
     margin-bottom: 4.5rem; /* Adjust margin as needed */
+  }
+  .dashtext {
+    font-size: 2.5rem !important;
+  }
+  .dashcont {
+    margin: 0 auto !important;
+    margin-bottom: 10px !important;
+    width: 100% !important;
+    max-width: 4xl !important;
+    border-radius: 0.5rem !important;
+    border: 2.5px solid #000 !important;
+    background-color: #d8c4b6 !important;
+    padding: 12px !important;
+    text-align: center !important;
+    color: #000 !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
   }
 }
 

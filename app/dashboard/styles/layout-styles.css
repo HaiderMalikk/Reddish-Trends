@@ -50,12 +50,6 @@
   display: none;
 }
 
-.mobile-logo {
-  display: block;
-  width: 40px;
-  height: 40px;
-}
-
 @media (min-width: 768px) {
   .desktop-logo {
     display: block;
@@ -64,6 +58,8 @@
   }
 
   .mobile-logo {
+    height: 2rem;
+    width: 2rem;
     display: none;
   }
 }

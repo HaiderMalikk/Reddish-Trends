@@ -6,7 +6,7 @@ import useUserData from "../../hooks/GetUserData"; // user data hook
 import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user management
 import { useCommonUser } from "../../hooks/UserContext";
 import { useRouter } from "next/navigation"; // Correct import for useRouter
-import "../styles/home-page-styles.css";
+import "../styles/profile-styles.css";
 import defaultPP from "../../../public/defaultprofilepic.svg";
 import { useUserFavorites } from "../../hooks/UserFavs"; // Import the favorites hook
 import Toast from "../../components/Toast"; // Import the Toast component
@@ -17,9 +17,13 @@ export default function ProfilePage() {
   const userEmail = user?.primaryEmailAddress?.emailAddress;
   const { userData, loading } = useUserData(); // get user data
   const { user: clerkUser } = useUser();
-  const { commonUser, loading: contextLoading, isUserLoggedIn } = useCommonUser();
+  const {
+    commonUser,
+    loading: contextLoading,
+    isUserLoggedIn,
+  } = useCommonUser();
   const router = useRouter(); // Access the router for navigation
-  
+
   // Use email from either source
   const email = userData?.email;
   const { removeFavorite, refreshFavorites } = useUserFavorites(email); // Get removeFavorite function
@@ -143,26 +147,31 @@ export default function ProfilePage() {
 
   // Check if user is a guest
   const isGuestUser = () => {
-    return userData.email.endsWith('.temp') || false;
+    return userData.email.endsWith(".temp") || false;
   };
-  
+
   // Return different content for guest users
   if (isGuestUser()) {
     return (
-      <div className="relative min-h-screen bg-reddish p-6 flex items-center justify-center">
-        <div className="guest-profile-message max-w-3xl w-full rounded-lg border-2 border-black bg-customColor4 p-8 text-center shadow-lg">
-          <h1 className="text-5xl font-bold mb-6 text-black">Guest Account</h1>
-          <p className="text-xl mb-4 text-black">Please login to create a profile and access your favorites.</p>
-          <p className="text-lg mb-8 text-black">With a registered account, you can save your favorite stocks and access them easily.</p>
+      <div className="relative flex min-h-screen items-center justify-center bg-reddish p-6">
+        <div className="guest-profile-message w-full max-w-3xl rounded-lg border-2 border-black bg-customColor4 p-8 text-center shadow-lg">
+          <h1 className="mb-6 text-5xl font-bold text-black">Guest Account</h1>
+          <p className="mb-4 text-xl text-black">
+            Please login to create a profile and access your favorites.
+          </p>
+          <p className="mb-8 text-lg text-black">
+            With a registered account, you can save your favorite stocks and
+            access them easily.
+          </p>
           <Link href="/login" className="custombutton">
-          <AnimatedButton
-            paddinginput="p-6 px-20"
-            Buttoncolor="#f5efe7"
-            fontSize="2rem"
-          >
-            <span className="text-black">Sign Up</span>
-          </AnimatedButton>
-        </Link>
+            <AnimatedButton
+              paddinginput="p-6 px-20"
+              Buttoncolor="#D8C4B6"
+              fontSize="2rem"
+            >
+              <span className="text-black">Sign Up</span>
+            </AnimatedButton>
+          </Link>
         </div>
       </div>
     );
@@ -216,8 +225,8 @@ export default function ProfilePage() {
         </h2>
 
         {localFavorites && localFavorites.length > 0 ? (
-          <div>
-            <table className="min-w-full overflow-hidden rounded-lg bg-white">
+          <div className="overflow-x-auto">
+            <table className="table-responsive min-w-full overflow-hidden rounded-lg bg-customColor5">
               <thead className="bg-customColor6 text-customColor2">
                 <tr>
                   <th className="px-4 py-3 text-left">Symbol</th>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import RedditLink from "./RedditLink";
+import "./styles/stock-card-styles.css";
 
 interface StockCardProps {
   stock: {
@@ -80,7 +81,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock }) => {
     <div className="mb-4 rounded-lg bg-customColor4 bg-opacity-20 p-6">
       <div className="flex items-center justify-between border-b border-gray-300 pb-4">
         <div className="flex items-center">
-          <h3 className="text-2xl font-bold text-black">
+          <h3 className="stock-txt text-2xl font-bold text-black">
             {stock.symbol}{" "}
             <span className="text-grey-600 text-xl font-normal">
               ({stock.company_name})
@@ -145,7 +146,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock }) => {
           <p className="text-sm text-gray-600">RSI</p>
           <div className="rsi-box items-center text-xl font-semibold text-black">
             {Number(stock.rsi) === 0 ? (
-              <span className="text-gray-500">Not Available</span>
+              <span className="rsi-tip text-gray-400">Not Available</span>
             ) : (
               <>
                 {stock.rsi}

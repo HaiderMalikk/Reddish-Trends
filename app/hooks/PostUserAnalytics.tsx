@@ -72,7 +72,7 @@ export const useAnalyticsTracking = () => {
 
     try {
       // Use community email for guest users
-      const email = userEmail?.endsWith('.temp') ? COMMON_EMAIL : userEmail;
+      const email = userEmail?.endsWith(".temp") ? COMMON_EMAIL : userEmail;
       return await incrementAnalysisRequest(email, type, parameters);
     } finally {
       setIsTracking(false);

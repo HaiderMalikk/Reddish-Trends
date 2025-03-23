@@ -26,29 +26,29 @@ export default function LoginPage() {
   const handleGuestLogin = async () => {
     setGuestLoading(true);
     setError(null);
-    
+
     try {
       // Call the API endpoint for guest login
-      const response = await fetch('/api/guest-login', {
-        method: 'POST',
+      const response = await fetch("/api/guest-login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         // Redirect to dashboard on successful login
-        router.push('/dashboard');
+        router.push("/dashboard");
       } else {
-        console.error('Guest login failed:', data.message);
-        setError(data.message || 'Guest login failed. Please try again.');
+        console.error("Guest login failed:", data.message);
+        setError(data.message || "Guest login failed. Please try again.");
         setGuestLoading(false);
       }
     } catch (error) {
-      console.error('Error during guest login:', error);
-      setError('Network error. Please check your connection and try again.');
+      console.error("Error during guest login:", error);
+      setError("Network error. Please check your connection and try again.");
       setGuestLoading(false);
     }
   };
@@ -69,20 +69,20 @@ export default function LoginPage() {
           <h1 className="text-customColor2">Loading...</h1>
         </div>
       ) : (
-        <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-reddish page">
-          <h1 className="text-4xl mb-4">Website Down Until Sunday</h1>
+        <div className="page flex min-h-screen flex-col items-center justify-center overflow-hidden bg-reddish">
           <div className="rounded-lg bg-customColor4 p-12 shadow-lg">
             {/* Use Clerk to handle sign-in */}
             <SignIn
               appearance={{
                 elements: {
-                  formButtonPrimary: "bg-customColor2 hover:bg-gray-300 text-sm",
+                  formButtonPrimary:
+                    "bg-customColor2 hover:bg-gray-300 text-sm",
                 },
               }}
               afterSignInUrl="/dashboard"
               afterSignUpUrl="/dashboard"
             />
-            
+
             {/* Guest Login Button */}
             <div className="mt-6 flex flex-col items-center">
               <div className="my-2 flex w-full items-center">
@@ -90,16 +90,16 @@ export default function LoginPage() {
                 <span className="mx-4 flex-shrink text-gray-600">or</span>
                 <div className="flex-grow border-t border-gray-400"></div>
               </div>
-              
+
               {error && (
                 <div className="mb-4 w-full rounded bg-red-100 p-2 text-center text-red-800">
                   {error}
                 </div>
               )}
-              
+
               <button
                 onClick={handleGuestLogin}
-                className="w-full rounded bg-customColor2 px-4 py-2 text-black transition-colors hover:bg-white disabled:opacity-50 mt-6"
+                className="mt-6 w-full rounded bg-customColor2 px-4 py-2 text-black transition-colors hover:bg-white disabled:opacity-50"
                 disabled={guestLoading}
               >
                 Continue as Guest

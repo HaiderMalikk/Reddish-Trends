@@ -298,7 +298,11 @@ export default function HomePage() {
       </div>
       <div
         ref={(el) => {
-          if (el) sectionRefs.current[8] = el;{{}}
+          if (el) sectionRefs.current[8] = el;
+          {
+            {
+            }
+          }
         }}
         className="mt-24 text-center"
       >

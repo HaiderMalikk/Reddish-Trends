@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import { useUser as useClerkUser } from "@clerk/nextjs";
 import { getCookie } from "cookies-next";
 
@@ -53,10 +59,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
         });
       } else {
         // Check if there's a guest user cookie
-        const isGuest = getCookie('guestUser');
-        const guestEmail = getCookie('userEmail');
+        const isGuest = getCookie("guestUser");
+        const guestEmail = getCookie("userEmail");
 
-        if (isGuest && guestEmail && typeof guestEmail === 'string') {
+        if (isGuest && guestEmail && typeof guestEmail === "string") {
           // If it's a guest user with a temporary email
           setCommonUser({
             firstName: "Reddish",
@@ -69,7 +75,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           setCommonUser(null);
         }
       }
-      
+
       setLoading(false);
     };
 
@@ -77,12 +83,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [clerkUser, clerkLoaded]);
 
   return (
-    <UserContext.Provider 
-      value={{ 
-        commonUser, 
+    <UserContext.Provider
+      value={{
+        commonUser,
         loading,
         isUserLoggedIn: !!commonUser,
-        setCommonUser
+        setCommonUser,
       }}
     >
       {children}

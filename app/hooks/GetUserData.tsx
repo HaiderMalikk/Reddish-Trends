@@ -28,23 +28,26 @@ export default function GetUserData() {
 
   // For guest users, we'll use an empty array for favorites
   // Only use the favorites hook for non-guest users
-  const isGuest = email?.endsWith('.temp') || false;
-  const { favorites, loading: favsLoading } = useUserFavorites(isGuest ? undefined : email);
+  const isGuest = email?.endsWith(".temp") || false;
+  const { favorites, loading: favsLoading } = useUserFavorites(
+    isGuest ? undefined : email,
+  );
 
   useEffect(() => {
     // If either common user or clerk user is available (and loaded), proceed
     if ((clerkLoaded && user) || (!contextLoading && commonUser)) {
       setLoading(true);
-      
+
       // Handle guest users completely separate from Firebase
-      if (commonUser?.email?.endsWith('.temp')) {
+      if (commonUser?.email?.endsWith(".temp")) {
         // For guest users, just create a local user data object with no Firebase interaction
         setUserData({
           firstName: commonUser?.firstName || "Guest",
           lastName: commonUser?.lastName || "User",
           email: commonUser?.email || "",
           profileImageUrl: commonUser?.imageUrl || null,
-          message: "Welcome, guest user! Create an account to save your preferences and history.",
+          message:
+            "Welcome, guest user! Create an account to save your preferences and history.",
           createdAt: null,
           favorites: [], // Empty favorites for guest users
         });
@@ -59,17 +62,23 @@ export default function GetUserData() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              email: commonUser?.email || user?.primaryEmailAddress?.emailAddress,
+              email:
+                commonUser?.email || user?.primaryEmailAddress?.emailAddress,
             }),
           });
 
           const data = await response.json();
           if (response.ok) {
             // Use commonUser if available, otherwise fall back to clerk user
-            const firstName = commonUser?.firstName || user?.firstName || "User";
+            const firstName =
+              commonUser?.firstName || user?.firstName || "User";
             const lastName = commonUser?.lastName || user?.lastName || "";
-            const userEmail = commonUser?.email || user?.primaryEmailAddress?.emailAddress || "";
-            const profileImageUrl = commonUser?.imageUrl || user?.imageUrl || null;
+            const userEmail =
+              commonUser?.email ||
+              user?.primaryEmailAddress?.emailAddress ||
+              "";
+            const profileImageUrl =
+              commonUser?.imageUrl || user?.imageUrl || null;
             const message = data.userExists
               ? `User found. Welcome back, ${firstName} ${lastName}!`
               : `New user profile created. Welcome, ${firstName} ${lastName}!`;
@@ -120,5 +129,5 @@ export default function GetUserData() {
     }
   }, [clerkLoaded, user, contextLoading, commonUser, favorites, isGuest]);
 
-  return { userData, loading: isGuest ? loading : (loading || favsLoading) };
+  return { userData, loading: isGuest ? loading : loading || favsLoading };
 }

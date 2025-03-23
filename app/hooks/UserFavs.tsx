@@ -12,7 +12,7 @@ export const useUserFavorites = (userEmail: string | undefined) => {
   const [error, setError] = useState<string | null>(null);
 
   // Skip Firebase for guest or undefined users
-  const isGuest = !userEmail || userEmail.endsWith('.temp');
+  const isGuest = !userEmail || userEmail.endsWith(".temp");
 
   // Fetch user favorites from Firebase only for non-guest users
   const getUserFavorites = async () => {

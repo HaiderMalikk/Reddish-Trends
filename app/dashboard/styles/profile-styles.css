@@ -16,10 +16,33 @@
 
 .guest-profile-message h1 {
   margin-bottom: 1rem;
-  color: #c44240;
 }
 
 .guest-profile-message p {
   margin-bottom: 1rem;
   line-height: 1.5;
+}
+
+/* medai */
+@media (max-width: 768px) {
+  .guest-profile-message {
+    margin-bottom: 200px;
+  }
+
+  /* Table specific mobile styles */
+  .table-responsive thead th,
+  .table-responsive tbody td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .table-responsive th:first-child,
+  .table-responsive td:first-child {
+    padding-left: 0.5rem;
+  }
+
+  .table-responsive th:last-child,
+  .table-responsive td:last-child {
+    padding-right: 0.5rem;
+  }
 }

@@ -54,7 +54,12 @@ export default function PlaygroundPage() {
   // Get user data and authentication state
   const { userData, loading: userDataLoading } = useUserData();
   const { user, isLoaded: clerkLoaded } = useUser();
-  const { commonUser, loading: contextLoading, isUserLoggedIn, setCommonUser } = useCommonUser();
+  const {
+    commonUser,
+    loading: contextLoading,
+    isUserLoggedIn,
+    setCommonUser,
+  } = useCommonUser();
   const router = useRouter();
   const { trackPlaygroundAnalysis, isTracking } = useAnalyticsTracking();
   const {
@@ -303,7 +308,7 @@ export default function PlaygroundPage() {
     const commentTime = Math.ceil(comments / 15) * 1;
 
     // Calculate total time 5 is for subreddits, plus 5 fro err
-    const totalTime = 5 * (postTime + commentTime) + 5;
+    const totalTime = 3 * (postTime + commentTime) + 5;
 
     console.log(`Estimated processing time: ${totalTime} seconds`);
     return totalTime;
@@ -397,10 +402,15 @@ export default function PlaygroundPage() {
       setProgress(100);
       clearInterval(progressInterval);
 
-      // Scroll to results section after a small delay to ensure rendering
+      // Ensure results are scrolled into view after rendering
       setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 300);
+        if (resultsRef.current) {
+          resultsRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }, 500); // Slightly longer delay to ensure rendering completes
 
       // Only track analytics after successful API response
       if (isUserLoggedIn && userData) {
@@ -465,10 +475,15 @@ export default function PlaygroundPage() {
       setProgress(100);
       clearInterval(progressInterval);
 
-      // Scroll to results section after a small delay to ensure rendering
+      // Ensure results are scrolled into view after rendering
       setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 300);
+        if (resultsRef.current) {
+          resultsRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }, 500); // Slightly longer delay to ensure rendering completes
 
       // Only track analytics for retry after successful API response
       if (isUserLoggedIn && userData && lastRequest) {
@@ -501,7 +516,7 @@ export default function PlaygroundPage() {
 
   // Add a function to check if user is a guest
   const isGuestUser = useCallback(() => {
-    return userData?.email?.endsWith('.temp') || false;
+    return userData?.email?.endsWith(".temp") || false;
   }, [userData]);
 
   // Handle favorite toggle for a stock - Matching dashboard implementation exactly
@@ -570,12 +585,12 @@ export default function PlaygroundPage() {
       // Show toast message for guest users
       setToast({
         show: true,
-        message: "Please create an account to track your search history",
+        message: "Log in to track search history",
         type: "error",
       });
       return;
     }
-    
+
     // Only open history for logged-in users
     setHistoryOpen(true);
   };
@@ -587,25 +602,25 @@ export default function PlaygroundPage() {
       const handleGuestLogin = async () => {
         try {
           // Call the API endpoint for guest login
-          const response = await fetch('/api/guest-login', {
-            method: 'POST',
+          const response = await fetch("/api/guest-login", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           });
 
           const data = await response.json();
-          
+
           if (response.ok) {
             // Set the common user context
             setCommonUser({
-              firstName: 'Guest',
-              lastName: 'User',
+              firstName: "Guest",
+              lastName: "User",
               email: data.email,
               isGuest: true,
-              imageUrl: null
+              imageUrl: null,
             });
-            
+
             // Show toast notification for guest login
             setToast({
               show: true,
@@ -614,7 +629,7 @@ export default function PlaygroundPage() {
             });
           }
         } catch (error) {
-          console.error('Error during automatic guest login:', error);
+          console.error("Error during automatic guest login:", error);
         }
       };
 
@@ -623,7 +638,7 @@ export default function PlaygroundPage() {
       // Show toast when user is logged in with Clerk account
       setToast({
         show: true,
-        message: `Logged in as ${user.firstName || ''} ${user.lastName || ''}`,
+        message: `Logged in as ${user.firstName || ""} ${user.lastName || ""}`,
         type: "success",
       });
     }
@@ -761,8 +776,8 @@ export default function PlaygroundPage() {
             History
           </button>
         </div>
-        <div className="mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-customColor4 p-12 text-center text-black shadow-md">
-          <h1 className="text-6xl font-semibold">Playground</h1>
+        <div className="playcont mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-customColor4 p-12 text-center text-black shadow-md">
+          <h1 className="playtext text-6xl font-semibold">Playground</h1>
           <p className="welcome-msg mt-4 text-xl text-gray-600">
             Welcome, {userData.firstName} {userData.lastName}!
           </p>
@@ -865,7 +880,7 @@ export default function PlaygroundPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className="flex items-center justify-between">
+                <div className="limit-box flex items-center justify-between">
                   <label className="mb-2 mt-4 block text-customColor2">
                     Post Limit
                   </label>
@@ -1047,140 +1062,145 @@ export default function PlaygroundPage() {
             )}
             {!formLoading && !error && results && (
               <div className="space-y-8">
-                {analysisType === "getplaygroundgeneralanalysis" && results.analysis_results
-                  ? // Display general analysis results
-                    results.analysis_results.map(
-                      (subredditData: any, index: number) => {
-                        const subredditName = Object.keys(subredditData)[0];
-                        const categories = subredditData[subredditName];
+                {analysisType === "getplaygroundgeneralanalysis" &&
+                results.analysis_results ? (
+                  // Display general analysis results
+                  results.analysis_results.map(
+                    (subredditData: any, index: number) => {
+                      const subredditName = Object.keys(subredditData)[0];
+                      const categories = subredditData[subredditName];
 
-                        return (
-                          <div
-                            key={index}
-                            className="rounded-lg bg-customColor2 p-6 shadow-lg"
-                          >
-                            <h3 className="mb-4 border-b border-black pb-2 text-2xl font-bold text-black">
-                              r/{subredditName}
-                            </h3>
+                      return (
+                        <div
+                          key={index}
+                          className="rounded-lg bg-customColor2 p-6 shadow-lg"
+                        >
+                          <h3 className="mb-4 border-b border-black pb-2 text-2xl font-bold text-black">
+                            r/{subredditName}
+                          </h3>
 
-                            {/* Top Stocks */}
-                            <div className="mb-6">
-                              <h4 className="mb-3 text-xl font-semibold text-black">
-                                Top Stocks
-                              </h4>
-                              {categories.top_stocks && categories.top_stocks.length > 0 ? (
-                                categories.top_stocks.map(
-                                  (stock: any, stockIndex: number) => (
-                                    <div key={stockIndex} className="mb-4">
-                                      {renderStockCard(stock)}
-                                      {renderStockDescription(
-                                        stock,
-                                        `top-${subredditName}-${stockIndex}`,
-                                      )}
-                                    </div>
-                                  ),
-                                )
-                              ) : (
-                                <p className="italic text-black">
-                                  No top stocks found for this subreddit
-                                </p>
-                              )}
-                            </div>
-
-                            {/* Worst Stocks */}
-                            <div className="mb-6">
-                              <h4 className="mb-3 text-xl font-semibold text-black">
-                                Worst Stocks
-                              </h4>
-                              {categories.worst_stocks && categories.worst_stocks.length > 0 ? (
-                                categories.worst_stocks.map(
-                                  (stock: any, stockIndex: number) => (
-                                    <div key={stockIndex} className="mb-4">
-                                      {renderStockCard(stock)}
-                                      {renderStockDescription(
-                                        stock,
-                                        `worst-${subredditName}-${stockIndex}`,
-                                      )}
-                                    </div>
-                                  ),
-                                )
-                              ) : (
-                                <p className="italic text-black">
-                                  No worst stocks found for this subreddit
-                                </p>
-                              )}
-                            </div>
-
-                            {/* Rising Stocks */}
-                            <div className="mb-6">
-                              <h4 className="mb-3 text-xl font-semibold text-black">
-                                Rising Stocks
-                              </h4>
-                              {categories.rising_stocks && categories.rising_stocks.length > 0 ? (
-                                categories.rising_stocks.map(
-                                  (stock: any, stockIndex: number) => (
-                                    <div key={stockIndex} className="mb-4">
-                                      {renderStockCard(stock)}
-                                      {renderStockDescription(
-                                        stock,
-                                        `rising-${subredditName}-${stockIndex}`,
-                                      )}
-                                    </div>
-                                  ),
-                                )
-                              ) : (
-                                <p className="italic text-black">
-                                  No rising stocks found for this subreddit
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      },
-                    )
-                  : analysisType === "getplaygroundspecificanalysis" && results.analysis_results
-                  ? // Display specific stock analysis results
-                    results.analysis_results.map(
-                      (subredditData: any, index: number) => {
-                        const subredditName = Object.keys(subredditData)[0];
-                        const stocks =
-                          subredditData[subredditName].specific_stock || [];
-
-                        return (
-                          <div
-                            key={index}
-                            className="rounded-lg bg-customColor2 p-6 shadow-lg"
-                          >
-                            <h3 className="mb-4 border-b border-black pb-2 text-2xl font-bold text-black">
-                              r/{subredditName}
-                            </h3>
-
-                            {stocks && stocks.length > 0 ? (
-                              <div className="space-y-4">
-                                {stocks.map(
-                                  (stock: any, stockIndex: number) => (
-                                    <div key={stockIndex} className="mb-4">
-                                      {renderStockCard(stock)}
-                                      {renderStockDescription(
-                                        stock,
-                                        `specific-${subredditName}-${stockIndex}`,
-                                      )}
-                                    </div>
-                                  ),
-                                )}
-                              </div>
+                          {/* Top Stocks */}
+                          <div className="mb-6">
+                            <h4 className="mb-3 text-xl font-semibold text-black">
+                              Top Stocks
+                            </h4>
+                            {categories.top_stocks &&
+                            categories.top_stocks.length > 0 ? (
+                              categories.top_stocks.map(
+                                (stock: any, stockIndex: number) => (
+                                  <div key={stockIndex} className="mb-4">
+                                    {renderStockCard(stock)}
+                                    {renderStockDescription(
+                                      stock,
+                                      `top-${subredditName}-${stockIndex}`,
+                                    )}
+                                  </div>
+                                ),
+                              )
                             ) : (
                               <p className="italic text-black">
-                                No stocks found for this subreddit
+                                No top stocks found for this subreddit
                               </p>
                             )}
                           </div>
-                        );
-                      },
-                    )
-                  : (
-                    <p className="text-center text-customColor2">No results to display</p>
-                  )}
+
+                          {/* Worst Stocks */}
+                          <div className="mb-6">
+                            <h4 className="mb-3 text-xl font-semibold text-black">
+                              Worst Stocks
+                            </h4>
+                            {categories.worst_stocks &&
+                            categories.worst_stocks.length > 0 ? (
+                              categories.worst_stocks.map(
+                                (stock: any, stockIndex: number) => (
+                                  <div key={stockIndex} className="mb-4">
+                                    {renderStockCard(stock)}
+                                    {renderStockDescription(
+                                      stock,
+                                      `worst-${subredditName}-${stockIndex}`,
+                                    )}
+                                  </div>
+                                ),
+                              )
+                            ) : (
+                              <p className="italic text-black">
+                                No worst stocks found for this subreddit
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Rising Stocks */}
+                          <div className="mb-6">
+                            <h4 className="mb-3 text-xl font-semibold text-black">
+                              Rising Stocks
+                            </h4>
+                            {categories.rising_stocks &&
+                            categories.rising_stocks.length > 0 ? (
+                              categories.rising_stocks.map(
+                                (stock: any, stockIndex: number) => (
+                                  <div key={stockIndex} className="mb-4">
+                                    {renderStockCard(stock)}
+                                    {renderStockDescription(
+                                      stock,
+                                      `rising-${subredditName}-${stockIndex}`,
+                                    )}
+                                  </div>
+                                ),
+                              )
+                            ) : (
+                              <p className="italic text-black">
+                                No rising stocks found for this subreddit
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    },
+                  )
+                ) : analysisType === "getplaygroundspecificanalysis" &&
+                  results.analysis_results ? (
+                  // Display specific stock analysis results
+                  results.analysis_results.map(
+                    (subredditData: any, index: number) => {
+                      const subredditName = Object.keys(subredditData)[0];
+                      const stocks =
+                        subredditData[subredditName].specific_stock || [];
+
+                      return (
+                        <div
+                          key={index}
+                          className="rounded-lg bg-customColor2 p-6 shadow-lg"
+                        >
+                          <h3 className="mb-4 border-b border-black pb-2 text-2xl font-bold text-black">
+                            r/{subredditName}
+                          </h3>
+
+                          {stocks && stocks.length > 0 ? (
+                            <div className="space-y-4">
+                              {stocks.map((stock: any, stockIndex: number) => (
+                                <div key={stockIndex} className="mb-4">
+                                  {renderStockCard(stock)}
+                                  {renderStockDescription(
+                                    stock,
+                                    `specific-${subredditName}-${stockIndex}`,
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="italic text-black">
+                              No stocks found for this subreddit
+                            </p>
+                          )}
+                        </div>
+                      );
+                    },
+                  )
+                ) : (
+                  <p className="text-center text-customColor2">
+                    No results to display
+                  </p>
+                )}
               </div>
             )}
           </div>
