@@ -18,7 +18,7 @@ export default function AnimatedButton({
 }: AnimatedButtonProps) {
   return (
     <button
-      className="button"
+      className="animated-button"
       style={{
         verticalAlign: "middle",
         backgroundColor: Buttoncolor || undefined,

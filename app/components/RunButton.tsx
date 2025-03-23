@@ -48,12 +48,12 @@ const RunButton: React.FC<RunButtonProps> = ({
   return (
     <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
       <button
-        className={`button ${className}`}
+        className={`run-button ${className}`}
         type="button"
         onClick={handleClick}
       >
-        <span className="button__text">{text}</span>
-        <span className="button__icon">
+        <span className="run-button__text">{text}</span>
+        <span className="run-button__icon">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"

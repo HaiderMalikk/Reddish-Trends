@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import useUserData from "../../hooks/GetUserData"; // user data hook
 import { useUser } from "@clerk/nextjs"; // Import both useUser for clerk user management
@@ -9,6 +10,7 @@ import "../styles/home-page-styles.css";
 import defaultPP from "../../../public/defaultprofilepic.svg";
 import { useUserFavorites } from "../../hooks/UserFavs"; // Import the favorites hook
 import Toast from "../../components/Toast"; // Import the Toast component
+import AnimatedButton from "../../components/AnimatedButton";
 
 export default function ProfilePage() {
   const { user } = useUser();
@@ -147,11 +149,20 @@ export default function ProfilePage() {
   // Return different content for guest users
   if (isGuestUser()) {
     return (
-      <div className="profile-container">
-        <div className="guest-profile-message">
-          <h1>Guest Account</h1>
-          <p>Please login to create a profile and access your favorites.</p>
-          <p>With a registered account, you can save your favorite subreddits and access them easily.</p>
+      <div className="relative min-h-screen bg-reddish p-6 flex items-center justify-center">
+        <div className="guest-profile-message max-w-3xl w-full rounded-lg border-2 border-black bg-customColor4 p-8 text-center shadow-lg">
+          <h1 className="text-5xl font-bold mb-6 text-black">Guest Account</h1>
+          <p className="text-xl mb-4 text-black">Please login to create a profile and access your favorites.</p>
+          <p className="text-lg mb-8 text-black">With a registered account, you can save your favorite stocks and access them easily.</p>
+          <Link href="/login" className="custombutton">
+          <AnimatedButton
+            paddinginput="p-6 px-20"
+            Buttoncolor="#f5efe7"
+            fontSize="2rem"
+          >
+            <span className="text-black">Sign Up</span>
+          </AnimatedButton>
+        </Link>
         </div>
       </div>
     );

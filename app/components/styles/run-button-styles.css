@@ -1,4 +1,4 @@
-.button {
+.run-button {
   position: relative;
   width: 15rem;
   height: 3rem;
@@ -11,20 +11,20 @@
   border-radius: 0.5rem;
 }
 
-.button,
-.button__icon,
-.button__text {
+.run-button,
+.run-button__icon,
+.run-button__text {
   transition: all 0.3s;
 }
 
-.button .button__text {
+.run-button .run-button__text {
   transform: translateX(25%) !important;
   color: #000;
   font-weight: 600;
   font-size: 1.25rem;
 }
 
-.button .button__icon {
+.run-button .run-button__icon {
   position: absolute;
   transform: translateX(190px);
   height: 100%;
@@ -35,50 +35,50 @@
   justify-content: center;
 }
 
-.button .svg {
+.run-button .svg {
   width: 20px;
   fill: #f5efe7;
 }
 
-.button:hover {
+.run-button:hover {
   background: #d8c4b6;
 }
 
-.button:hover .button__text {
+.run-button:hover .run-button__text {
   transform: translateX(125%);
   color: transparent;
 }
 
-.button:hover .button__icon {
+.run-button:hover .run-button__icon {
   width: 148px;
   transform: translateX(30%);
 }
 
-.button:active .button__icon {
+.run-button:active .run-button__icon {
   background-color: #f5efe7;
 }
 
-.button:active {
+.run-button:active {
   border: 1px solid #f5efe7;
 }
 
 /* Media query for mobile devices */
 @media screen and (max-width: 768px) {
-  .button {
+  .run-button {
     width: 18.8rem; /* Increased width for mobile */
     height: 3.5rem; /* Slightly taller for better touch target */
   }
 
-  .button .button__text {
+  .run-button .run-button__text {
     transform: translateX(150%); /* Adjusted text position for wider button */
     font-size: 1.1rem; /* Slightly larger text */
   }
 
-  .button .button__icon {
+  .run-button .run-button__icon {
     transform: translateX(250px); /* Adjusted initial position for icon */
   }
 
-  .button:hover .button__icon {
+  .run-button:hover .run-button__icon {
     width: 200px; /* Wider icon area on hover for mobile */
     transform: translateX(25%); /* Adjusted position for hover state */
   }

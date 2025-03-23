@@ -1,5 +1,5 @@
 /* From Uiverse.io by TCdesign-dev */
-.button {
+.animated-button {
   display: inline-block;
   border-radius: 7px;
   border: none;
@@ -12,7 +12,7 @@
   /* Remove fixed padding from here to allow customization */
 }
 
-.button span {
+.animated-button span {
   cursor: pointer;
   display: inline-block;
   position: relative;
@@ -20,7 +20,7 @@
   font-size: inherit; /* Inherit font size from parent */
 }
 
-.button span:after {
+.animated-button span:after {
   content: "for free";
   position: absolute;
   opacity: 0;
@@ -30,11 +30,11 @@
   font-size: inherit; /* Inherit font size from parent */
 }
 
-.button:hover span {
+.animated-button:hover span {
   padding-right: 3.8em;
 }
 
-.button:hover span:after {
+.animated-button:hover span:after {
   opacity: 4;
   right: 0;
 }

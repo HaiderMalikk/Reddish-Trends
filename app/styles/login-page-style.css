@@ -1,4 +1,7 @@
 /* page styles */
+.page {
+  margin-top: -2rem;
+}
 
 /* custom spinner */
 .spinner {

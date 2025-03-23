@@ -69,17 +69,14 @@ export default function LoginPage() {
           <h1 className="text-customColor2">Loading...</h1>
         </div>
       ) : (
-        <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-reddish">
-          <h1 className="mb-4 text-center text-4xl font-bold text-customColor6">
-            Website Down Till Sunday 23th 7:00 PM EST For Feture Updates. Please
-            Check Back Then For a New Update.
-          </h1>
+        <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-reddish page">
+          <h1 className="text-4xl mb-4">Website Down Until Sunday</h1>
           <div className="rounded-lg bg-customColor4 p-12 shadow-lg">
             {/* Use Clerk to handle sign-in */}
             <SignIn
               appearance={{
                 elements: {
-                  formButtonPrimary: "bg-slate-500 hover:bg-slate-200 text-sm",
+                  formButtonPrimary: "bg-customColor2 hover:bg-gray-300 text-sm",
                 },
               }}
               afterSignInUrl="/dashboard"
@@ -89,9 +86,9 @@ export default function LoginPage() {
             {/* Guest Login Button */}
             <div className="mt-6 flex flex-col items-center">
               <div className="my-2 flex w-full items-center">
-                <div className="flex-grow border-t border-gray-300"></div>
+                <div className="flex-grow border-t border-gray-400"></div>
                 <span className="mx-4 flex-shrink text-gray-600">or</span>
-                <div className="flex-grow border-t border-gray-300"></div>
+                <div className="flex-grow border-t border-gray-400"></div>
               </div>
               
               {error && (
@@ -102,7 +99,7 @@ export default function LoginPage() {
               
               <button
                 onClick={handleGuestLogin}
-                className="w-full rounded bg-slate-500 px-4 py-2 text-white transition-colors hover:bg-slate-600 disabled:opacity-50"
+                className="w-full rounded bg-customColor2 px-4 py-2 text-black transition-colors hover:bg-white disabled:opacity-50 mt-6"
                 disabled={guestLoading}
               >
                 Continue as Guest
