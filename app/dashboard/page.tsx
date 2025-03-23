@@ -56,8 +56,8 @@ interface FlaskResponse {
 
 export default function Dashboard() {
   const { userData, loading } = useUserData(); // get user data
-  const { user } = useUser(); // Use Clerk hook for user management
-  const { commonUser, loading: contextLoading, isUserLoggedIn } = useCommonUser();
+  const { user, isLoaded: clerkLoaded } = useUser(); // Use Clerk hook for user management
+  const { commonUser, loading: contextLoading, isUserLoggedIn, setCommonUser } = useCommonUser();
   const router = useRouter(); // Access the router for navigation
   const [response, setResponse] = useState<FlaskResponse | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -358,9 +358,58 @@ export default function Dashboard() {
       const timer = setTimeout(() => {
         router.push("/login");
       }, 1500);
-      return () => clearTimeout(timer);
+      return () => clearInterval(timer);
     }
   }, [isUserLoggedIn, contextLoading, loading, router]);
+
+  // Auto login as guest if Clerk auth fails
+  useEffect(() => {
+    // Only execute if Clerk is loaded and the user isn't logged in yet
+    if (clerkLoaded && !user && !isUserLoggedIn && !contextLoading) {
+      const handleGuestLogin = async () => {
+        try {
+          // Call the API endpoint for guest login
+          const response = await fetch('/api/guest-login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          const data = await response.json();
+          
+          if (response.ok) {
+            // Set the common user context
+            setCommonUser({
+              firstName: 'Guest',
+              lastName: 'User',
+              email: data.email,
+              isGuest: true,
+              imageUrl: null
+            });
+            
+            // Show toast notification for guest login
+            setToast({
+              show: true,
+              message: "Logged in as Guest User",
+              type: "success",
+            });
+          }
+        } catch (error) {
+          console.error('Error during automatic guest login:', error);
+        }
+      };
+
+      handleGuestLogin();
+    } else if (clerkLoaded && user && !contextLoading) {
+      // Show toast when user is logged in with Clerk account
+      setToast({
+        show: true,
+        message: `Logged in as ${user.firstName || ''} ${user.lastName || ''}`,
+        type: "success",
+      });
+    }
+  }, [clerkLoaded, user, isUserLoggedIn, contextLoading, setCommonUser]);
 
   if (!isUserLoggedIn && !contextLoading && !loading) {
     return (

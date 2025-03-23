@@ -53,8 +53,8 @@ interface HistoryItem {
 export default function PlaygroundPage() {
   // Get user data and authentication state
   const { userData, loading: userDataLoading } = useUserData();
-  const { user: clerkUser } = useUser();
-  const { commonUser, loading: contextLoading, isUserLoggedIn } = useCommonUser();
+  const { user, isLoaded: clerkLoaded } = useUser();
+  const { commonUser, loading: contextLoading, isUserLoggedIn, setCommonUser } = useCommonUser();
   const router = useRouter();
   const { trackPlaygroundAnalysis, isTracking } = useAnalyticsTracking();
   const {
@@ -579,6 +579,55 @@ export default function PlaygroundPage() {
     // Only open history for logged-in users
     setHistoryOpen(true);
   };
+
+  // Auto login as guest if Clerk auth fails
+  useEffect(() => {
+    // Only execute if Clerk is loaded and the user isn't logged in yet
+    if (clerkLoaded && !user && !isUserLoggedIn && !contextLoading) {
+      const handleGuestLogin = async () => {
+        try {
+          // Call the API endpoint for guest login
+          const response = await fetch('/api/guest-login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          const data = await response.json();
+          
+          if (response.ok) {
+            // Set the common user context
+            setCommonUser({
+              firstName: 'Guest',
+              lastName: 'User',
+              email: data.email,
+              isGuest: true,
+              imageUrl: null
+            });
+            
+            // Show toast notification for guest login
+            setToast({
+              show: true,
+              message: "Logged in as Guest User",
+              type: "success",
+            });
+          }
+        } catch (error) {
+          console.error('Error during automatic guest login:', error);
+        }
+      };
+
+      handleGuestLogin();
+    } else if (clerkLoaded && user && !contextLoading) {
+      // Show toast when user is logged in with Clerk account
+      setToast({
+        show: true,
+        message: `Logged in as ${user.firstName || ''} ${user.lastName || ''}`,
+        type: "success",
+      });
+    }
+  }, [clerkLoaded, user, isUserLoggedIn, contextLoading, setCommonUser]);
 
   // If user is not logged in, show a message and redirect
   if (!isUserLoggedIn && !contextLoading && !userDataLoading) {

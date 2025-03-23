@@ -18,6 +18,7 @@ interface UserContextType {
   commonUser: CommonUser | null;
   loading: boolean;
   isUserLoggedIn: boolean;
+  setCommonUser: (user: CommonUser) => void;
 }
 
 // Create the context
@@ -25,6 +26,7 @@ const UserContext = createContext<UserContextType>({
   commonUser: null,
   loading: true,
   isUserLoggedIn: false,
+  setCommonUser: () => {},
 });
 
 // Provider component
@@ -79,7 +81,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       value={{ 
         commonUser, 
         loading,
-        isUserLoggedIn: !!commonUser 
+        isUserLoggedIn: !!commonUser,
+        setCommonUser
       }}
     >
       {children}
