@@ -189,7 +189,7 @@ body {
   }
   .playcont {
     margin: 0 auto;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     width: 100%;
     max-width: 4xl;
     border-radius: 0.5rem;
@@ -202,5 +202,21 @@ body {
   }
   .limit-box {
     margin-top: 1.5rem;
+  }
+  .hist-phone{
+    background: #D8C4B6;
+    padding-left: 0.75rem;
+    padding-right: 0.25rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .form-title-phone{
+    font-size: 1.5rem !important;
+  }
+  .submit-phone{
+    margin-bottom: 1rem;
+  }
+  .results-phone{
+    margin-top: 0rem;
   }
 }

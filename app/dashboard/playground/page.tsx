@@ -805,7 +805,7 @@ export default function PlaygroundPage() {
           <button
             onClick={handleOpenHistory}
             type="button"
-            className="flex items-center rounded-lg bg-customColor4 px-4 py-2 text-black shadow-md transition hover:bg-opacity-80"
+            className="flex items-center rounded-lg bg-customColor4 px-4 py-2 text-black shadow-md transition hover:bg-opacity-80 hist-phone"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -821,7 +821,8 @@ export default function PlaygroundPage() {
                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            History
+          {/*  just icon for mobile */}
+            <span className="hidden sm:inline">History</span>
           </button>
         </div>
         <div className="playcont mx-auto mb-10 w-full max-w-4xl rounded-lg border-2 border-black bg-customColor4 p-12 text-center text-black shadow-md">
@@ -841,7 +842,7 @@ export default function PlaygroundPage() {
           ref={formRef}
           className="mx-auto mb-14 w-full max-w-6xl rounded-lg border-2 border-customColor2 bg-black bg-opacity-70 p-6"
         >
-          <h2 className="mb-6 text-center text-xl text-customColor2">
+          <h2 className="mb-6 text-center text-xl text-customColor2 form-title-phone">
             Analysis Parameters
           </h2>
 
@@ -1090,7 +1091,7 @@ export default function PlaygroundPage() {
               <RunButton
                 text="Run Analysis"
                 onClick={handleSubmit}
-                className="mt-6"
+                className="mt-6 submit-phone"
               />
             </div>
           </form>
@@ -1098,7 +1099,7 @@ export default function PlaygroundPage() {
 
         {/* Results Section - Only show when we have results */}
         {(results || error) && (
-          <div ref={resultsRef} className="mx-auto mb-10 mt-8 w-full max-w-6xl">
+          <div ref={resultsRef} className="mx-auto mb-10 mt-8 w-full max-w-6xl results-phone">
             <h2 className="mb-6 text-center text-7xl font-bold text-customColor2">
               Analysis Results
             </h2>

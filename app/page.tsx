@@ -312,7 +312,7 @@ export default function HomePage() {
             Buttoncolor="#f5efe7"
             fontSize="2rem"
           >
-            <span className="text-black">Sign Up</span>
+            <span className="text-black p-phone">Sign Up</span>
           </AnimatedButton>
         </Link>
         <p className="twoxlpadded mt-4 text-2xl text-customColor2">

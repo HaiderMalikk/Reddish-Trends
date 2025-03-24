@@ -96,4 +96,12 @@
   .scene-container {
     background-image: url("/bgimagephone.webp");
   }
+  .animated-text{
+    font-size: 1.25rem !important;
+    margin-bottom: 4rem;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }
