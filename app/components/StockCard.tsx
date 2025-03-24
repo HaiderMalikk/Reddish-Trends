@@ -20,10 +20,25 @@ interface StockCardProps {
       link: string;
     };
   };
+  customId?: string; // Add optional customId prop
 }
 
-const StockCard: React.FC<StockCardProps> = ({ stock }) => {
+const StockCard: React.FC<StockCardProps> = ({ stock, customId }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    // If we're currently expanded and about to collapse, scroll to this section
+    if (isExpanded && customId) {
+      setTimeout(() => {
+        const section = document.getElementById(customId);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100); // Small delay to ensure state is updated
+    }
+    
+    setIsExpanded(!isExpanded);
+  };
 
   const renderPostContent = () => {
     if (!stock.post || !stock.post.title) {
@@ -67,7 +82,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock }) => {
         {((stock.post.text && stock.post.text.split(" ").length > 50) ||
           (stock.post.comments && stock.post.comments.length > 0)) && (
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={toggleExpand}
             className="mt-2 text-sm font-semibold text-blue-800 hover:underline"
           >
             {isExpanded ? "Show Less" : "Read More"}
@@ -78,7 +93,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock }) => {
   };
 
   return (
-    <div className="mb-4 rounded-lg bg-customColor4 bg-opacity-20 p-6">
+    <div id={customId} className="mb-4 rounded-lg bg-customColor4 bg-opacity-20 p-6">
       <div className="flex items-center justify-between border-b border-gray-300 pb-4">
         <div className="flex items-center">
           <h3 className="stock-txt text-2xl font-bold text-black">

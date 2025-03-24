@@ -132,6 +132,8 @@ export default function PlaygroundPage() {
   // Reference for scrolling to results
   const resultsRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
+  // Add a ref for the top of the page
+  const topRef = useRef<HTMLDivElement>(null);
 
   // Effect to adjust history button position when toast is shown/hidden
   useEffect(() => {
@@ -269,7 +271,10 @@ export default function PlaygroundPage() {
   };
 
   // Custom StockCard with favorites functionality
-  const renderStockCard = (stock: any) => {
+  const renderStockCard = (stock: any, index: number, category: string, subredditName: string) => {
+    // Create a unique ID for this stock card
+    const stockId = `stock-${category}-${subredditName}-${index}`;
+    
     return (
       <div className="relative">
         {/* Add favorite button positioned top-left */}
@@ -289,7 +294,7 @@ export default function PlaygroundPage() {
             <FaRegStar size={24} />
           )}
         </button>
-        <StockCard stock={stock} />
+        <StockCard stock={stock} customId={stockId} />
       </div>
     );
   };
@@ -355,8 +360,13 @@ export default function PlaygroundPage() {
     setIsApiLoading(true);
     setProgress(5); // Start at 5%
 
-    // Scroll to the top of the page to see the loading screen
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Scroll to the top of the page with more reliable approach
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      // Fallback method if ref isn't available
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     try {
       // Build request object with proper typing
@@ -401,6 +411,22 @@ export default function PlaygroundPage() {
       setResults(response.data);
       setProgress(100);
       clearInterval(progressInterval);
+
+      // More robust approach to scroll to results
+      // Use multiple attempts with different delays to increase reliability
+      const scrollToResults = () => {
+        if (resultsRef.current) {
+          resultsRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      };
+      
+      // Try scrolling multiple times with increasing delays
+      setTimeout(scrollToResults, 100);
+      setTimeout(scrollToResults, 500);
+      setTimeout(scrollToResults, 1000);
 
       // Ensure results are scrolled into view after rendering
       setTimeout(() => {
@@ -453,8 +479,12 @@ export default function PlaygroundPage() {
     setApiError(null);
     setProgress(5);
 
-    // Scroll to the top of the page to see the loading screen
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Improved scroll to top using ref
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     try {
       console.log("Retrying request:", lastRequest);
@@ -474,6 +504,21 @@ export default function PlaygroundPage() {
       setResults(response.data);
       setProgress(100);
       clearInterval(progressInterval);
+
+      // More robust approach to scroll to results
+      const scrollToResults = () => {
+        if (resultsRef.current) {
+          resultsRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      };
+      
+      // Try scrolling multiple times with increasing delays
+      setTimeout(scrollToResults, 100);
+      setTimeout(scrollToResults, 500);
+      setTimeout(scrollToResults, 1000);
 
       // Ensure results are scrolled into view after rendering
       setTimeout(() => {
@@ -741,6 +786,9 @@ export default function PlaygroundPage() {
 
   return (
     <div className="playground-wrapper">
+      {/* Add ref to the top of the page */}
+      <div ref={topRef} className="absolute top-0"></div>
+      
       {/* Toast notification */}
       {toast.show && (
         <Toast message={toast.message} type={toast.type} onClose={closeToast} />
@@ -1050,7 +1098,7 @@ export default function PlaygroundPage() {
 
         {/* Results Section - Only show when we have results */}
         {(results || error) && (
-          <div className="mx-auto mb-10 mt-8 w-full max-w-6xl">
+          <div ref={resultsRef} className="mx-auto mb-10 mt-8 w-full max-w-6xl">
             <h2 className="mb-6 text-center text-7xl font-bold text-customColor2">
               Analysis Results
             </h2>
@@ -1089,11 +1137,7 @@ export default function PlaygroundPage() {
                               categories.top_stocks.map(
                                 (stock: any, stockIndex: number) => (
                                   <div key={stockIndex} className="mb-4">
-                                    {renderStockCard(stock)}
-                                    {renderStockDescription(
-                                      stock,
-                                      `top-${subredditName}-${stockIndex}`,
-                                    )}
+                                    {renderStockCard(stock, stockIndex, "top", subredditName)}
                                   </div>
                                 ),
                               )
@@ -1114,11 +1158,7 @@ export default function PlaygroundPage() {
                               categories.worst_stocks.map(
                                 (stock: any, stockIndex: number) => (
                                   <div key={stockIndex} className="mb-4">
-                                    {renderStockCard(stock)}
-                                    {renderStockDescription(
-                                      stock,
-                                      `worst-${subredditName}-${stockIndex}`,
-                                    )}
+                                    {renderStockCard(stock, stockIndex, "worst", subredditName)}
                                   </div>
                                 ),
                               )
@@ -1139,11 +1179,7 @@ export default function PlaygroundPage() {
                               categories.rising_stocks.map(
                                 (stock: any, stockIndex: number) => (
                                   <div key={stockIndex} className="mb-4">
-                                    {renderStockCard(stock)}
-                                    {renderStockDescription(
-                                      stock,
-                                      `rising-${subredditName}-${stockIndex}`,
-                                    )}
+                                    {renderStockCard(stock, stockIndex, "rising", subredditName)}
                                   </div>
                                 ),
                               )
@@ -1179,11 +1215,7 @@ export default function PlaygroundPage() {
                             <div className="space-y-4">
                               {stocks.map((stock: any, stockIndex: number) => (
                                 <div key={stockIndex} className="mb-4">
-                                  {renderStockCard(stock)}
-                                  {renderStockDescription(
-                                    stock,
-                                    `specific-${subredditName}-${stockIndex}`,
-                                  )}
+                                  {renderStockCard(stock, stockIndex, "specific", subredditName)}
                                 </div>
                               ))}
                             </div>
