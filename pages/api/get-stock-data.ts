@@ -29,16 +29,19 @@ export default async function handler(
     console.log("Getting response from Flask API, sending request");
 
     // Make a POST request to the Flask backend with the correct structure
-    const response = await fetch("http://127.0.0.1:8080/api/home", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      process.env.MY_SECRET_FLASK_URL + "/api/home",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Structure the data as expected by the Flask API
+        body: JSON.stringify({
+          request: parsedRequest, // This is the key change - ensure there's a "request" key
+        }),
       },
-      // Structure the data as expected by the Flask API
-      body: JSON.stringify({
-        request: parsedRequest, // This is the key change - ensure there's a "request" key
-      }),
-    });
+    );
 
     if (!response.ok) {
       throw new Error(`Flask backend error: ${response.statusText}`);
