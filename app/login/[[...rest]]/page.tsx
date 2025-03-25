@@ -75,8 +75,14 @@ export default function LoginPage() {
             <SignIn
               appearance={{
                 elements: {
-                  formButtonPrimary:
-                    "bg-customColor2 hover:bg-gray-300 text-sm",
+                  formButtonPrimary: {
+                    fontSize: 12,
+                    textTransform: 'none',
+                    backgroundColor: '#f5f5f5',
+                    '&:hover, &:focus, &:active': {
+                      backgroundColor: '#e5e5e5',
+                    },
+                  },
                 },
               }}
               afterSignInUrl="/dashboard"
@@ -99,7 +105,7 @@ export default function LoginPage() {
 
               <button
                 onClick={handleGuestLogin}
-                className="mt-6 w-full rounded bg-customColor2 px-4 py-2 text-black transition-colors hover:bg-white disabled:opacity-50"
+                className="mt-6 w-full rounded-lg bg-customColor5 px-4 py-2 text-black transition-colors hover:bg-white disabled:opacity-50 shadow-md"
                 disabled={guestLoading}
               >
                 Continue as Guest
