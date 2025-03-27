@@ -77,10 +77,10 @@ export default function LoginPage() {
                 elements: {
                   formButtonPrimary: {
                     fontSize: 12,
-                    textTransform: 'none',
-                    backgroundColor: '#f5f5f5',
-                    '&:hover, &:focus, &:active': {
-                      backgroundColor: '#e5e5e5',
+                    textTransform: "none",
+                    backgroundColor: "#f5f5f5",
+                    "&:hover, &:focus, &:active": {
+                      backgroundColor: "#e5e5e5",
                     },
                   },
                 },
@@ -105,7 +105,7 @@ export default function LoginPage() {
 
               <button
                 onClick={handleGuestLogin}
-                className="mt-6 w-full rounded-lg bg-customColor5 px-4 py-2 text-black transition-colors hover:bg-white disabled:opacity-50 shadow-md"
+                className="mt-6 w-full rounded-lg bg-customColor5 px-4 py-2 text-black shadow-md transition-colors hover:bg-white disabled:opacity-50"
                 disabled={guestLoading}
               >
                 Continue as Guest

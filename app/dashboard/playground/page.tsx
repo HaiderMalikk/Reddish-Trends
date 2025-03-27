@@ -271,10 +271,15 @@ export default function PlaygroundPage() {
   };
 
   // Custom StockCard with favorites functionality
-  const renderStockCard = (stock: any, index: number, category: string, subredditName: string) => {
+  const renderStockCard = (
+    stock: any,
+    index: number,
+    category: string,
+    subredditName: string,
+  ) => {
     // Create a unique ID for this stock card
     const stockId = `stock-${category}-${subredditName}-${index}`;
-    
+
     return (
       <div className="relative">
         {/* Add favorite button positioned top-left */}
@@ -422,7 +427,7 @@ export default function PlaygroundPage() {
           });
         }
       };
-      
+
       // Try scrolling multiple times with increasing delays
       setTimeout(scrollToResults, 100);
       setTimeout(scrollToResults, 500);
@@ -514,7 +519,7 @@ export default function PlaygroundPage() {
           });
         }
       };
-      
+
       // Try scrolling multiple times with increasing delays
       setTimeout(scrollToResults, 100);
       setTimeout(scrollToResults, 500);
@@ -788,7 +793,7 @@ export default function PlaygroundPage() {
     <div className="playground-wrapper">
       {/* Add ref to the top of the page */}
       <div ref={topRef} className="absolute top-0"></div>
-      
+
       {/* Toast notification */}
       {toast.show && (
         <Toast message={toast.message} type={toast.type} onClose={closeToast} />
@@ -805,7 +810,7 @@ export default function PlaygroundPage() {
           <button
             onClick={handleOpenHistory}
             type="button"
-            className="flex items-center rounded-lg bg-customColor4 px-4 py-2 text-black shadow-md transition hover:bg-opacity-80 hist-phone"
+            className="hist-phone flex items-center rounded-lg bg-customColor4 px-4 py-2 text-black shadow-md transition hover:bg-opacity-80"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -821,7 +826,7 @@ export default function PlaygroundPage() {
                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-          {/*  just icon for mobile */}
+            {/*  just icon for mobile */}
             <span className="hidden sm:inline">History</span>
           </button>
         </div>
@@ -842,7 +847,7 @@ export default function PlaygroundPage() {
           ref={formRef}
           className="mx-auto mb-14 w-full max-w-6xl rounded-lg border-2 border-customColor2 bg-black bg-opacity-70 p-6"
         >
-          <h2 className="mb-6 text-center text-xl text-customColor2 form-title-phone">
+          <h2 className="form-title-phone mb-6 text-center text-xl text-customColor2">
             Analysis Parameters
           </h2>
 
@@ -1091,7 +1096,7 @@ export default function PlaygroundPage() {
               <RunButton
                 text="Run Analysis"
                 onClick={handleSubmit}
-                className="mt-6 submit-phone"
+                className="submit-phone mt-6"
               />
             </div>
           </form>
@@ -1099,7 +1104,10 @@ export default function PlaygroundPage() {
 
         {/* Results Section - Only show when we have results */}
         {(results || error) && (
-          <div ref={resultsRef} className="mx-auto mb-10 mt-8 w-full max-w-6xl results-phone">
+          <div
+            ref={resultsRef}
+            className="results-phone mx-auto mb-10 mt-8 w-full max-w-6xl"
+          >
             <h2 className="mb-6 text-center text-7xl font-bold text-customColor2">
               Analysis Results
             </h2>
@@ -1138,7 +1146,12 @@ export default function PlaygroundPage() {
                               categories.top_stocks.map(
                                 (stock: any, stockIndex: number) => (
                                   <div key={stockIndex} className="mb-4">
-                                    {renderStockCard(stock, stockIndex, "top", subredditName)}
+                                    {renderStockCard(
+                                      stock,
+                                      stockIndex,
+                                      "top",
+                                      subredditName,
+                                    )}
                                   </div>
                                 ),
                               )
@@ -1159,7 +1172,12 @@ export default function PlaygroundPage() {
                               categories.worst_stocks.map(
                                 (stock: any, stockIndex: number) => (
                                   <div key={stockIndex} className="mb-4">
-                                    {renderStockCard(stock, stockIndex, "worst", subredditName)}
+                                    {renderStockCard(
+                                      stock,
+                                      stockIndex,
+                                      "worst",
+                                      subredditName,
+                                    )}
                                   </div>
                                 ),
                               )
@@ -1180,7 +1198,12 @@ export default function PlaygroundPage() {
                               categories.rising_stocks.map(
                                 (stock: any, stockIndex: number) => (
                                   <div key={stockIndex} className="mb-4">
-                                    {renderStockCard(stock, stockIndex, "rising", subredditName)}
+                                    {renderStockCard(
+                                      stock,
+                                      stockIndex,
+                                      "rising",
+                                      subredditName,
+                                    )}
                                   </div>
                                 ),
                               )
@@ -1216,7 +1239,12 @@ export default function PlaygroundPage() {
                             <div className="space-y-4">
                               {stocks.map((stock: any, stockIndex: number) => (
                                 <div key={stockIndex} className="mb-4">
-                                  {renderStockCard(stock, stockIndex, "specific", subredditName)}
+                                  {renderStockCard(
+                                    stock,
+                                    stockIndex,
+                                    "specific",
+                                    subredditName,
+                                  )}
                                 </div>
                               ))}
                             </div>

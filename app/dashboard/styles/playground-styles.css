@@ -203,20 +203,20 @@ body {
   .limit-box {
     margin-top: 1.5rem;
   }
-  .hist-phone{
-    background: #D8C4B6;
+  .hist-phone {
+    background: #d8c4b6;
     padding-left: 0.75rem;
     padding-right: 0.25rem;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
-  .form-title-phone{
+  .form-title-phone {
     font-size: 1.5rem !important;
   }
-  .submit-phone{
+  .submit-phone {
     margin-bottom: 1rem;
   }
-  .results-phone{
+  .results-phone {
     margin-top: 0rem;
   }
 }

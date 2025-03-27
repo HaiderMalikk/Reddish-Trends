@@ -36,7 +36,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock, customId }) => {
         }
       }, 100); // Small delay to ensure state is updated
     }
-    
+
     setIsExpanded(!isExpanded);
   };
 
@@ -93,7 +93,10 @@ const StockCard: React.FC<StockCardProps> = ({ stock, customId }) => {
   };
 
   return (
-    <div id={customId} className="mb-4 rounded-lg bg-customColor4 bg-opacity-20 p-6">
+    <div
+      id={customId}
+      className="mb-4 rounded-lg bg-customColor4 bg-opacity-20 p-6"
+    >
       <div className="flex items-center justify-between border-b border-gray-300 pb-4">
         <div className="flex items-center">
           <h3 className="stock-txt text-2xl font-bold text-black">

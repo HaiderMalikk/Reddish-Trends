@@ -76,8 +76,17 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <UserProvider>
         <html lang="en" className={poppins.variable}>
           {/* meta tags for SEO */}
+          <head>
+            <meta />
+            <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
+            <title>Reddish Trends</title>
+          </head>
           <Head>
-            <title>Reddish Trends - AI-Powered Stock Predictions</title>
+            <title>Reddish Trends - Reddit-Powered Stock Predictions</title>
             <meta
               name="description"
               content="Reddish Trends combines social sentiment analysis using Reddit and subreddit posts and financial data to provide unique insights into stock market movements."

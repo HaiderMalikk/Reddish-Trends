@@ -27,9 +27,7 @@ export default function AnimatedButton({
       }}
       onClick={onClick}
     >
-      <div className={paddinginput|| ""}> 
-        {children}
-      </div>
+      <div className={paddinginput || ""}>{children}</div>
     </button>
   );
 }
