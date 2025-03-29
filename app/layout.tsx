@@ -83,7 +83,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
               name="viewport"
               content="width=device-width, initial-scale=1.0"
             />
-            <title>Reddish Trends</title>
+            <title>Reddish Trends - Reddit-Powered Stock Predictions</title>
           </head>
           <Head>
             <title>Reddish Trends - Reddit-Powered Stock Predictions</title>
@@ -106,7 +106,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
               property="og:description"
               content="A hybrid stock prediction system that combines social sentiment analysis using Reddit and subreddit posts and financial data to provide unique insights into stock market movements leveraging the power of AI for better investment decisions."
             />
-            <meta property="og:image" content="../public/logo-bg.svg" />
+            <meta
+              property="og:image"
+              content="https://reddishtrends.com/logo-bg.svg"
+            />
             <meta property="og:url" content="https://reddishtrends.com" />
             <meta property="og:type" content="website" />
 
@@ -120,24 +123,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
               name="twitter:description"
               content="A hybrid stock prediction system that combines social sentiment analysis using Reddit and subreddit posts and financial data to provide unique insights into stock market movements leveraging the power of AI for better investment decisions."
             />
-            <meta name="twitter:image" content="../public/logo-bg.svg" />
-
-            {/* Canonical Link */}
-            <link rel="canonical" href="https://reddishtrends.com" />
-
-            {/* Robots Meta Tag */}
-            <meta name="robots" content="index, follow" />
-
-            {/* Viewport Meta Tag */}
             <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
-
-            {/* Reddish Trends Meta Tag */}
-            <meta
-              name="Reddish Trends"
-              content="Reddish Trends - AI-Powered Stock Predictions"
+              name="twitter:image"
+              content="https://reddishtrends.com/logo-bg.svg"
             />
 
             {/* Reddit Meta Tag */}
@@ -149,10 +137,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
               name="reddit:description"
               content="A hybrid stock prediction system that combines social sentiment analysis using Reddit and subreddit posts and financial data to provide unique insights into stock market movements leveraging the power of AI for better investment decisions."
             />
-            <meta name="reddit:image" content="../public/logo-bg.svg" />
+            <meta
+              name="reddit:image"
+              content="https://reddishtrends.com/logo-bg.svg"
+            />
 
             {/* Favicon */}
-            <link rel="icon" href="./favicon.ico" />
+            <link rel="icon" href="/favicon.ico" />
           </Head>
           <body className="min-h-screen bg-customColor6 font-signature text-customColor2">
             {/* keep font global but keep dashboard header separate (will apply to all the pages in the website once user logs in) */}
