@@ -18,6 +18,8 @@
 
 Reddish Trends is a hybrid stock prediction system that combines social sentiment analysis with traditional financial data and advanced analytics to provide a more accurate, holistic prediction model.
 
+<img src="./public/website_preview.png" alt="logo" width="490"/>
+
 ## 🔥 How It Works
 
 Instead of just using social media sentiment or just stock trends and market info, Reddish Trends combines both to make a unique trading helper:
