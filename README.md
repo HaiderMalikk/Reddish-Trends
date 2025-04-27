@@ -1,3 +1,7 @@
+<img src="./public/readme_preview.png" alt="media-logo" width="1000"/>
+
+#
+
 <a href="https://reddishtrends.com">
 <img src="./public/logo-w-text.svg" alt="logo" width="400"/>
 &nbsp&nbsp&nbsp<img src="./public/linkgrey.png" alt="Home" width="60"/>
