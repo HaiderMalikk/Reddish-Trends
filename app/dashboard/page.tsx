@@ -628,16 +628,13 @@ export default function Dashboard() {
 
           {/* Refresh and Countdown Section */}
           <div className="mb-10 flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
-            <div className="mb-7 flex flex-col items-center">
-              <span className="mt-2 text-sm font-bold text-black">
-                EST Time 3 Min
-              </span>
+            <div className="mb-7 mt-7 flex flex-col items-center">
               <RefreshButton onClick={handleRefresh}></RefreshButton>
             </div>
             <div className="time-tracker flex items-center rounded-lg bg-customColor2 px-6 py-3">
               <button
                 onClick={() => setStockUpdateInfoOpen(true)}
-                className="time-info-button mr-3 text-customColor6 hover:text-gray-300"
+                className="time-info-button mr-3 text-customColor6 hover:text-gray-600"
               >
                 <FaInfoCircle size={18} />
               </button>

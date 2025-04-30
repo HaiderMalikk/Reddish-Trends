@@ -61,7 +61,38 @@
   border: 1px solid #f5efe7;
 }
 
-/* Media query for mobile devices */
+.refresh-button__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 45%;
+  transform: translateX(-50%);
+  width: 100%;
+  text-align: center;
+}
+
+.refresh-button__text {
+  font-weight: bold;
+  margin-bottom: -5px;
+  transform: none !important;
+}
+
+.refresh-button__est-time {
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-style: italic;
+  text-align: center;
+  margin-top: -2px;
+}
+
+/* Adjust original text positioning to account for new content container */
+.refresh-button .refresh-button__text {
+  transform: none !important;
+}
+
+/* Media query adjustments for mobile */
 @media screen and (max-width: 768px) {
   .refresh-button {
     width: 18.8rem;
@@ -69,7 +100,7 @@
   }
 
   .refresh-button .refresh-button__text {
-    transform: translateX(150%) !important;
+    transform: none !important;
     font-size: 1.1rem;
   }
 

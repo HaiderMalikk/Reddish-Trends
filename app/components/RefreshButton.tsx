@@ -44,7 +44,10 @@ export default function RefreshButton({
   return (
     <div>
       <button className="refresh-button" type="button" onClick={handleClick}>
-        <span className="refresh-button__text">Refresh</span>
+        <div className="refresh-button__content">
+          <span className="refresh-button__text">Refresh</span>
+          <span className="refresh-button__est-time">Est time 3 min</span>
+        </div>
         <span className="refresh-button__icon">
           <svg
             xmlns="http://www.w3.org/2000/svg"
