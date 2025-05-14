@@ -10,7 +10,7 @@ export default function About() {
           Welcome to Reddish Trends this Website is owned and operated by{" "}
           <a
             className="text-customWhite underline hover:text-customColor5"
-            href="https://haidermalikk.github.io/HaiderMaliksWebsite/"
+            href="https://www.haidercodes.com"
             target="_blank"
             rel="noopener noreferrer"
           >

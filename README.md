@@ -70,4 +70,4 @@ A stunning UI that:
 
 - [License](Licence)
 - [Reddish Trends Engine](https://github.com/HaiderMalikk/Reddish-Trends-Engine)
-- [About-Me](https://github.com/HaiderMalikk)
+- [About-Me](https://www.haidercodes.com)

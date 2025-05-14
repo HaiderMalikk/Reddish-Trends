@@ -200,7 +200,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     Reddish Trends, a project of{" "}
                     <a
                       className="underline hover:text-gray-300"
-                      href="https://haidermalikk.github.io/HaiderMaliksWebsite/"
+                      href="https://www.haidercodes.com"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
