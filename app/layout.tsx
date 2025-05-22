@@ -78,7 +78,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           {/* meta tags for SEO */}
           <head>
             <meta />
-            <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+            <link rel="icon" type="image/svg+xml" href="/logo-bg.svg" />
             <meta
               name="viewport"
               content="width=device-width, initial-scale=1.0"
