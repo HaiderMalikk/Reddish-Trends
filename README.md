@@ -2,63 +2,75 @@
 
 <img src="./public/readme_preview.png" alt="hero" width="1000"/>
 
-Reddish Trends blends Reddit vibes with market data to surface the stocks people actually care about — then explains why. This repository contains the website frontend and integration glue that talks to the backend engine (hosted separately).
+Reddish Trends blends Reddit vibes with market data to surface the stocks people actually care about — then explains why. This repo contains the frontend and the backend glue that turns noisy Reddit posts into actionable signals.
 
 ## Quick links
-- Live site: [reddishtrends.com](https://reddishtrends.com)
-- Engine (Github Repo): [Reddish-Trends-Engine](https://github.com/HaiderMalikk/Reddish-Trends-Engine)
+- Live site: [reddishtrends.com](https://reddishtrends.com)  
+- Engine (Github repo): [Reddish-Trends-Engine](https://github.com/HaiderMalikk/Reddish-Trends-Engine)
 
 ## Why this is fun (and useful) 🎉
-- Real-time Reddit discovery + Yahoo Finance enrichment
-- Compact, explainable 3-step ranking algorithm — repeat community signals > one-off hype
-- Optional GPT enrichment for human-friendly summaries
+- Real-time Reddit discovery + market-data enrichment  
+- Compact, explainable 3-step ranking algorithm — repeat signals > one-off hype  
+- Optional LLM enrichment for human-friendly summaries  
 - Playable API for quick experiments
 
-## Frontend & Website (this repo)
-This repo is focused on the web experience. The frontend is responsible for:
-- Calling the Engine API (hosted backend) to get Top / Worst / Rising stock summaries and detailed analysis.
-- Presenting clear, visual summaries: headline cards, trend charts, small technical indicators (price / percent change / RSI), and short GPT-powered explanations when available.
-- Allowing users to "play" with the analysis via a playground UI (custom subreddits, time windows, symbol lists).
-- Persisting user preferences and logs using Firebase (NoSQL) — favorites, recent playground runs, and request counters.
-- Handling cache state and refreshing UI automatically when the engine updates.
+## Core backend highlights (expanded)
+- Sentiment ingestion — Robust Reddit pipeline that fetches title, body and a capped set of top-level comments, builds a single "full_text" context blob per post, and computes compound sentiment so every symbol is scored against a consistent context window.
+- Market enrichment — Fast enrichment layer that pulls period-based OHLC, computes percentage moves and a 14-period RSI, and returns a consistent data shape so UI and ranking logic remain stable even when symbols are missing or delisted.
+- Ranking component — a compact, deterministic, explainable ranking system built for reliability and product clarity. This ranking is the signature piece of the engine and is designed to surface signals that matter to traders and product users, not noise.
+  - Why it's special: It intentionally prioritizes repeatable, cross-community traction over single-post hype. The algorithm is deterministic, fast, and easy to audit — ideal for a consumer-facing product where explainability is essential.
+  - The 3-step ranking funnel:
+    1. Per-subreddit peak selection — pick the symbol(s) with the strongest sentiment in each community (local maxima). This isolates locally meaningful signals.
+    2. Cross-subreddit frequency — reward symbols that appear as local peaks in multiple communities. Frequency across communities is interpreted as stronger, more generalizable signal.
+    3. Subreddit mention-weight tie-break — when frequency ties occur, break ties using the local mention count (how many times the symbol was mentioned where it was strongest). This promotes symbols with deep local traction as well as broad reach.
+  - Modulation & safety:
+    - Sentiment normalization and optional thresholds reduce false positives from small-sample extremes.
+    - Parameters (per-subreddit peak depth, minimum-frequency threshold, mention-weight multiplier) are configurable to tune sensitivity for production.
+  - Benefits:
+    - Explainable: every ranked symbol maps back to the specific posts/comments that produced it, enabling "why" explanations in the UI.
+    - Deterministic: same inputs => same ranking, which is essential for reproducibility and debugging.
+    - Lightweight: no heavy ML model required for the core ranking, keeping cost and complexity low.
+  - Tiny conceptual usage (pseudocode):
+    ```python
+    # Run the pipeline for subreddits
+    analysis = orchestration.run_general_analysis(["wallstreetbets","stocks"], limit=20)
+    # Get the headline signals
+    top = ranking_component.get_top_stock(analysis)
+    worst = ranking_component.get_worst_stock(analysis)
+    rising = ranking_component.get_rising_stock(analysis, limit=3)
+    # Each item contains symbol, sentiment, count, linked post and enriched market fields
+    ```
+- API & scheduler (engine service) — endpoints expose cached summaries (Top/Worst/Rising) and a playground for ad-hoc queries. A scheduler refreshes the cache daily and a startup check ensures the cache is fresh on deploy.
+- LLM summarization (optional) — concise JSON-formatted AI analysis that augments each headline symbol with human-readable commentary, confidence, and short recommendations (purely explanatory, not investment advice).
 
-Frontend UI notes
-- Headline cards show Top / Worst / Rising stocks with quick stats and a short rationale excerpt from the source post.
-- Clicking a card opens a detail view that shows the underlying Reddit excerpt, price chart, RSI, and the optional GPT JSON summary.
-- Playground UI exposes the same parameters the API supports so users can experiment without changing server-side cache.
-- The app uses the cached engine results for fast rendering and shows an unobtrusive banner when a fresh analysis is in progress.
+## Reddit fetching & preprocessing algorithm 🧩
+We fetch and prepare Reddit content using a predictable, low-noise pipeline that's part of the sentiment ingestion step above:
+- Fetch posts from a subreddit by type (hot / new / top / rising / controversial).  
+- For "top" and "controversial" respect an optional time_filter (hour/day/week/month/year/all).  
+- Load only top-level comments and limit them per-post via comment_limit for predictable latency.  
+- Combine title, body, link and top comments into a single "full_text" blob for sentiment analysis and ticker extraction.  
+- Extract tickers using a simple regex for $TICKER tokens (e.g. $TSLA, $AAPL) and compute average sentiment per symbol.  
+- Normalize compound sentiment to improve ranking impact (small multiplier).
 
-## How frontend and engine communicate
-- The frontend POSTs to the engine endpoints (/api/home, /api/playground) and renders the JSON response.
-- For cached results, frontend expects a "last_updated" timestamp and uses it to show freshness.
-- Playgrounds are non-destructive — they trigger on-demand runs but do not overwrite the shared cache.
-
-## Backend / Engine (conceptual)
-This project integrates with a separate backend engine (linked above) that performs:
-- Reddit fetching and preprocessing (title + body + top comments combined into a single text blob).
-- Symbol extraction (simple $TICKER regex) and sentiment scoring per mention (VADER).
-- Aggregation of mentions & average sentiment per symbol across communities.
-- Market data enrichment using a financial data provider (price, high, low, percent change, RSI).
-- An explainable 3-step ranking algorithm that produces Top, Worst and Rising lists based on:
-  1. per-community peak selection,
-  2. cross-community recurrence,
-  3. mention-weight tiebreaking.
-- Optional GPT-based summarization that returns structured JSON insights for headline stocks.
-Note: the engine lives in a separate repository; this README avoids internal engine filenames and focuses on behavior and integration.
-
-## Reddit fetching & preprocessing (conceptual)
-- Fetch posts by type (hot/new/top/rising/controversial) with an optional time filter.
-- For each post, gather title, body and up to N top-level comments (bounded `comment_limit`) and build a `full_text`.
-- Run sentiment on `full_text`, extract $TICKER tokens, aggregate counts and average sentiment per ticker.
-- The bounded comment strategy keeps response times predictable and reduces noisy deep-comment traversal.
+Quick view of the core behaviors (conceptual)
+```python
+# Engine behaviors (conceptual)
+# - fetch N posts per subreddit and up to comment_limit top-level comments
+# - build full_text = title + body + top comments and run sentiment analysis
+# - extract tickers via r"\$[A-Z]+" and aggregate counts + sentiment per ticker
+# - enrich tickers with market data and run the 3-step ranking filter
+```
 
 ## Quickstart — run & call the API ⚡
 
-### Frontend (local dev)
-- Install dependencies and run the frontend dev server (refer to frontend package scripts).
-- Ensure you have engine API URL and firebase config in environment variables.
+### Run the backend engine
+```bash
+# Backend engine lives in its own repo — follow the Engine README to run the service:
+# https://github.com/HaiderMalikk/Reddish-Trends-Engine
+# When running locally the engine exposes API endpoints on port 5000 by default
+```
 
-### Call the Engine API (curl)
+### Call the API (curl)
 ```bash
 curl -X POST http://localhost:5000/api/home \
   -H "Content-Type: application/json" \
@@ -67,7 +79,7 @@ curl -X POST http://localhost:5000/api/home \
 
 ### Playground (Python)
 ```python
-# example_playground.py
+# example_playground.py (client)
 import requests
 payload = {
   "request": {"type": "getplaygroundgeneralanalysis",
@@ -78,8 +90,13 @@ r = requests.post("http://localhost:5000/api/playground", json=payload)
 print(r.json())
 ```
 
-### Use ranking results internally (conceptual)
-- The engine returns structured Top/Worst/Rising items that the frontend consumes and renders. The frontend does not re-run ranking logic — it displays the engine's output.
+### Internal usage (conceptual)
+```python
+# Conceptual: use the engine's modules to run the pipeline and extract signals
+# analysis = orchestration_module.run_general_analysis(["wallstreetbets","stocks"], limit=10)
+# top = ranking_component.get_top_stock(analysis)
+# rising = ranking_component.get_rising_stock(analysis, limit=3)
+```
 
 ### Sample Top_Stock shape (abbrev.)
 ```json
@@ -91,12 +108,12 @@ print(r.json())
   "price":576.68,
   "percentage_change":-1.21,
   "rsi":28.53,
-  "GPT_Analysis":{"overview":"...","prediction":"...","Confidence Score":78}
+  "LLM_Analysis":{"overview":"...","prediction":"...","Confidence Score":78}
 }
 ```
 
 ## Firebase (NoSQL) — user document example
-We store user preferences, cached requests, and logs in Firebase Firestore. Example user document (abbreviated):
+We use Firebase Firestore to store user preferences, cached requests, and logs. Example user document (abbreviated):
 
 ```json
 // example firebase user doc
@@ -108,23 +125,12 @@ We store user preferences, cached requests, and logs in Firebase Firestore. Exam
     { "companyName": "Identiv, Inc.", "symbol": "$INVE" }
   ],
   "requests": {
-    "general_analysis": {
-      "count": 37,
-      "log": ["March 22, 2025 at 1:58:46..."]
-    },
+    "general_analysis": { "count": 37, "log": ["March 22, 2025 at 1:58:46..."] },
     "playground_analysis": {
       "count": 2,
       "log": [
         {
-          "parameters": {
-            "analysisType": "getplaygroundgeneralanalysis",
-            "commentLimit": 10,
-            "limit": 10,
-            "period": "1mo",
-            "sort": "hot",
-            "subreddits": "wallstreetbets,stocks,stockmarket",
-            "time": "none"
-          },
+          "parameters": { "analysisType": "getplaygroundgeneralanalysis", "commentLimit": 10, "limit": 10, "period": "1mo", "sort": "hot", "subreddits": "wallstreetbets,stocks,stockmarket", "time": "none" },
           "timestamp": "2025-03-23T22:16:01-04:00"
         }
       ]
@@ -134,14 +140,31 @@ We store user preferences, cached requests, and logs in Firebase Firestore. Exam
 ```
 
 ## Play with it 🔬
-- `/api/home` → cached Top/Worst/Rising summaries (frontend reads & shows freshness)
-- `/api/playground` → custom subreddit sets, time windows, symbol lists (playground runs are not cached globally)
-- Cache stored in the engine's `cached_analysis.json` — scheduler updates it daily (engine behavior)
+- `/api/home` → cached Top/Worst/Rising summaries  
+- `/api/playground` → custom subreddit sets, time windows, symbol lists  
+- Cache stored in `cached_analysis.json` — scheduler refreshes daily
 
 ## Design notes (short)
-- Deterministic & explainable ranking > black-box for a community product.  
-- Bounded comment retrieval and caching reduce rate-limit headaches.  
-- Frontend displays engine-provided results; playgrounds allow experimentation without changing shared cache.
+- Deterministic & explainable ranking > black-box for community products.  
+- Cache + scheduler = fewer rate-limit headaches with Reddit / market APIs.  
+- Modular design: swap sentiment, enrichment, or LLM independently.
+
+## Frontend / Website — full feature list & tech
+The website surfaces ranked signals and explains them — designed for fast scanning and transparency.
+
+Core user-facing features
+- Trending discovery: Top, Worst and Rising stocks detected across financial communities.  
+- Post-level transparency: every signal links back to the Reddit post(s) that generated it so users can inspect context.  
+- Market enrichment: live price, daily high/low, percent change and RSI shown alongside sentiment scores.  
+- Confidence & explanations: optional LLM summaries explaining market sentiment, technical signals, fundamentals and a confidence score.  
+- Playgrounds & custom queries: run custom analyses across subreddits, periods, and symbol lists via the playground API.  
+- User personalization: favorites, request logs and account persistence using Firestore.  
+- Clean UI & visuals: responsive summaries, card-based layouts and compact visual cues for quick decision-making.
+
+Frontend tech
+- Typescript, Next.js, Tailwind CSS  
+- Firebase Firestore for user data and preferences  
+- Hosting: Vercel (frontend) + Heroku/Render for backend (engine)
 
 ## Screenshots & preview
 <img src="./public/website_preview.png" alt="website preview" width="700"/>
