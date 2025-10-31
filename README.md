@@ -168,8 +168,20 @@ Frontend tech
 
 ## Screenshots & preview
 <img src="./public/website_preview.png" alt="website preview" width="700"/>
+<img src="./public/top_stock_prev.png" alt="website preview" width="700"/>
+<img src="./public/reddit_analysis_prev.png" alt="website preview" width="700"/>
+<img src="./public/infoicon_prev.png" alt="website preview" width="700"/>
+<img src="./public/playground_prev.png" alt="website preview" width="700"/>
+<img src="./public/playground_results_prev.png" alt="website preview" width="700"/>
+<img src="./public/reddit_analysis_playground_prev.png" alt="website preview" width="700"/>
+<img src="./public/playground_history_prev.png" alt="website preview" width="700"/>
+<img src="./public/profile_prev.png" alt="website preview" width="700"/>
+<img src="./public/favs_profile_prev.png" alt="website preview" width="700"/>
+<img src="./public/login_prev.png" alt="website preview" width="700"/>
+<img src="./public/loader_prev.png" alt="website preview" width="700"/>
+<img src="./public/anamiation_hp_prev.jpeg" alt="website preview" width="700"/>
 
-Want it snappier? Open an issue with the exact playground params you want and I'll add a quick example.
+
 
 # 
 
