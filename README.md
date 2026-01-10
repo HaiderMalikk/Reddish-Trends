@@ -164,7 +164,7 @@ Core user-facing features
 Frontend tech
 - Typescript, Next.js, Tailwind CSS  
 - Firebase Firestore for user data and preferences  
-- Hosting: Vercel (frontend) + Heroku/Render for backend (engine)
+- Hosting: Vercel (frontend) + Vercel for backend (engine)
 
 ## Screenshots & preview
 <img src="./public/website_preview.png" alt="website preview" width="700"/>
